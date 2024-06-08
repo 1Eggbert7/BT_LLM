@@ -1,0 +1,28 @@
+{
+    "functions": {
+        "combine_breads(sandwich_item, sandwich_item)": "Joins two pieces of bread, such as for a sandwich, with the fillings in between.",
+        "cook_pancakes(number)": "Cooks number-amount of pancakes on a hot surface until they are golden brown on both sides.",
+        "cook_quesadilla()": "Cooks a filled tortilla on a hot surface until the exterior is crispy and the cheese inside melts.",
+        "cook_rice(number)": "Prepares number-amount of portions of rice by boiling it until fully cooked and fluffy.",
+        "fry_vegetables(number)": "Cooks number-amount of servings of prepared vegetables by washing, peeling, and cutting them into pieces suitable for cooking.",
+        "fry_bacon(number)": "Fries number-amount of bacon slices until crispy.",
+        "fry_eggs(number)": "Fries a number-amount of eggs sunny-side up.",
+        "grill_mushrooms(number)": "Grills number-amount of mushrooms until they are fully cooked and have released their moisture.",
+        "grill_sausages(number)": "Grills a specified number of sausages, until they are thoroughly cooked.",
+        "grill_tomatoes(number)": "Heats and grills tomatoes until tender, seasoned to taste.",
+        "heat_beans(number)": "Warms number-amount of canned beans until hot, ready to serve.",
+        "initiate_sandwich(toasted_bread)": "Begins assembling a sandwich on the plate, using toasted bread as the base.",
+        "inspect_cleanliness()": "Visually inspects the cleaned area to ensure that it meets cleanliness standards.",
+        "mop_floor()": "Cleans the floor using a mop and a cleaning solution to remove stains and spills.",
+        "place_on_plate(item, number)": "Places the specified number of items, such as food or an ingredient, directly onto a serving plate.",
+        "place_on_sandwich(item, number)": "Adds a number-amount of ingredients to the sandwich being assembled.",
+        "prepare_tortilla(number)": "Heats number-amount of tortillas until warm and pliable, ready for assembly.",
+        "report_completion()": "Signals the completion of the cleaning task and reports the status.",
+        "retrieve_cleaning_supplies()": "Gathers all necessary cleaning tools and products needed for the task.",
+        "return_supplies()": "Returns all cleaning tools and products to their original storage locations after the task is completed.",
+        "serve()": "Presents the prepared meal or dish to the diners for consumption.",
+        "spread_on_bread(item)": "Spreads an ingredient, such as butter or jam, evenly on an empty piece of toast.",
+        "toast_bread(number)": "Toasts a specified number of bread slices until golden brown and crispy.",
+        "vacuum_floor()": "Uses a vacuum cleaner to remove dirt, dust, and debris from the floor."
+    }
+}

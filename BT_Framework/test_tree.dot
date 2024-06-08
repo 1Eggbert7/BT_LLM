@@ -1,0 +1,11 @@
+digraph pastafarianism {
+ordering=out;
+graph [fontname="times-roman"];
+node [fontname="times-roman"];
+edge [fontname="times-roman"];
+"Test Tree" [fillcolor=orange, fontcolor=black, fontsize=9, label="Test Tree", shape=box, style=filled];
+"Check New Sequence" [fillcolor=gray, fontcolor=black, fontsize=9, label="Check New Sequence", shape=ellipse, style=filled];
+"Test Tree" -> "Check New Sequence";
+"Explain Sequence" [fillcolor=gray, fontcolor=black, fontsize=9, label="Explain Sequence", shape=ellipse, style=filled];
+"Test Tree" -> "Explain Sequence";
+}

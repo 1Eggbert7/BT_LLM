@@ -1,0 +1,32 @@
+{
+    "ingredients": {
+        "avocado": "A ripe mashed avocado, seasoned and ready to use in dishes.",
+        "avocado_toast": "A slice of bread with mashed avocado spread on top.",
+        "bacon": "Thin raw slices of pork",
+        "beans": "Pre-cooked or canned beans, heated for use in dishes.",
+        "berries": "Fresh berries, washed and ready to eat or use in recipes.",
+        "bread": "Sliced bread.",
+        "cheese": "Grated cheese used as a topping or filling, melts when heated.",
+        "cooked_quesadilla": "A quesadilla that has been filled and cooked until the cheese is melted and the exterior crispy.",
+        "cooked_pancakes": "Pancakes that have been cooked until golden brown and fluffy.",
+        "egg": "A raw egg.",
+        "fried_bacon": "Thin slices of pork that have been fried until crispy.",
+        "fried_egg": "A fried egg made sunny side up.",
+        "fried_vegetables": "Vegetables that have been fried until tender and slightly crispy.",
+        "grilled_mushrooms": "Mushrooms that have been grilled, ready to be added to dishes.",
+        "grilled_sausages": "Sausages that have been cooked thoroughly by grilling.",
+        "grilled_tomatoes": "Tomatoes that have been grilled and seasoned.",
+        "heated_beans": "Beans that have been warmed through, ready for serving.",
+        "jelly": "A fruit preserve, used as a spread or topping.",
+        "jelly_toast": "A slice of toasted bread with jelly spread on top.",
+        "maple_syrup": "A sweet syrup made from the sap of sugar maple trees, used as a topping or sweetener.",
+        "mushrooms": "Fresh mushrooms.",
+        "peanut_butter": "A spread made from ground peanuts, used in sandwiches, baking, etc.",
+        "peanut_butter_toast": "A slice of toasted bread with peanut butter spread on top.",
+        "prepared_tortilla": "A tortilla that has been heated and is ready for dish assembly.",
+        "sausages": "Raw meat sausages, ready to be cooked thoroughly by grilling.",
+        "toasted_bread": "Bread that has been toasted to a crispy texture and golden color.",
+        "tomatoes": "Used raw, often cooked or seasoned in recipes.",
+        "tortilla": "A flatbread used as a base for wraps, quesadillas, and other dishes, heated before assembly."
+    }
+}

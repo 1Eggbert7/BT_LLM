@@ -1,0 +1,140 @@
+{
+  "sequences": [
+    {
+      "task": "bacon and egg sandwich",
+      "ID": "1",
+      "sequence": [
+        {"step": "1", "action": "toast_bread(2)"},
+        {"step": "2", "action": "fry_eggs(1)"},
+        {"step": "3", "action": "initiate_sandwich(toasted_bread)"},
+        {"step": "4", "action": "place_on_sandwich(fried_egg, 1)"},
+        {"step": "5", "action": "fry_bacon(2)"},
+        {"step": "6", "action": "place_on_sandwich(fried_bacon, 2)"},
+        {"step": "7", "action": "place_on_sandwich(toasted_bread, 1)"},
+        {"step": "8", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "avocado toast with sausage on the side",
+      "ID": "2",
+      "sequence": [
+        {"step": "1", "action": "toast_bread(1)"},
+        {"step": "2", "action": "grill_sausages(2)"},
+        {"step": "3", "action": "spread_on_bread(avocado)"},
+        {"step": "4", "action": "place_on_plate(grilled_sausages, 1)"},
+        {"step": "5", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "peanut butter and jelly sandwich",
+      "ID": "3",
+      "sequence": [
+        {"step": "1", "action": "toast_bread(2)"},
+        {"step": "2", "action": "spread_on_bread(peanut_butter)"},
+        {"step": "3", "action": "spread_on_bread(jelly)"},
+        {"step": "4", "action": "combine_breads(jelly_toast, peanut_butter_toast)"},
+        {"step": "5", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "vegetable stir fry with rice",
+      "ID": "4",
+      "sequence": [
+        {"step": "1", "action": "cook_rice(1)"},
+        {"step": "2", "action": "fry_vegetables(1)"},
+        {"step": "3", "action": "place_on_plate(cooked_rice, 1)"},
+        {"step": "4", "action": "place_on_plate(fried_vegetables, 1)"},
+        {"step": "5", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "pancakes with maple syrup and berries",
+      "ID": "5",
+      "sequence": [
+        {"step": "1", "action": "cook_pancakes(3)"},
+        {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"},
+        {"step": "3", "action": "place_on_plate(maple_syrup, 1)"},
+        {"step": "4", "action": "place_on_plate(berries, 1)"},
+        {"step": "5", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "full English breakfast",
+      "ID": "6",
+      "sequence": [
+        {"step": "1", "action": "grill_sausages(2)"},
+        {"step": "2", "action": "fry_bacon(2)"},
+        {"step": "3", "action": "toast_bread(2)"},
+        {"step": "4", "action": "grill_tomatoes(1)"},
+        {"step": "5", "action": "grill_mushrooms(3)"},
+        {"step": "6", "action": "heat_beans(1)"},
+        {"step": "7", "action": "fry_eggs(1)"},
+        {"step": "8", "action": "place_on_plate(grilled_sausages, 2)"},
+        {"step": "9", "action": "place_on_plate(fried_bacon, 2)"},
+        {"step": "10", "action": "place_on_plate(toasted_bread, 2)"},
+        {"step": "11", "action": "place_on_plate(grilled_tomatoes, 1)"},
+        {"step": "12", "action": "place_on_plate(grilled_mushrooms, 3)"},
+        {"step": "13", "action": "place_on_plate(heated_beans, 1)"},
+        {"step": "14", "action": "place_on_plate(fried_egg, 1)"},
+        {"step": "15", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "tortilla with tomatoes beans and egg (huevos rancheros)",
+      "ID": "7",
+      "sequence": [
+        {"step": "1", "action": "grill_tomatoes(1)"},
+        {"step": "2", "action": "heat_beans(1)"},
+        {"step": "3", "action": "fry_eggs(1)"},
+        {"step": "4", "action": "prepare_tortilla(1)"},
+        {"step": "5", "action": "place_on_plate(prepared_tortilla, 1)"},
+        {"step": "6", "action": "place_on_plate(heated_beans, 1)"},
+        {"step": "7", "action": "place_on_plate(grilled_tomatoes, 1)"},
+        {"step": "8", "action": "place_on_plate(fried_egg, 1)"},
+        {"step": "9", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "bean and cheese quesadilla",
+      "ID": "8",
+      "sequence": [
+        {"step": "1", "action": "heat_beans(1)"},
+        {"step": "2", "action": "prepare_tortilla(1)"},
+        {"step": "3", "action": "place_on_plate(prepared_tortilla, 1)"},
+        {"step": "4", "action": "place_on_plate(heated_beans, 1)"},
+        {"step": "5", "action": "place_on_plate(grated_cheese, 1)"},
+        {"step": "6", "action": "cook_quesadilla()"},
+        {"step": "7", "action": "place_on_plate(cooked_quesadilla, 1)"},
+        {"step": "8", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "grilled tomato and mushroom bruschetta",
+      "ID": "9",
+      "sequence": [
+        {"step": "1", "action": "grill_tomatoes(2)"},
+        {"step": "2", "action": "grill_mushrooms(2)"},
+        {"step": "3", "action": "toast_bread(2)"},
+        {"step": "4", "action": "initiate_sandwich(toasted_bread)"},
+        {"step": "5", "action": "place_on_sandwich(grilled_tomatoes, 1)"},
+        {"step": "6", "action": "place_on_sandwich(grilled_mushrooms, 1)"},
+        {"step": "7", "action": "initiate_sandwich(toasted_bread)"},
+        {"step": "8", "action": "place_on_sandwich(grilled_tomatoes, 1)"},
+        {"step": "9", "action": "place_on_sandwich(grilled_mushrooms, 1)"},
+        {"step": "10", "action": "serve()"}
+      ]
+    },
+    {
+      "task": "clean living room floor",
+      "ID": "10",
+      "sequence": [
+        {"step": "1", "action": "retrieve_cleaning_supplies()"},
+        {"step": "2", "action": "vacuum_floor()"},
+        {"step": "3", "action": "mop_floor()"},
+        {"step": "4", "action": "return_supplies()"},
+        {"step": "5", "action": "inspect_cleanliness()"},
+        {"step": "6", "action": "report_completion()"}
+      ]
+    }     
+  ]
+}
