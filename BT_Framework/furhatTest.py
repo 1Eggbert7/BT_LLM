@@ -36,6 +36,9 @@ furhat.set_voice(name=voice_name)
 
 furhat.say(text="Hello, I am a speaking robot")
 
+user_input = furhat.listen()
+
+print(user_input)
 # Perform a named gesture
 #furhat.gesture(name="BrowRaise")
 
