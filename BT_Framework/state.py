@@ -20,5 +20,5 @@ var_generated_sequence_test = {"sequence": [
         {"step": "2", "action": "fry_vegetables(1)"},
         {"step": "3", "action": "place_on_plate(toasted_bread, 1)"},
         {"step": "4", "action": "place_on_plate(fried_vegetables, 1)"},
-        {"step": "5", "action": "serve()"}
+        {"step": "5", "action": "seve()"}
       ]}

@@ -319,11 +319,19 @@ class CheckNewSeq(py_trees.behaviour.Behaviour):
             return False, "The sequence is empty or not properly formatted."
         
         for step in sequence["sequence"]:
-            if "step" not in step or "action" not in step:
-                #print("Step: ", step)
-                return False, "Each step must contain 'step' and 'action' fields."
-            if not isinstance(step["step"], str) or not isinstance(step["action"], str):
-                return False, "Both 'step' and 'action' must be strings."
+            
+            if "step" not in step:
+                state.var_found_errors_in_sequence.append("Each step must contain 'step' and 'action' fields. 'step' is missing.")
+            if "action" not in step:
+                state.var_found_errors_in_sequence.append("Each step must contain 'step' and 'action' fields. 'action' is missing.")
+            if state.var_found_errors_in_sequence:
+                return False, "The sequence contains errors. Please check the following:\n" + "\n".join(state.var_found_errors_in_sequence)
+            if not isinstance(step["step"], str):
+                state.var_found_errors_in_sequence.append("Step number must be a string.")
+            if not isinstance(step["action"], str):
+                state.var_found_errors_in_sequence.append("Action must be a string.")
+            if state.var_found_errors_in_sequence:
+                return False, "The sequence contains errors. Please check the following:\n" + "\n".join(state.var_found_errors_in_sequence)                
         
         return True, "Sequence format is valid."
 

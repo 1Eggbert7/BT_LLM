@@ -1,9 +1,9 @@
 # main.py
 # Alexander Leszczynski
-# 08-06-2024 
+# 10-06-2024 
 
 import py_trees
-from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence
+from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser
 from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq
 from config import LLM
 import state
@@ -64,7 +64,8 @@ def build_tree(conversation, process_user_input):
     sub_sequence_2_2_2_1_2_1_1.add_children([check_new_seq, explain_sequence])                          # Level 7
 
     # Sub selector 2.2.2.1.2.1
-    sub_selector_2_2_2_1_2_1.add_children([sub_sequence_2_2_2_1_2_1_1])                                 # Level 6
+    report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
+    sub_selector_2_2_2_1_2_1.add_children([sub_sequence_2_2_2_1_2_1_1, report_failure])                 # Level 6
 
     # Sub sequence 2.2.2.1.2
     generate_new_sequence = GenerateNewSequence(name="Generate New Sequence", conversation=conversation)
@@ -95,12 +96,13 @@ def build_tree(conversation, process_user_input):
 
 def build_test_tree():
     # just for testing conditions and actions directly
-    root = py_trees.composites.Sequence(name="Test Tree", memory=False)
+    root = py_trees.composites.Selector(name="Test Tree", memory=False)
 
     check_sequence = CheckNewSeq(name="Check New Sequence")
-    explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
+    #explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
+    report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
 
-    root.add_children([check_sequence, explain_sequence])
+    root.add_children([check_sequence, report_failure])
 
     return root
 
@@ -115,7 +117,7 @@ def test_conditions_and_actions(user_input):
     behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
     behaviour_tree.tick()
     # Render the behavior tree
-    py_trees.display.render_dot_tree(behaviour_tree.root)
+    #py_trees.display.render_dot_tree(behaviour_tree.root)
 
 def process_user_input(user_input):
     global conversation
@@ -132,11 +134,12 @@ def process_user_input(user_input):
 print("User: ", user_input)
 
 # Full BT is called with the user input
-process_user_input(user_input)
+#process_user_input(user_input)
 
 # Test conditions and actions directly
 
-#test_conditions_and_actions(user_input)
 
+test_conditions_and_actions(user_input)
+#print("conversation: ", conversation)
 #test_conditions_and_actions(user_input)
 print(state.var_total_llm_calls)

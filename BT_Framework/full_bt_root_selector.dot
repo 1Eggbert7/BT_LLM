@@ -58,6 +58,8 @@ edge [fontname="times-roman"];
 "Sub Sequence 2.2.2.1.2.1.1" -> "Check New Sequence";
 "Explain Sequence" [fillcolor=gray, fontcolor=black, fontsize=9, label="Explain Sequence", shape=ellipse, style=filled];
 "Sub Sequence 2.2.2.1.2.1.1" -> "Explain Sequence";
+"Report Failure Back to User" [fillcolor=gray, fontcolor=black, fontsize=9, label="Report Failure Back to User", shape=ellipse, style=filled];
+"Sub Selector 2.2.2.1.2.1" -> "Report Failure Back to User";
 "Print 'Eggbert3'" [fillcolor=gray, fontcolor=black, fontsize=9, label="Print 'Eggbert3'", shape=ellipse, style=filled];
 "Full BT Root Selector" -> "Print 'Eggbert3'";
 }

@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 08-06-2024
+# 10-06-2024
 
 import py_trees
 from openai import OpenAI
@@ -553,7 +553,67 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             print(f"Error in LLM call: {e}")
             return "Failed LLM call"
         
+class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
+    """
+    This action reports the failure back to the user. It is triggered when the automated check of the newly generated sequence fails.
+    """
 
+    def __init__(self, name, conversation):
+        super(ReportFailureBackToUser, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        if LLM:
+            #response = self.report_failure_back_to_user()
+            response = "I’m sorry, but I ran into an issue while trying to create what you requested. Would you like to try again, or do you have any other questions I can help with?"
+            self.conversation.append({"role": "assistant", "content": response})
+            print("Assistant: ", response)
+        else:
+            print("The sequence failed the automated check.")
+            response = 'False'
+
+        return py_trees.common.Status.SUCCESS
+
+    def report_failure_back_to_user(self):
+        """
+        This function reports the failure back to the user with the ChatGPT 3.5 Turbo model.
+        """
+        # This logic is to prevent the LLM from being called too many times
+        if state.var_total_llm_calls >= MAX_LLM_CALL:
+            print("Exceeded the maximum number of LLM calls.")
+            return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
+        state.var_total_llm_calls += 1
+        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+        try:
+            # Construct the final prompt by inserting the user input
+            error_messages = "\n".join(state.var_found_errors_in_sequence)
+
+            predefined_messages_report_failure = [
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a helpful assistant that reports back to the user when the automated check of the newly generated sequence fails. "
+                        "The report should be clear and concise, explaining the reason for the failure without adding unnecessary details. "
+                        "At the end of the report, ask the user if they would like to try generating a new sequence or if they have any other questions. "
+                        "Do not provide any extra information or detail about how the actions are performed beyond what is specified."
+                        "To report the failure you have access to the error messages: '" + error_messages + "' Make sure to explain the error messages to the user in a way that is easy to understand."
+                    )
+                }
+            ]
+
+            messages = predefined_messages_report_failure  # Start with the predefined context.
+            print("prepromt Messages for reporting failure in the sequence: ", messages)
+
+            # Make the API call
+            completion = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    messages=messages
+                    )
+            
+            # Extract and return the response content
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error in LLM call: {e}")
 
 
 
