@@ -1,14 +1,14 @@
 # main.py
 # Alexander Leszczynski
-# 10-06-2024 
+# 11-06-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser
-from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq
-from config import LLM
+from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq
+from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT
 import state
 from prompts import DUMMY_CONVERSATION
-from utils import format_conversation
+from utils import format_conversation, initialize_furhat
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 
@@ -41,6 +41,8 @@ def build_tree(conversation, process_user_input):
     sub_sequence_2_2_2_1_2 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2", memory=False) # this sequence is a child of sub_selector_2_2_2_1
     sub_selector_2_2_2_1_2_1 = py_trees.composites.Selector(name="Sub Selector 2.2.2.1.2.1", memory=False) # this selector is a child of sub_sequence_2_2_2_1_2
     sub_sequence_2_2_2_1_2_1_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.1", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1
+    sub_selector_2_2_2_1_2_1_1_1 = py_trees.composites.Selector(name="Sub Selector 2.2.2.1.2.1.1.1", memory=False) # this selector is a child of sub_sequence_2_2_2_1_2_1_1
+    sub_sequence_2_2_2_1_2_1_1_1_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.1.1.1", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1_1_1
 
     # Sub selector 2.1
     check_var_known = CheckVarKnownCondition(name="Check for var_known")
@@ -58,10 +60,19 @@ def build_tree(conversation, process_user_input):
     decline_request = DeclineRequest(name="Decline Request")
     sub_sequence_2_2_2_1_1.add_children([check_var_inf, decline_request])                               # Level 5
 
+    
+
+    # Sub sequence 2.2.2.1.2.1.1.1.1
+    check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
+    sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq])                        # Level 9
+
+    # Sub selector 2.2.2.1.2.1.1.1
+    sub_selector_2_2_2_1_2_1_1_1.add_children([sub_sequence_2_2_2_1_2_1_1_1_1])                         # Level 8
+
     # Sub sequence 2.2.2.1.2.1.1
     check_new_seq = CheckNewSeq(name="Check New Sequence")
     explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
-    sub_sequence_2_2_2_1_2_1_1.add_children([check_new_seq, explain_sequence])                          # Level 7
+    sub_sequence_2_2_2_1_2_1_1.add_children([check_new_seq, explain_sequence, sub_selector_2_2_2_1_2_1_1_1]) # Level 7
 
     # Sub selector 2.2.2.1.2.1
     report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
@@ -96,13 +107,11 @@ def build_tree(conversation, process_user_input):
 
 def build_test_tree():
     # just for testing conditions and actions directly
-    root = py_trees.composites.Selector(name="Test Tree", memory=False)
+    root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
 
-    check_sequence = CheckNewSeq(name="Check New Sequence")
-    #explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
-    report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
+    check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
 
-    root.add_children([check_sequence, report_failure])
+    root.add_children([check_if_user_ok_with_new_seq])
 
     return root
 
@@ -111,6 +120,8 @@ def test_conditions_and_actions(user_input):
     conversation = DUMMY_CONVERSATION
     state.var_KnowNo = ['pancakes with maple syrup and berries']
     state.var_generated_sequence = state.var_generated_sequence_test
+    if FURHAT:
+        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
 
     tree = build_test_tree()
     
@@ -122,6 +133,8 @@ def test_conditions_and_actions(user_input):
 def process_user_input(user_input):
     global conversation
     conversation.append({"role": "user", "content": user_input})
+    if FURHAT:
+        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
 
     tree = build_tree(conversation, process_user_input)
     behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
@@ -134,12 +147,12 @@ def process_user_input(user_input):
 print("User: ", user_input)
 
 # Full BT is called with the user input
-#process_user_input(user_input)
+process_user_input(user_input)
 
 # Test conditions and actions directly
 
 
-test_conditions_and_actions(user_input)
+#test_conditions_and_actions(user_input)
 #print("conversation: ", conversation)
 #test_conditions_and_actions(user_input)
 print(state.var_total_llm_calls)

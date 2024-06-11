@@ -1,12 +1,12 @@
 # prompts.py
 # Alexander Leszczynski
-# 8-06-2024
+# 11-06-2024
 
 import json
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': 'Can I get the vegetable stir fry without rice but with toasted bread instead?'}
+    {'role': 'user', 'content': 'Hoowdy partner!'},
 ]
 
 PRE_PROMPT_AMBIGUOUS = """

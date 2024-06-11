@@ -1,21 +1,26 @@
-from openai import OpenAI
+def quick_check_user_answer(user_answer):
+        """
+        This function quickly checks the user answer if it is less than 15 characters.
+        """
+        # Define lists for quick checks
+        affirmatives = ["yes", "yeah", "ok", "sure", "yup", "jup", "jap", "ye", "of course", "naturally", "good"]
+        affirmative_buts = ["but", "however", "no", "and", "not"]
+        negatives = ["no", "wrong", "false", "not"]
+        
+        
+        for affirmative in affirmatives:
+            if affirmative in user_answer.lower():
+                # Check if it also contains an affirmative but
+                for affirmative_but in affirmative_buts:
+                    if affirmative_but in user_answer.lower():
+                        return "needs further checking"
+                return "affirmative"
+        
+        # Check for negatives
+        for negative in negatives:
+            if negative in user_answer.lower():
+                return "negative"
+    
+        return "needs further checking"  # Default if it does not match any quick check
 
-client = OpenAI()
-
-# make a simple request to the API
-
-predefined_messages_new_sequence = [
-                    {"role": "system", "content": "You are a 1920s Gentleman assistant that likes to be sarcastic and witty. You are tasked with helping a user to pick his favorite color."},
-                ]
-
-user_input = "Hey, i can't decide on my favorite color. Can you help me?"
-
-predefined_messages_new_sequence.append({"role": "user", "content": user_input})
-
-completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=predefined_messages_new_sequence
-)
-response_content = completion.choices[0].message.content
-
-print(response_content)
+print(quick_check_user_answer("that sounds good. Do that."))
