@@ -1,14 +1,16 @@
 # main.py
 # Alexander Leszczynski
-# 11-06-2024 
+# 12-06-2024 
 
 import py_trees
-from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser
+from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest
 from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq
 from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT
 import state
 from prompts import DUMMY_CONVERSATION
 from utils import format_conversation, initialize_furhat
+#import cProfile
+#import time
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 
@@ -64,10 +66,12 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 2.2.2.1.2.1.1.1.1
     check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
-    sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq])                        # Level 9
+    execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence")
+    sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq, execute_new_sequence])  # Level 9
 
     # Sub selector 2.2.2.1.2.1.1.1
-    sub_selector_2_2_2_1_2_1_1_1.add_children([sub_sequence_2_2_2_1_2_1_1_1_1])                         # Level 8
+    ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
+    sub_selector_2_2_2_1_2_1_1_1.add_children([sub_sequence_2_2_2_1_2_1_1_1_1, ask_user_for_new_request]) # Level 8
 
     # Sub sequence 2.2.2.1.2.1.1
     check_new_seq = CheckNewSeq(name="Check New Sequence")
@@ -109,9 +113,10 @@ def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
 
-    check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
+    #execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence")
+    ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
 
-    root.add_children([check_if_user_ok_with_new_seq])
+    root.add_children([ask_user_for_new_request])
 
     return root
 
@@ -120,12 +125,17 @@ def test_conditions_and_actions(user_input):
     conversation = DUMMY_CONVERSATION
     state.var_KnowNo = ['pancakes with maple syrup and berries']
     state.var_generated_sequence = state.var_generated_sequence_test
+    state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
+    
     if FURHAT:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+
 
     tree = build_test_tree()
     
     behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
+    
+    #cProfile.runctx('behaviour_tree.tick()', globals(), locals())  # Profile the tick function
     behaviour_tree.tick()
     # Render the behavior tree
     #py_trees.display.render_dot_tree(behaviour_tree.root)

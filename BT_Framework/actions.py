@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 10-06-2024
+# 12-06-2024
 
 import py_trees
 from openai import OpenAI
@@ -323,7 +323,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
 
 class ExecuteAction(py_trees.behaviour.Behaviour):
     """
-    This action executes the action that maps to the user input.
+    This action executes the action that maps to the user input, by acknowledging the user input and providing the response.
     """
 
     def __init__(self, name, conversation):
@@ -342,6 +342,26 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         #choices =  ['bacon and egg sandwich', 'avocado toast with sausage on the side', 'peanut butter and jelly sandwich', 'vegetable stir fry with rice', 'pancakes with maple syrup and berries', 'full English breakfast', 'tortilla with tomatoes beans and egg (huevos rancheros)', 'bean and cheese quesadilla', 'grilled tomato and mushroom bruschetta', 'clean living room floor']
         #random_choice = random.choice(choices)
         response = "Great choice! I will execute the sequence for {}.".format(state.var_KnowNo[0])
+        return response
+
+class ExecuteNewSequence(py_trees.behaviour.Behaviour):
+    """
+    This action executes the new sequence that was generated.
+    """
+
+    def __init__(self, name):
+        super(ExecuteNewSequence, self).__init__(name)
+    
+    def update(self):
+        response = self.execute_new_sequence()
+        print("Assistant: ", response)
+        return py_trees.common.Status.SUCCESS
+
+    def execute_new_sequence(self):
+        """
+        This function executes the new sequence that was generated.
+        """
+        response = "Great then I will now proceed to make the: {}".format(state.var_generated_sequence_name)
         return response
 
 class RunSafetyCheck(py_trees.behaviour.Behaviour):
@@ -485,8 +505,10 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
     def update(self):
         #print("The sequence to explain is the generated sequence: ", state.var_generated_sequence)
         if LLM:
-            response = self.explain_sequence(self.conversation)
+            response, sequence_name = self.explain_sequence(self.conversation)
             print("Assistant: ", response)
+            state.var_generated_sequence_name = sequence_name  # Save the sequence name
+            print("var_generated_sequence_name is: ", state.var_generated_sequence_name)
         else:
             print("The sequence to explain is the generated sequence: ", state.var_generated_sequence)
             print("The sequence is a very great sequence. \nIt is a very good sequence.")
@@ -511,7 +533,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
                     "content": (
                         "You are a helpful assistant that explains the steps a robot will take to fulfill a user's request. "
                         "The explanation should be clear and concise, focusing on the actions without adding unnecessary details. "
-                        "At the end of the explanation, ask the user if the sequence sounds good to them. "
+                        "At the end of the explanation, ask the user if the sequence sounds good to them and name the sequence with var_generated_sequence_name. "
                         "Do not provide any extra information or detail about how the actions are performed beyond what is specified."
                     )
                 }
@@ -548,7 +570,17 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
                     )
             
             # Extract and return the response content
-            return completion.choices[0].message.content
+            full_response = completion.choices[0].message.content
+
+            # Extract the sequence name from the response
+            sequence_name = None
+            if "var_generated_sequence_name" in full_response:
+                start_index = full_response.index("var_generated_sequence_name: '") + len("var_generated_sequence_name: '")
+                end_index = full_response.index("'", start_index)
+                sequence_name = full_response[start_index:end_index]
+                full_response = full_response.replace(f"var_generated_sequence_name: '{sequence_name}'", "").strip()
+
+            return full_response, sequence_name
         except Exception as e:
             print(f"Error in LLM call: {e}")
             return "Failed LLM call"
@@ -615,7 +647,20 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
 
+class AskUserForNewRequest(py_trees.behaviour.Behaviour):
+    """
+    This action asks the user for a new request after the failure of the automated check of the newly generated sequence.
+    """
 
+    def __init__(self, name, conversation):
+        super(AskUserForNewRequest, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        response = "I'm sorry I couldn't create what you requested. Could you state your request again, but in a clearer way? Or do you have any other requests I can help with?"
+        self.conversation.append({"role": "assistant", "content": response})
+        print("Assistant: ", response)
+        return py_trees.common.Status.SUCCESS
 
 
 
