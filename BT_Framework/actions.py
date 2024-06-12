@@ -662,5 +662,50 @@ class AskUserForNewRequest(py_trees.behaviour.Behaviour):
         print("Assistant: ", response)
         return py_trees.common.Status.SUCCESS
 
+class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
+    """
+    This action asks the user to specify their request based on the options provided in the KnowNo variable.
+    """
+
+    def __init__(self, name, conversation):
+        super(AskUserToSpecifyWithKnowNo, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        response = "I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? "
+        for i, option in enumerate(state.var_KnowNo):
+            response += f"\nOption {i + 1}: {option}"
+        response += "\nOr do you want me to do something else?"
+        self.conversation.append({"role": "assistant", "content": response})
+        print("Assistant: ", response)
+        return py_trees.common.Status.SUCCESS
+
+class SetVarKnownTrue(py_trees.behaviour.Behaviour):
+    """
+    This action sets the var_known variable to True.
+    """
+
+    def __init__(self, name):
+        super(SetVarKnownTrue, self).__init__(name)
+
+    def update(self):
+        state.var_known = True
+        return py_trees.common.Status.SUCCESS
+
+class FallbackAnswer(py_trees.behaviour.Behaviour):
+    """
+    This action provides a fallback answer when the user input is not understood.
+    """
+
+    def __init__(self, name, conversation):
+        super(FallbackAnswer, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        response = "I'm sorry, I'm confused. Is there anything I can do for you? I could give you suggestions if you want me to."
+        self.conversation.append({"role": "assistant", "content": response})
+        print("Assistant: ", response)
+        return py_trees.common.Status.SUCCESS
+
 
 

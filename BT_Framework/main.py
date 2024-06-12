@@ -3,8 +3,8 @@
 # 12-06-2024 
 
 import py_trees
-from actions import WaitForUserInput, PrintAmbiguousAnswer, PrintExit1, PrintExit2, PrintExit3, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest
-from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq
+from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
+from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2
 from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT
 import state
 from prompts import DUMMY_CONVERSATION
@@ -12,7 +12,7 @@ from utils import format_conversation, initialize_furhat
 #import cProfile
 #import time
 
-#py_trees.logging.level = py_trees.logging.Level.DEBUG
+py_trees.logging.level = py_trees.logging.Level.DEBUG
 
 user_input =  format_conversation(DUMMY_CONVERSATION)# Contains the user input
 conversation = []  # Contains the conversation history between the user and the system
@@ -29,107 +29,188 @@ def build_tree(conversation, process_user_input):
     
     # Sequence 2: Check for Known sequence and generate new sequence if needed. This sequence has 5 sub selectors and 6 sub sequences
     sequence_2 = py_trees.composites.Sequence(name="Sequence 2", memory=False)
-    
-    
-    print_exit2 = PrintExit2(name="Print 'Eggbert2'")
-    
+
     # Sequences and Selectors for Sequence 2
     sub_selector_2_1 = py_trees.composites.Selector(name="Sub Selector 2.1", memory=False) # this selector is a child of sequence_2
     sub_selector_2_2 = py_trees.composites.Selector(name="Sub Selector 2.2", memory=False) # this selector is a child of sequence_2
     sub_sequence_2_2_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.1", memory=False) # this sequence is a child of sub_selector_2_2
     sub_sequence_2_2_2 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2", memory=False) # this sequence is a child of sub_selector_2_2
+    sub_sequence_2_2_3 = py_trees.composites.Sequence(name="Sub Sequence 2.2.3", memory=False) # this sequence is a child of sub_selector_2_2
     sub_selector_2_2_2_1 = py_trees.composites.Selector(name="Sub Selector 2.2.2.1", memory=False) # this selector is a child of sub_sequence_2_2_2
     sub_sequence_2_2_2_1_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.1", memory=False) # this sequence is a child of sub_selector_2_2_2_1
     sub_sequence_2_2_2_1_2 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2", memory=False) # this sequence is a child of sub_selector_2_2_2_1
     sub_selector_2_2_2_1_2_1 = py_trees.composites.Selector(name="Sub Selector 2.2.2.1.2.1", memory=False) # this selector is a child of sub_sequence_2_2_2_1_2
     sub_sequence_2_2_2_1_2_1_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.1", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1
+    sub_sequence_2_2_2_1_2_1_2 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.2", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1
     sub_selector_2_2_2_1_2_1_1_1 = py_trees.composites.Selector(name="Sub Selector 2.2.2.1.2.1.1.1", memory=False) # this selector is a child of sub_sequence_2_2_2_1_2_1_1
     sub_sequence_2_2_2_1_2_1_1_1_1 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.1.1.1", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1_1_1
+    sub_sequence_2_2_2_1_2_1_1_1_2 = py_trees.composites.Sequence(name="Sub Sequence 2.2.2.1.2.1.1.1.2", memory=False) # this sequence is a child of sub_selector_2_2_2_1_2_1_1_1
 
     # Sub selector 2.1
     check_var_known = CheckVarKnownCondition(name="Check for var_known")
     check_known = CheckForKnown(name= "Check for known", conversation=conversation)
-    sub_selector_2_1.add_children([check_var_known, check_known])                                       # Level 2 
+    sub_selector_2_1.add_children([check_var_known, check_known])                                               # Level 2 
 
     # Sub sequence 2.2.1
     check_var_knowNo = CheckVarKnowNo(name="Check if var_KnowNo == 1")
     check_legitness_of_mapping = CheckMapping(name="Check Mapping", conversation=conversation)
     execute_action = ExecuteAction(name="Execute known Action", conversation=conversation)
-    sub_sequence_2_2_1.add_children([check_var_knowNo, check_legitness_of_mapping, execute_action])     # Level 3    
+    sub_sequence_2_2_1.add_children([check_var_knowNo, check_legitness_of_mapping, execute_action])             # Level 3    
 
     # Sub sequence 2.2.2.1.1
     check_var_inf = CheckVarInf(name="Check for var_inf")
     decline_request = DeclineRequest(name="Decline Request")
-    sub_sequence_2_2_2_1_1.add_children([check_var_inf, decline_request])                               # Level 5
-
-    
+    wait_for_user_input_2 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_2_2_2_1_1.add_children([check_var_inf, decline_request, wait_for_user_input_2])                # Level 5
 
     # Sub sequence 2.2.2.1.2.1.1.1.1
     check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
     execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence")
-    sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq, execute_new_sequence])  # Level 9
+    sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq, execute_new_sequence])          # Level 9
+
+    # Sub sequence 2.2.2.1.2.1.1.1.2
+    ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
+    wait_for_user_input_3 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_2_2_2_1_2_1_1_1_2.add_children([ask_user_for_new_request, wait_for_user_input_3])              # Level 9
 
     # Sub selector 2.2.2.1.2.1.1.1
-    ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
-    sub_selector_2_2_2_1_2_1_1_1.add_children([sub_sequence_2_2_2_1_2_1_1_1_1, ask_user_for_new_request]) # Level 8
+    sub_selector_2_2_2_1_2_1_1_1.add_children([sub_sequence_2_2_2_1_2_1_1_1_1, sub_sequence_2_2_2_1_2_1_1_1_2]) # Level 8
 
     # Sub sequence 2.2.2.1.2.1.1
     check_new_seq = CheckNewSeq(name="Check New Sequence")
     explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
-    sub_sequence_2_2_2_1_2_1_1.add_children([check_new_seq, explain_sequence, sub_selector_2_2_2_1_2_1_1_1]) # Level 7
+    sub_sequence_2_2_2_1_2_1_1.add_children([check_new_seq, explain_sequence, sub_selector_2_2_2_1_2_1_1_1])    # Level 7
+
+    # Sub sequence 2.2.2.1.2.1.2
+    report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
+    wait_for_user_input_4 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_2_2_2_1_2_1_2.add_children([report_failure, wait_for_user_input_4])                            # Level 7
 
     # Sub selector 2.2.2.1.2.1
-    report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
-    sub_selector_2_2_2_1_2_1.add_children([sub_sequence_2_2_2_1_2_1_1, report_failure])                 # Level 6
+    sub_selector_2_2_2_1_2_1.add_children([sub_sequence_2_2_2_1_2_1_1, sub_sequence_2_2_2_1_2_1_2])             # Level 6
 
     # Sub sequence 2.2.2.1.2
     generate_new_sequence = GenerateNewSequence(name="Generate New Sequence", conversation=conversation)
-    sub_sequence_2_2_2_1_2.add_children([generate_new_sequence, sub_selector_2_2_2_1_2_1])              # Level 5
+    sub_sequence_2_2_2_1_2.add_children([generate_new_sequence, sub_selector_2_2_2_1_2_1])                      # Level 5
 
     # Sub selector 2.2.2.1
-    sub_selector_2_2_2_1.add_children([sub_sequence_2_2_2_1_1, sub_sequence_2_2_2_1_2])                 # Level 4                                    
+    sub_selector_2_2_2_1.add_children([sub_sequence_2_2_2_1_1, sub_sequence_2_2_2_1_2])                         # Level 4                                    
 
     # Sub sequence 2.2.2
     check_var_knowNo_2 = CheckVarKnowNo(name="Check if var_KnowNo == 1 again")
     run_safety_check = RunSafetyCheck(name="Run Safety Check", conversation=conversation)
-    print_exit1 = PrintExit1(name="Print 'Eggbert1'") # placeholder for now
-    sub_sequence_2_2_2.add_children([check_var_knowNo_2, run_safety_check, sub_selector_2_2_2_1])       # Level 3
+    sub_sequence_2_2_2.add_children([check_var_knowNo_2, run_safety_check, sub_selector_2_2_2_1])               # Level 3
+
+    # Sub sequence 2.2.3
+    ask_user_to_specify_with_know_no = AskUserToSpecifyWithKnowNo(name="Ask User to Specify with KnowNo", conversation=conversation)
+    wait_for_user_input_5 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_2_2_3.add_children([ask_user_to_specify_with_know_no, wait_for_user_input_5])                  # Level 3
 
     # Sub selector 2.2
-    sub_selector_2_2.add_children([sub_sequence_2_2_1, sub_sequence_2_2_2])                             # Level 2
+    sub_selector_2_2.add_children([sub_sequence_2_2_1, sub_sequence_2_2_2, sub_sequence_2_2_3])                 # Level 2
     
     # Sequence 2
     know_no_mapping = KnowNoMapping(name="KnowNo Mapping", conversation=conversation)
-    sequence_2.add_children([sub_selector_2_1, know_no_mapping, sub_selector_2_2])                      # Level 1
+    sequence_2.add_children([sub_selector_2_1, know_no_mapping, sub_selector_2_2])                              # Level 1
     
-    # Fallback action: Print "Eggbert3" if both sequences fail
-    print_exit3 = PrintExit3(name="Print 'Eggbert3'") # will not be executed atm
+    # Sequence 3: 
+    sequence_3 = py_trees.composites.Sequence(name="Sequence 3", memory=False)
+
+    # Sub sequences and selectors for Sequence 3
+    sub_selector_3_1 = py_trees.composites.Selector(name="Sub Selector 3.1", memory=False) # this selector is a child of sequence_3
+    sub_sequence_3_1_1 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1", memory=False) # this sequence is a child of sub_selector_3_1
+    sub_selector_3_1_1_1 = py_trees.composites.Selector(name="Sub Selector 3.1.1.1", memory=False) # this selector is a child of sub_sequence_3_1_1
+    sub_sequence_3_1_1_1_1 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.1", memory=False) # this sequence is a child of sub_selector_3_1_1_1
+    sub_sequence_3_1_1_1_2 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.2", memory=False) # this sequence is a child of sub_selector_3_1_1_1
+    sub_selector_3_1_1_1_2_1 = py_trees.composites.Selector(name="Sub Selector 3.1.1.1.2.1", memory=False) # this selector is a child of sub_sequence_3_1_1_1_2
+    sub_sequence_3_1_1_1_2_1_1 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.2.1.1", memory=False) # this sequence is a child of sub_selector_3_1_1_1_2_1
+    sub_sequence_3_1_1_1_2_1_2 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.2.1.2", memory=False) # this sequence is a child of sub_selector_3_1_1_1_2_1
+    sub_selector_3_1_1_1_2_1_1_1 = py_trees.composites.Selector(name="Sub Selector 3.1.1.1.2.1.1.1", memory=False) # this selector is a child of sub_sequence_3_1_1_1_2_1_1
+    sub_sequence_3_1_1_1_2_1_1_1_1 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.2.1.1.1.1", memory=False) # this sequence is a child of sub_selector_3_1_1_1_2_1_1_1
+    sub_sequence_3_1_1_1_2_1_1_1_2 = py_trees.composites.Sequence(name="Sub Sequence 3.1.1.1.2.1.1.1.2", memory=False) # this sequence is a child of sub_selector_3_1_1_1_2_1_1_1
+
+    # Sub sequence 3.1.1.1.2.1.1.1.1
+    check_if_user_ok_with_new_seq_2 = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
+    execute_new_sequence_2 = ExecuteNewSequence(name="Execute New Sequence")
+    sub_sequence_3_1_1_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq_2, execute_new_sequence_2])      # Level 9
     
-    root.add_children([sequence_1, sequence_2, print_exit3]) # Level 0
+    # Sub sequence 3.1.1.1.2.1.1.1.2
+    ask_user_for_new_request_2 = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
+    wait_for_user_input_8 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_3_1_1_1_2_1_1_1_2.add_children([ask_user_for_new_request_2, wait_for_user_input_8])            # Level 9
     
+    # Sub selector 3.1.1.1.2.1.1.1
+    sub_selector_3_1_1_1_2_1_1_1.add_children([sub_sequence_3_1_1_1_2_1_1_1_1, sub_sequence_3_1_1_1_2_1_1_1_2]) # Level 8    
+
+    # Sub Sequence 3.1.1.1.2.1.1
+    check_new_seq_2 = CheckNewSeq(name="Check New Sequence")
+    explain_sequence_2 = ExplainSequence(name="Explain Sequence", conversation=conversation)
+    sub_sequence_3_1_1_1_2_1_1.add_children([check_new_seq_2, explain_sequence_2, sub_selector_3_1_1_1_2_1_1_1]) # Level 7
+
+    # Sub sequence 3.1.1.1.2.1.2
+    report_failure_2 = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
+    wait_for_user_input_7 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_3_1_1_1_2_1_2.add_children([report_failure_2, wait_for_user_input_7])                          # Level 7
+
+    # Sub Selector 3.1.1.1.2.1
+    sub_selector_3_1_1_1_2_1.add_children([sub_sequence_3_1_1_1_2_1_1, sub_sequence_3_1_1_1_2_1_2])             # Level 6
+
+    # Sub Sequence 3.1.1.1.2
+    generate_new_sequence_2 = GenerateNewSequence(name="Generate New Sequence", conversation=conversation)
+    sub_sequence_3_1_1_1_2.add_children([generate_new_sequence_2, sub_selector_3_1_1_1_2_1])                    # Level 5
+    
+    # Sub Sequence 3.1.1.1.1
+    check_var_inf_2 = CheckVarInf(name="Check for var_inf")
+    decline_request_2 = DeclineRequest(name="Decline Request")
+    wait_for_user_input_6 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sub_sequence_3_1_1_1_1.add_children([check_var_inf_2, decline_request_2, wait_for_user_input_6])            # Level 5
+
+    # Sub Selector 3.1.1.1
+    sub_selector_3_1_1_1.add_children([sub_sequence_3_1_1_1_1, sub_sequence_3_1_1_1_2])                         # Level 4
+    
+    # Sub Sequence 3.1.1
+    check_for_new_seq_2 = CheckForNewSeq2(name="Does it actually need a new Seq?", conversation=conversation)
+    run_safety_check_2 = RunSafetyCheck(name="Run Safety Check", conversation=conversation)
+    sub_sequence_3_1_1.add_children([check_for_new_seq_2, run_safety_check_2, sub_selector_3_1_1_1])            # Level 3
+
+    # Sub Selector 3.1
+    set_var_known_true = SetVarKnownTrue(name="Set var_known to True")
+    sub_selector_3_1.add_children([sub_sequence_3_1_1, set_var_known_true])                                     # Level 2
+
+    # Sequence 3
+    check_for_new_seq = CheckForNewSeq(name="Check for New Sequence", conversation=conversation)
+    sequence_3.add_children([check_for_new_seq, sub_selector_3_1])                                              # Level 1
+
+    # Sequence 4: Fallback action
+    sequence_4 = py_trees.composites.Sequence(name="Sequence 4", memory=False)
+
+    # Fallback action: Say youre confused and ask the user if he wants you to do something
+    fallback_answer = FallbackAnswer(name="Answer that user instruction is unclear", conversation=conversation)
+    wait_for_user_input_9 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    sequence_4.add_children([fallback_answer, wait_for_user_input_9])                                           # Level 1
+
+    root.add_children([sequence_1, sequence_2, sequence_3, sequence_4])                                         # Level 0
     return root
 
 def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
 
-    #execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence")
-    ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
+    check_for_new_seq2 = CheckForNewSeq2(name="Check for New Sequence", conversation=conversation)
 
-    root.add_children([ask_user_for_new_request])
+    root.add_children([check_for_new_seq2])
 
     return root
 
 def test_conditions_and_actions(user_input):
     global conversation
     conversation = DUMMY_CONVERSATION
-    state.var_KnowNo = ['pancakes with maple syrup and berries']
+    state.var_KnowNo = ['pancakes with maple syrup and berries', 'western breakfast sandwich with bacon and sausages']
     state.var_generated_sequence = state.var_generated_sequence_test
     state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
     
     if FURHAT:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
-
 
     tree = build_test_tree()
     
@@ -161,8 +242,7 @@ process_user_input(user_input)
 
 # Test conditions and actions directly
 
-
 #test_conditions_and_actions(user_input)
 #print("conversation: ", conversation)
-#test_conditions_and_actions(user_input)
+
 print(state.var_total_llm_calls)

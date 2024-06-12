@@ -4,15 +4,13 @@
 
 import py_trees
 from openai import OpenAI
-from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING
+from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING, PRE_PROMPT_NEW_SEQ_CHECK, PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT
 from config import MAX_LLM_CALL, LLM, FURHAT
 import state
 import json
 from furhat_remote_api import FurhatRemoteAPI
 from transformers import pipeline
-from utils import record_speech
-
-
+from utils import record_speech, format_conversation
 
 client = OpenAI()
 
@@ -74,19 +72,150 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
             return "False"
         
 class CheckForNewSeq(py_trees.behaviour.Behaviour):
-    counter = 0  # Class attribute to count the total calls across instances
+    """
+    This condition checks if the user wants a new sequence.
+    """
 
     def __init__(self, name, conversation):
         super(CheckForNewSeq, self).__init__(name)
         self.conversation = conversation
 
     def update(self):
-        # later i will have an api call to openai here that checks if the input_string requests a new sequence
-        CheckForNewSeq.counter += 1  # Increment the counter each time the behavior is called
-        if 'New Seq' in self.conversation[-1]['content']:
+        if LLM:
+            # Call the LLM to check if the user wants a new sequence
+            response = self.check_new_sequence_with_llm(self.conversation)
+            print("Is a new sequence requested?: ", response)
+            if response == "True":
+                return py_trees.common.Status.SUCCESS
+        elif 'new sequence' in self.conversation[-1]['content']:
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
-    
+
+    def check_new_sequence_with_llm(self, conversation):
+        """
+        This function checks if the user wants a new sequence using the Chatgpt 3.5 turbo model.
+        """
+        # This logic is to prevent the LLM from being called too many times
+        if state.var_total_llm_calls >= MAX_LLM_CALL:
+            print("Exceeded the maximum number of LLM calls.")
+            return "False"
+        state.var_total_llm_calls += 1
+        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+
+        try:
+            # Construct the final prompt by inserting the user input
+            predefined_messages_new_sequence = [
+                    {"role": "system", "content": PRE_PROMPT_NEW_SEQ_CHECK}
+                ]
+           
+            first_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT}
+            predefined_messages_new_sequence.append(first_shot) 
+            first_shot_answer = {"role": "system", "content": "True"}
+            predefined_messages_new_sequence.append(first_shot_answer)
+
+            second_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT}
+            predefined_messages_new_sequence.append(second_shot)
+            second_shot_answer = {"role": "system", "content": "False"}
+            predefined_messages_new_sequence.append(second_shot_answer)
+
+            third_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT}
+            predefined_messages_new_sequence.append(third_shot)
+            third_shot_answer = {"role": "system", "content": "True"}        
+            predefined_messages_new_sequence.append(third_shot_answer)
+            
+            formatted_conversation = format_conversation(conversation)      
+            convo_to_add = {"role": "user", "content": formatted_conversation}
+            predefined_messages_new_sequence.append(convo_to_add)  
+            messages = predefined_messages_new_sequence
+            print("Messages for New Sequence: ", messages)
+
+
+            #print("Messages: ", messages)
+
+            # Make the API call
+            completion = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    # response_format={ "type": "json_object" },
+                    messages=messages
+                    )
+            
+            # Extract and return the response content
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error in LLM call: {e}")
+            return "False"
+
+class CheckForNewSeq2(py_trees.behaviour.Behaviour):
+    """
+    This condition checks if the user actually wants a new sequence, given that the system classified the user input to be requesting a new sequence.
+    """
+
+    def __init__(self, name, conversation):
+        super(CheckForNewSeq2, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        if LLM:
+            # Call the LLM to check if the user wants a new sequence
+            response = self.check_new_sequence_with_llm(self.conversation)
+            print("Is a new sequence actually requested?: ", response)
+            if response == "True":
+                return py_trees.common.Status.SUCCESS
+        elif 'new sequence' in self.conversation[-1]['content']:
+            return py_trees.common.Status.SUCCESS
+        return py_trees.common.Status.FAILURE
+
+    def check_new_sequence_with_llm(self, conversation):
+        """
+        This function checks if the user wants a new sequence using the Chatgpt 3.5 turbo model.
+        """
+        # This logic is to prevent the LLM from being called too many times
+        if state.var_total_llm_calls >= MAX_LLM_CALL:
+            print("Exceeded the maximum number of LLM calls.")
+            return "False"
+        state.var_total_llm_calls += 1
+        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+
+        try:
+            # Construct the final prompt by inserting the user input
+            predefined_messages_new_sequence = [
+                    {"role": "system", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK}
+                ]
+           
+            first_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT}
+            predefined_messages_new_sequence.append(first_shot)
+            first_shot_answer = {"role": "system", "content": "False"}
+            predefined_messages_new_sequence.append(first_shot_answer)
+
+            second_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT}
+            predefined_messages_new_sequence.append(second_shot)
+            second_shot_answer = {"role": "system", "content": "True"}
+            predefined_messages_new_sequence.append(second_shot_answer)
+
+            third_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT}
+            predefined_messages_new_sequence.append(third_shot)
+            third_shot_answer = {"role": "system", "content": "True"}
+            predefined_messages_new_sequence.append(third_shot_answer)
+                        
+            formatted_conversation = format_conversation(conversation)
+            convo_to_add = {"role": "user", "content": formatted_conversation}
+            predefined_messages_new_sequence.append(convo_to_add)
+            messages = predefined_messages_new_sequence
+            print("Messages for New Sequence: ", messages)
+
+            # Make the API call
+            completion = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    # response_format={ "type": "json_object" },
+                    messages=messages
+                    )
+            
+            # Extract and return the response content
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error in LLM call: {e}")
+            return "False"
+        
 class CheckVarKnownCondition(py_trees.behaviour.Behaviour):
     """
     This condition checks if var_known is True.
@@ -484,5 +613,8 @@ class CheckUserOkWithNewSeq(py_trees.behaviour.Behaviour):
                 return "negative"
     
         return "needs further checking"  # Default if it does not match any quick check
-           
+
+
+
+
 

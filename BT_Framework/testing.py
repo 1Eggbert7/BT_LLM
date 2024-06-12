@@ -1,26 +1,6 @@
-def quick_check_user_answer(user_answer):
-        """
-        This function quickly checks the user answer if it is less than 15 characters.
-        """
-        # Define lists for quick checks
-        affirmatives = ["yes", "yeah", "ok", "sure", "yup", "jup", "jap", "ye", "of course", "naturally", "good"]
-        affirmative_buts = ["but", "however", "no", "and", "not"]
-        negatives = ["no", "wrong", "false", "not"]
-        
-        
-        for affirmative in affirmatives:
-            if affirmative in user_answer.lower():
-                # Check if it also contains an affirmative but
-                for affirmative_but in affirmative_buts:
-                    if affirmative_but in user_answer.lower():
-                        return "needs further checking"
-                return "affirmative"
-        
-        # Check for negatives
-        for negative in negatives:
-            if negative in user_answer.lower():
-                return "negative"
-    
-        return "needs further checking"  # Default if it does not match any quick check
+Thethang = """
+[{'role': 'system', 'content': '\nThe following conversation was deemed to be a request for a new sequence. Can you confirm if the user is asking for a new sequence to be generated?\nTo avoid false positives, please ensure that the user is indeed asking for a new sequence to be generated. The sequences that are known by you are:\n{{\n    "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",\n    "avocado toast with sausage on the side": "Creates avocado toast accompanied by a grilled sausage on the side, starting with toasting bread and grilling the sausage before assembly and serving.",\n    "peanut butter and jelly sandwich": "Makes a peanut butter and jelly sandwich by toasting bread, spreading peanut butter on one slice and jelly on the other, combining them, and serving.",\n    "vegetable stir fry with rice": "Prepares a vegetable stir fry with rice by cooking rice, preparing and cooking vegetables, plating the rice and vegetables together, adding sauce, and serving.",\n    "pancakes with maple syrup and berries": "Cooks pancakes, plates them, adds maple syrup and berries on top, and serves. The process includes mixing batter, cooking the pancakes, and assembling the final dish with toppings.",\n    "full English breakfast": "Prepares a full English breakfast by cooking sausages, bacon, tomatoes, mushrooms, toasting bread, heating beans, and frying an egg. Each cooked component is placed on a plate as it\'s ready. The meal is served with all items arranged together on the plate, providing a hearty and traditional breakfast experience.",\n    "tortilla with tomatoes beans and egg (huevos rancheros)": "Prepares huevos rancheros by first cooking tomatoes and then heating beans. An egg is cooked to the desired doneness. A tortilla is prepared and placed on a plate, followed by the heated beans, cooked tomatoes, and the egg. The dish is served as a flavorful and hearty breakfast option.",\n    "bean and cheese quesadilla": "Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans and grated cheese. The quesadilla is then cooked until the cheese melts and the tortilla is golden brown. The cooked quesadilla is placed back on the plate and served hot.",\n    "grilled tomato and mushroom bruschetta": "Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms. Bread is toasted and placed on a plate. The grilled tomatoes and mushrooms are then placed on the toasted bread, creating a simple yet delicious appetizer or snack. The dish is served immediately.",\n    "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."\n}}\n\nOnly respond with \'False\' if the user is asking for one of these known sequences without any modifications. The catch here is, that sometimes the user might ask for a known sequence without directly mentioning it. For example if the user is asking you to generate a new sequence for a bacon and egg sandwich you should realize that this is a known sequence and respond with \'False\'. If the user is asking for a known sequence but with a modification, you should still respond with \'True\'. For example if the user is asking for a bacon and egg sandwich, but with extra bacon, you should still respond with \'True\'.\n'}, {'role': 'user', 'content': '\nUser: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?\n'}, {'role': 'system', 'content': 'False'}, {'role': 'user', 'content': "\nUser: I'm hungry, what can I eat?\nAssistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Let me know if any of these options sound good to you, or feel free to provide more details for a tailored recommendation!\nUser: I want the bacon and egg sandwich, but can you add extra bacon?\n"}, {'role': 'system', 'content': 'True'}, {'role': 'user', 'content': "\nUser: Hello how are you?\nAssistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?\nUser: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving please.\n"}, {'role': 'system', 'content': 'True'}, {'role': 'user', 'content': 'User: Can I have the bacon and egg sandwich?\n'}]
+"""
 
-print(quick_check_user_answer("that sounds good. Do that."))
+
+print(Thethang.replace("\n", "\n"))
