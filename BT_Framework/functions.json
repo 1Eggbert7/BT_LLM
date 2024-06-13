@@ -5,7 +5,7 @@
         "cook_quesadilla()": "Cooks a filled tortilla on a hot surface until the exterior is crispy and the cheese inside melts.",
         "cook_rice(number)": "Prepares number-amount of portions of rice by boiling it until fully cooked and fluffy.",
         "fry_vegetables(number)": "Cooks number-amount of servings of prepared vegetables by washing, peeling, and cutting them into pieces suitable for cooking.",
-        "fry_bacon(number)": "Fries number-amount of bacon slices until crispy.",
+        "cook_bacon(number)": "Fries number-amount of bacon slices until crispy.",
         "fry_eggs(number)": "Fries a number-amount of eggs sunny-side up.",
         "grill_mushrooms(number)": "Grills number-amount of mushrooms until they are fully cooked and have released their moisture.",
         "grill_sausages(number)": "Grills a specified number of sausages, until they are thoroughly cooked.",

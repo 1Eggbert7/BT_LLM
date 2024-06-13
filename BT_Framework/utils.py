@@ -1,9 +1,10 @@
 # utils.py
 # Alexander Leszczynski
-# 11-06-2024 
+# 13-06-2024 
 
 from furhat_remote_api import FurhatRemoteAPI
 import keyboard
+import time
 
 
 def format_conversation(conversation):
@@ -20,16 +21,31 @@ def format_conversation(conversation):
         return formatted_conversation
 
 def initialize_furhat(ip_address, voice_name):
+    """
+    This function initializes the Furhat robot with the given IP address and voice name.
+    """
+    
     furhat = FurhatRemoteAPI(ip_address)
+    furhat.set_face(mask="adult", character = "Isabel")
     furhat.set_voice(name=voice_name)
+    # attend closest user
+    furhat.attend(user="CLOSEST")
     return furhat
 
 def listen(furhat):
+    """
+    This function listens to the user and returns the message as a string.
+    """
     return furhat.listen()
 
 def record_speech(furhat):
+    """
+    This function records the speech of the user and returns it as a string.
+    """
     total_listened = ""
+    time.sleep(2) # else the enter key will be detected in the next loop
     print("Press 'space' to start/continue recording, 'Enter' to stop.")
+    furhat.set_led(red=66, green=66, blue=66)  # Set the LED to blue to indicate recording mode
 
     while True:
         try:
@@ -48,3 +64,9 @@ def record_speech(furhat):
             break  # if user pressed a key other than the given key the loop will break
 
     return total_listened
+
+def speak(furhat, text):
+    """
+    This function makes the Furhat speak the given text.
+    """
+    furhat.say(text = text)

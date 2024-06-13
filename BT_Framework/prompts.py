@@ -6,7 +6,9 @@ import json
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': 'Can I have the bacon and egg sandwich?'}
+    {'role': 'user', 'content': 'Can I have the pancakes?'},
+    {'role': 'assistant', 'content': 'Sure! Would you like the pancakes with maple syrup and berries on top?'},
+    {'role': 'user', 'content': 'Yes, um but can you add some bacon to it?'}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
@@ -496,7 +498,7 @@ Known Ingredients:
 Instructions for you:
 
 1. Go trough the known ingredients and check if the user's request contains ingredients that are not listed. If the user's request involves unknown ingredients, respond 'False', because the assistant can only work with known ingredients. (e.g. requests to add choclate chips, chilli flakes, etc.)
-2. Check if the user's request involves logical and reasonable quantities of known ingredients respond 'True'. If the user's request involves illogical quantities, respond 'False', because the assistant can only work with reasonable quantities. For example doubling or adding extra ingredients is considered reasonable, but asking for 500 eggs is not. (e.g. requests to double the syrup, add extra bacon, etc.)
+2. Check if the user's request involves logical and reasonable quantities of known ingredients respond 'True'. Reasonable ammounts are anything below 10000 kcal. If the user's request involves illogical quantities, respond 'False', because the assistant can only work with reasonable quantities. For example doubling or adding extra ingredients is considered reasonable, but asking for 500 eggs is not. (e.g. requests to double the syrup, add extra bacon, etc.)
 
 User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is safe and feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the safety/feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.
 """
@@ -594,7 +596,7 @@ Step 1: cook_pancakes(3)
 Step 2: place_on_plate(cooked_pancakes, 3)
 Step 3: place_on_plate(maple_syrup, 1)
 Step 4: place_on_plate(berries, 1)
-Step 5: fry_bacon(3)
+Step 5: cook_bacon(3)
 Step 6: place_on_plate(fried_bacon, 3)
 Step 7: serve()
 """
@@ -615,26 +617,11 @@ var_generated_sequence_name: 'pancakes with maple syrup, berries, and bacon'
 PRE_PROMPT_NEW_SEQ_CHECK = """
 You are part of my Robot Instruction Understanding Framework:
 
-Objective: Determine whether a user instruction requests you to generate a new sequence.
+Objective: Determine whether a user instruction requests you to do something. You are to respond with 'True' if the user is asking for you to do something, and 'False' if the user is asking you a question that doesn't involve you to do something physically, like ('Whats the weather like in Timbuktu?", "Hey what's your favourite color?", "Who won the 2022 elections?" and so on).
 
-The user will provide you with a conversation and your task is to identify if the user is asking for a new sequence to be generated. Answer with 'True' if the user is requesting a new sequence, and 'False' if the user is not asking for a new sequence.
-These are the known sequences that don't need to be generated anew:
-{{
-    "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",
-    "avocado toast with sausage on the side": "Creates avocado toast accompanied by a grilled sausage on the side, starting with toasting bread and grilling the sausage before assembly and serving.",
-    "peanut butter and jelly sandwich": "Makes a peanut butter and jelly sandwich by toasting bread, spreading peanut butter on one slice and jelly on the other, combining them, and serving.",
-    "vegetable stir fry with rice": "Prepares a vegetable stir fry with rice by cooking rice, preparing and cooking vegetables, plating the rice and vegetables together, adding sauce, and serving.",
-    "pancakes with maple syrup and berries": "Cooks pancakes, plates them, adds maple syrup and berries on top, and serves. The process includes mixing batter, cooking the pancakes, and assembling the final dish with toppings.",
-    "full English breakfast": "Prepares a full English breakfast by cooking sausages, bacon, tomatoes, and mushrooms, toasting bread, heating beans, and frying an egg. Each cooked component is placed on a plate as it's ready. The meal is served with all items arranged together on the plate, providing a hearty and traditional breakfast experience.",
-    "tortilla with tomatoes beans and egg (huevos rancheros)": "Prepares huevos rancheros by first cooking tomatoes and then heating beans. An egg is cooked to the desired doneness. A tortilla is prepared and placed on a plate, followed by the heated beans, cooked tomatoes, and the egg. The dish is served as a flavorful and hearty breakfast option.",
-    "bean and cheese quesadilla": "Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans and grated cheese. The quesadilla is then cooked until the cheese melts and the tortilla is golden brown. The cooked quesadilla is placed back on the plate and served hot.",
-    "grilled tomato and mushroom bruschetta": "Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms. Bread is toasted and placed on a plate. The grilled tomatoes and mushrooms are then placed on the toasted bread, creating a simple yet delicious appetizer or snack. The dish is served immediately.",
-    "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
-}}
+The robot is a cooking and cleaning robot, so any requests to cook, clean, or perform any physical task should be considered as a request for you to do something.
 
-So if the user is asking for one of these known sequences, you should respond with 'False'. If the user is askiing for some modification or a new sequence, you should respond with 'True'.
-
-When the user asks for something known, but with a modification, you should also respond with 'True'. For example, if the user asks for a bacon and egg sandwich, but with extra bacon, you should still respond with 'True'.
+So if the user is asking for you to do something , you should respond with 'True'. If the user is asking you a question that doesn't involve you to do something physically, you should respond with 'False'.
 """
 
 PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT = """
@@ -644,13 +631,21 @@ User: Yes, that avocado toast with sausage on the side sounds perfect, but can y
 """
 
 PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT = """
-User: I'm craving some pancakes, can you make me some with maple syrup and berries?
+User: Can you tell me how to make pancakes?
 """
 
 PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT = """
 User: I'm hungry, what can I eat?
 Assistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Let me know if any of these options sound good to you, or feel free to provide more details for a tailored recommendation!
 User: Hm no I want something else, can you make me a vegetable stir fry with bread?
+"""
+
+PRE_PROMPT_NEW_SEQ_CHECK_FOURTH_SHOT = """
+User: What are you capable of doing?
+"""
+
+PRE_PROMPT_NEW_SEQ_CHECK_FIFTH_SHOT = """
+User: I'm craving some pancakes, can you make me some with maple syrup and berries?
 """
 
 # Double check for new sequence

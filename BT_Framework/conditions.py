@@ -4,7 +4,7 @@
 
 import py_trees
 from openai import OpenAI
-from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING, PRE_PROMPT_NEW_SEQ_CHECK, PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT
+from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING, PRE_PROMPT_NEW_SEQ_CHECK, PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FOURTH_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FIFTH_SHOT
 from config import MAX_LLM_CALL, LLM, FURHAT
 import state
 import json
@@ -28,9 +28,9 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
             # Call the LLM to check for ambiguity
             response = self.check_ambiguity_with_llm(self.conversation)
             print("Is it Ambiguous?: ", response)
-            if response == "True":
+            if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
-        elif 'ambig' in self.conversation[-1]['content']:
+        elif 'ambig' in self.conversation[-1]['content'].lower():
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
 
@@ -122,12 +122,23 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
             predefined_messages_new_sequence.append(third_shot)
             third_shot_answer = {"role": "system", "content": "True"}        
             predefined_messages_new_sequence.append(third_shot_answer)
+
+            fourth_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_CHECK_FOURTH_SHOT}
+            predefined_messages_new_sequence.append(fourth_shot)
+            fourth_shot_answer = {"role": "system", "content": "False"}        
+            predefined_messages_new_sequence.append(fourth_shot_answer)
+
+            fifth_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_CHECK_FIFTH_SHOT}
+            predefined_messages_new_sequence.append(fifth_shot)
+            fifth_shot_answer = {"role": "system", "content": "True"}
+            predefined_messages_new_sequence.append(fifth_shot_answer)
+
             
             formatted_conversation = format_conversation(conversation)      
             convo_to_add = {"role": "user", "content": formatted_conversation}
             predefined_messages_new_sequence.append(convo_to_add)  
             messages = predefined_messages_new_sequence
-            print("Messages for New Sequence: ", messages)
+            #print("Messages for New Sequence: ", messages)
 
 
             #print("Messages: ", messages)
@@ -201,7 +212,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
             convo_to_add = {"role": "user", "content": formatted_conversation}
             predefined_messages_new_sequence.append(convo_to_add)
             messages = predefined_messages_new_sequence
-            print("Messages for New Sequence: ", messages)
+            #print("Messages for New Sequence: ", messages)
 
             # Make the API call
             completion = client.chat.completions.create(
@@ -230,6 +241,22 @@ class CheckVarKnownCondition(py_trees.behaviour.Behaviour):
             return py_trees.common.Status.SUCCESS
         #print("var_known is False")
         return py_trees.common.Status.FAILURE
+
+class CheckVarKnownFalse(py_trees.behaviour.Behaviour):
+    """
+    This condition checks if var_known is False.
+    """
+
+    def __init__(self, name):
+        super(CheckVarKnownFalse, self).__init__(name)
+
+    def update(self):
+        if not state.var_known:
+            #print("var_known is False")
+            return py_trees.common.Status.SUCCESS
+        #print("var_known is True")
+        return py_trees.common.Status.FAILURE
+
 
 # replied: "Great choice! I'll prepare some delicious pancakes with maple syrup and berries for you. Just sit back and enjoy!" instead of 'True'
 """
@@ -263,10 +290,10 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user input is known
             response = self.check_known_with_llm(self.conversation)
             print("Is it Known?: ", response)
-            if response == "True":
+            if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         
-        elif 'known' in self.conversation[-1]['content']:
+        elif 'known' in self.conversation[-1]['content'].lower():
             print("Is it Known?: True")
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
@@ -340,7 +367,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             print("Does it map to the action in var_KnowNo?: ", response)
             if response == "True":
                 return py_trees.common.Status.SUCCESS
-        elif 'map' in self.conversation[-1]['content']:
+        else:
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
 
@@ -357,7 +384,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
 
         try:
             # Construct the final prompt by inserting the user input
-            formatted_conversation = self.format_conversation(conversation)
+            formatted_conversation = format_conversation(conversation)
             predefined_messages = [
                     {"role": "system", "content": PRE_PROMPT_CHECK_MAPPING.format(state.var_KnowNo[0], state.var_KnowNo[0], formatted_conversation)},
                 ]
@@ -376,19 +403,6 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             print(f"Error in LLM call: {e}")
             return "False"
         
-    def format_conversation(self, conversation):
-        """
-        This function formats the conversation to be used in the LLM call.
-        """
-        # The format should be User: <user_input> Assistant: <assistant_response> User: <user_input> ...
-        formatted_conversation = ""
-        for i, message in enumerate(conversation):
-            if i % 2 == 0:
-                formatted_conversation += f"User: {message['content']}\n"
-            else:
-                formatted_conversation += f"Assistant: {message['content']}\n"
-        return formatted_conversation
-    
 class CheckVarInf(py_trees.behaviour.Behaviour):
     """
     This condition checks if var_inf is True.
@@ -419,6 +433,21 @@ class CheckNewSeq(py_trees.behaviour.Behaviour):
         if not sequence:
             self.logger.error("The generated sequence is empty.")
             return py_trees.common.Status.FAILURE
+        
+        
+        #print("Sequence before checking the format: ", sequence)
+        #print("The type of the sequence: ", type(sequence))
+        
+        # Convert string to dict if needed
+        if isinstance(sequence, str):
+            try:
+                sequence = json.loads(sequence)
+            except json.JSONDecodeError as e:
+                self.logger.error(f"Error decoding JSON: {e}")
+                return py_trees.common.Status.FAILURE
+            
+        #print("Sequence after checking the format: ", sequence)
+
 
         format_check, format_message = self.check_sequence_format(sequence)
         if not format_check:

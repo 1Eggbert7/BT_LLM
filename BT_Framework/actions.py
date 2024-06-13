@@ -5,8 +5,8 @@
 import py_trees
 from openai import OpenAI
 from prompts import PRE_PROMPT_AMBIGUOUS_ANSWER, PRE_PROMPT_KNOWN, FORMAT_SCHEME, FIRST_SHOT, SECOND_SHOT, THIRD_SHOT, PRE_PROMPT_KNOWNO, SECOND_SHOT_ASSISTANT_ANSWER, TEST_JSON_MC_RAW, PRE_PROMPT_MC_SCORES, AMBIGUOUS_SHOT, PREDEFINED_SAFETY_FEASIBILITY, PRE_PROMPT_NEW_SEQ, FIRST_SHOT_EXPLAIN_SEQ, FIRST_SHOT_EXPLAIN_SEQ_ANSWER
-from config import MAX_LLM_CALL, LLM
-from utils import format_conversation
+from config import MAX_LLM_CALL, LLM, FURHAT, EXPLAIN
+from utils import format_conversation, speak, record_speech
 import state
 import json
 import random
@@ -21,15 +21,27 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
-        if LLM:
+        if EXPLAIN:
+            response = "Your request is ambiguous to me. I will need more information to help you. Could you please provide more details or clarify your request?"
+            if FURHAT:
+                speak(state.var_furhat, response)
+            print("Assistant Explanation: ", response)
+        elif LLM:
             # Call the LLM to generate the response
             #print("the conversation before the LLM call: ", self.conversation)
             response = self.generate_ambiguous_response_with_llm(self.conversation)
             print("Assistant: ", response.replace('\\n', '\n').replace('\\\'', '\''))
+            if FURHAT:
+                speak(state.var_furhat, response)
             self.conversation.append({"role": "assistant", "content": response}) 
             #print("conversation with the LLM response: ", self.conversation)
         else:
-            print("Ambiguous Answer 1")
+            if FURHAT:
+                speak(state.var_furhat, "Yo I'm sorry, I cannot help you at the moment. The Large Language Model is not available.")
+            print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
+
+        formated_conversation = format_conversation(self.conversation)
+        #print("The conversation log after the ambiguous answer: ", formated_conversation)
         return py_trees.common.Status.SUCCESS
     
     def generate_ambiguous_response_with_llm(self, conversation):
@@ -69,12 +81,20 @@ class WaitForUserInput(py_trees.behaviour.Behaviour):
     This action waits for new user input from the keyboard.
     """
 
-    def __init__(self, name, process_user_input_func):
+    def __init__(self, name, process_user_input_func, conversation):
         super(WaitForUserInput, self).__init__(name)
         self.process_user_input_func = process_user_input_func
+        self.conversation = conversation
 
     def update(self):
-        new_user_input = input("User: ")
+        if FURHAT: 
+            new_user_input = record_speech(state.var_furhat)
+        else:
+            new_user_input = input("User: ")
+        self.conversation.append({"role": "user", "content": new_user_input})
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after the user input: ", formatted_conversation)
+
         self.process_user_input_func(new_user_input)  # Re-trigger the behavior tree with the new input
         return py_trees.common.Status.SUCCESS
 
@@ -114,19 +134,26 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
     def update(self):
 
         #create_messages_KnowNo(conversation)
+        # make sure var_known_no is empty
+        if LLM:
+            state.var_KnowNo = []
 
-        result = self.create_mc_KnowNo(self.conversation)
-        #print("Result: ", result)
-        the_options, the_options_list , the_add_mc_prefix = self.process_mc_raw(result, add_mc='an option not listed here')
-        #print("the options: ", the_options)
-        #print("the add mc prefix: ", the_add_mc_prefix)
-        logprobs = self.get_logprobs(the_options, self.conversation)
-        #print('\n====== Raw log probabilities for each option ======')
-        #for option, logprob in logprobs.items():
-        #    print(f'Option: {option} \t log prob: {logprob}')
+            result = self.create_mc_KnowNo(self.conversation)
+            #print("Result: ", result)
+            the_options, the_options_list , the_add_mc_prefix = self.process_mc_raw(result, add_mc='an option not listed here')
+            #print("the options: ", the_options)
+            #print("the add mc prefix: ", the_add_mc_prefix)
+            logprobs = self.get_logprobs(the_options, self.conversation)
+            #print('\n====== Raw log probabilities for each option ======')
+            #for option, logprob in logprobs.items():
+            #    print(f'Option: {option} \t log prob: {logprob}')
 
-        # next we fill the state of var_KnowNo with the options that are above a certain threshold
-        self.fill_var_KnowNo(logprobs, the_options_list)
+            # next we fill the state of var_KnowNo with the options that are above a certain threshold
+            self.fill_var_KnowNo(logprobs, the_options_list)
+            print("var_KnowNo: ", state.var_KnowNo)
+        else:
+            state.var_KnowNo = ['Magical robot soup']
+            print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
 
         return py_trees.common.Status.SUCCESS
     
@@ -148,7 +175,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
 
         # print
         #print('Softmax scores:', mc_smx_all)
-        print('Prediction set:', prediction_set)
+        print('Prediction set of the KnowNo operation:', prediction_set)
 
         case = {
                 'A': 1,
@@ -160,7 +187,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         
         for token in prediction_set:
             state.var_KnowNo.append(the_options_list[case[token] - 1])
-        print("var_KnowNo: ", state.var_KnowNo)
+        #print("var_KnowNo: ", state.var_KnowNo)
 
     def temperature_scaling(self, logits, temperature):
         """
@@ -331,8 +358,19 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
-        response = self.execute_action(self.conversation)
+        if EXPLAIN:
+            response = "I understood your request and will now execute the action."
+        else:
+            response = self.execute_action(self.conversation)
+        
+        if FURHAT:
+            state.var_furhat.gesture(name="Nod")
+            speak(state.var_furhat, response)
+        self.conversation.append({"role": "assistant", "content": response})
         print("Assistant: ", response)
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after the action execution: ", formatted_conversation)
+
         return py_trees.common.Status.SUCCESS
 
     def execute_action(self, conversation):
@@ -349,12 +387,24 @@ class ExecuteNewSequence(py_trees.behaviour.Behaviour):
     This action executes the new sequence that was generated.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, conversation):
         super(ExecuteNewSequence, self).__init__(name)
+        self.conversation = conversation
     
     def update(self):
-        response = self.execute_new_sequence()
+        if EXPLAIN:
+            response = "You confirmed the newly generated sequence. I will now proceed to execute it."
+        else:
+            response = self.execute_new_sequence()
+        self.conversation.append({"role": "assistant", "content": response})
+
+        if FURHAT:
+            speak(state.var_furhat, response)
         print("Assistant: ", response)
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after the new sequence execution: ", formatted_conversation)
+
         return py_trees.common.Status.SUCCESS
 
     def execute_new_sequence(self):
@@ -427,11 +477,26 @@ class DeclineRequest(py_trees.behaviour.Behaviour):
     This action declines the user request if the safety check fails.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, conversation):
         super(DeclineRequest, self).__init__(name)
+        self.conversation = conversation
 
     def update(self):
-        print("I'm sorry, I cannot execute the action you requested. The reason is:", state.var_decline_explanation)
+        if EXPLAIN:
+            response = "I'm sorry, I cannot execute the action you requested. Because it was declared unsafe or infeasible by me."
+        else:
+            response = "I'm sorry, I cannot execute the action you requested. The reason is: {}".format(state.var_decline_explanation)
+    
+        if FURHAT:
+            speak(state.var_furhat, response)
+        print("Assistant: ", response)
+        
+        # append the response to the conversation
+        self.conversation.append({"role": "assistant", "content": response})
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after declining the request: ", formatted_conversation)      
+
         return py_trees.common.Status.SUCCESS
 
 # needs testing
@@ -469,7 +534,15 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
             predefined_messages_new_sequence = [
                     {"role": "system", "content": PRE_PROMPT_NEW_SEQ}
                 ]
-            messages = predefined_messages_new_sequence + conversation  # Start with the predefined context.
+
+            formated_conversation = format_conversation(conversation)
+            predefined_messages_new_sequence.append(
+                {
+                    "role": "user",
+                    "content": f"Given this conversation, can you generate a new sequence for me?\n{formated_conversation}"
+                }
+            )
+            messages = predefined_messages_new_sequence  # Start with the predefined context.
             #print("prepromt Messages for generating new sequence: ", messages)
 
             # Make the API call
@@ -554,7 +627,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             predefined_messages_explain_sequence.append(
                 {
                     "role": "user",
-                    "content": f"Yes, now given this conversation and the generated sequence, can you explain the sequence to me?\n{formated_conversation}\nThe sequence is:\n{sequence_str}"
+                    "content": f"Yes, now given the following conversation and the generated sequence, can you explain the sequence to me?\n{formated_conversation}\nThe sequence is:\n{sequence_str}"
                 }
             )
 
@@ -595,14 +668,20 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
+        if EXPLAIN:
+            response = "I’m sorry, but I ran into an issue while trying to create what you requested."
         if LLM:
             #response = self.report_failure_back_to_user()
             response = "I’m sorry, but I ran into an issue while trying to create what you requested. Would you like to try again, or do you have any other questions I can help with?"
-            self.conversation.append({"role": "assistant", "content": response})
-            print("Assistant: ", response)
         else:
-            print("The sequence failed the automated check.")
-            response = 'False'
+            response = "The sequence failed the automated check."
+        self.conversation.append({"role": "assistant", "content": response})
+        if FURHAT:
+            speak(state.var_furhat, response)
+        print("Assistant: ", response)
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after reporting the failure back to the user: ", formatted_conversation)
 
         return py_trees.common.Status.SUCCESS
 
@@ -657,9 +736,19 @@ class AskUserForNewRequest(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
-        response = "I'm sorry I couldn't create what you requested. Could you state your request again, but in a clearer way? Or do you have any other requests I can help with?"
+        if EXPLAIN:
+            response = "I understand that you say that the newly generated sequence does not meet your expectations."
+        else:
+            response = "I'm sorry I couldn't create what you requested. Could you state your request again, but in a clearer way? Or do you have any other requests I can help with?"
         self.conversation.append({"role": "assistant", "content": response})
+
+        if FURHAT:
+            speak(state.var_furhat, response)
         print("Assistant: ", response)
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after asking the user for a new request: ", formatted_conversation)
+
         return py_trees.common.Status.SUCCESS
 
 class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
@@ -672,12 +761,22 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
-        response = "I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? "
-        for i, option in enumerate(state.var_KnowNo):
-            response += f"\nOption {i + 1}: {option}"
-        response += "\nOr do you want me to do something else?"
+        if EXPLAIN:
+            response = "I matched your request to multiple possible actions. I need you to make a clearer request."
+        else:
+            response = "I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? "
+            for i, option in enumerate(state.var_KnowNo):
+                response += f"\nOption {i + 1}: {option}"
+            response += "\nOr do you want me to do something else?"
         self.conversation.append({"role": "assistant", "content": response})
+
+        if FURHAT:
+            speak(state.var_furhat, response)
         print("Assistant: ", response)
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after asking the user to specify their request with KnowNo: ", formatted_conversation)
+
         return py_trees.common.Status.SUCCESS
 
 class SetVarKnownTrue(py_trees.behaviour.Behaviour):
@@ -685,11 +784,26 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
     This action sets the var_known variable to True.
     """
 
-    def __init__(self, name):
+    def __init__(self, name, process_user_input_func, conversation):
         super(SetVarKnownTrue, self).__init__(name)
+        self.process_user_input_func = process_user_input_func
+        self.conversation = conversation
 
     def update(self):
+        if EXPLAIN:
+            response = "I thought your request requires me to  generate a new sequence, but after double checking I think your request matches an action I know."
+        else:
+            response = "Hold on dear user, I think I know what you want. Let me execute the action for you."
+        self.conversation.append({"role": "assistant", "content": response})
+        
+        if FURHAT:
+            speak(state.var_furhat, response)
+        print("Assistant: ", response)
         state.var_known = True
+        
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation log after setting the var_known variable to True: ", formatted_conversation)
+        self.process_user_input_func(response)  # Re-trigger the behavior tree with the new input
         return py_trees.common.Status.SUCCESS
 
 class FallbackAnswer(py_trees.behaviour.Behaviour):
@@ -702,10 +816,56 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
-        response = "I'm sorry, I'm confused. Is there anything I can do for you? I could give you suggestions if you want me to."
+        if EXPLAIN:
+            response = "Your request couldn't be matched to any known actions. I need you to make a clearer request."
+        elif LLM:
+            response = self.generate_fallback_answer(self.conversation)
+        else:
+            response = "I'm sorry, I'm confused. Is there anything I can do for you? I could give you suggestions if you want me to."
         self.conversation.append({"role": "assistant", "content": response})
+
+        if FURHAT:
+            speak(state.var_furhat, response)
         print("Assistant: ", response)
+
+        formatted_conversation = format_conversation(self.conversation)
+        #print("The conversation at Fallback step is: ", formatted_conversation)
+
         return py_trees.common.Status.SUCCESS
+    
+    def generate_fallback_answer(self, conversation):
+        """
+        This function generates a fallback answer when the user input is not understood.
+        """
+        # This logic is to prevent the LLM from being called too many times
+        if state.var_total_llm_calls >= MAX_LLM_CALL:
+            print("Exceeded the maximum number of LLM calls.")
+            return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
+        state.var_total_llm_calls += 1
+        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+        try:
+            # Construct the final prompt by inserting the user input
+            predefined_messages_fallback = [
+                    {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Your job is to find out what the user wants from you and ask him for more information if necessary."}
+                ]
+            formatted_conversation = format_conversation(conversation)
+
+            predefined_messages_fallback.append({"role": "user", "content": formatted_conversation})
+            messages = predefined_messages_fallback
+            #print("prepromt Messages for the fallback answer: ", messages)
+
+            # Make the API call
+            completion = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    # response_format={ "type": "json_object" },
+                    messages=messages
+                    )
+            
+            # Extract and return the response content
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error in LLM call: {e}")
+            return "Failed LLM call"
 
 
 

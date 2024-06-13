@@ -4,17 +4,17 @@
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
-from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2
+from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse
 from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT
 import state
 from prompts import DUMMY_CONVERSATION
-from utils import format_conversation, initialize_furhat
+from utils import format_conversation, initialize_furhat, record_speech
 #import cProfile
-#import time
+import time
 
-py_trees.logging.level = py_trees.logging.Level.DEBUG
+#py_trees.logging.level = py_trees.logging.Level.DEBUG
 
-user_input =  format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Good day sir" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 conversation = []  # Contains the conversation history between the user and the system
 
 def build_tree(conversation, process_user_input):
@@ -22,10 +22,11 @@ def build_tree(conversation, process_user_input):
     
     # Sequence 1: Check for ambiguity, print answer for ambiguity, wait for user input. This sequence has 3 sub sequences
     sequence_1 = py_trees.composites.Sequence(name="Sequence 1", memory=False)
+    check_var_known_false = CheckVarKnownFalse(name="Check for var_known == False")
     check_ambiguity = CheckForAmbiguity(name="Check for Ambiguity", conversation=conversation)
     print_answer_for_ambiguity = PrintAmbiguousAnswer(name="Print 'Answer for Ambiguity'", conversation=conversation)
-    wait_for_user_input = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
-    sequence_1.add_children([check_ambiguity, print_answer_for_ambiguity, wait_for_user_input]) # Level 1
+    wait_for_user_input = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
+    sequence_1.add_children([check_var_known_false, check_ambiguity, print_answer_for_ambiguity, wait_for_user_input])  # Level 1
     
     # Sequence 2: Check for Known sequence and generate new sequence if needed. This sequence has 5 sub selectors and 6 sub sequences
     sequence_2 = py_trees.composites.Sequence(name="Sequence 2", memory=False)
@@ -59,18 +60,18 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 2.2.2.1.1
     check_var_inf = CheckVarInf(name="Check for var_inf")
-    decline_request = DeclineRequest(name="Decline Request")
-    wait_for_user_input_2 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    decline_request = DeclineRequest(name="Decline Request", conversation=conversation)
+    wait_for_user_input_2 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_2_2_2_1_1.add_children([check_var_inf, decline_request, wait_for_user_input_2])                # Level 5
 
     # Sub sequence 2.2.2.1.2.1.1.1.1
     check_if_user_ok_with_new_seq = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
-    execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence")
+    execute_new_sequence = ExecuteNewSequence(name="Execute New Sequence", conversation=conversation)
     sub_sequence_2_2_2_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq, execute_new_sequence])          # Level 9
 
     # Sub sequence 2.2.2.1.2.1.1.1.2
     ask_user_for_new_request = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
-    wait_for_user_input_3 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_3 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_2_2_2_1_2_1_1_1_2.add_children([ask_user_for_new_request, wait_for_user_input_3])              # Level 9
 
     # Sub selector 2.2.2.1.2.1.1.1
@@ -83,7 +84,7 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 2.2.2.1.2.1.2
     report_failure = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
-    wait_for_user_input_4 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_4 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_2_2_2_1_2_1_2.add_children([report_failure, wait_for_user_input_4])                            # Level 7
 
     # Sub selector 2.2.2.1.2.1
@@ -103,7 +104,7 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 2.2.3
     ask_user_to_specify_with_know_no = AskUserToSpecifyWithKnowNo(name="Ask User to Specify with KnowNo", conversation=conversation)
-    wait_for_user_input_5 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_5 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_2_2_3.add_children([ask_user_to_specify_with_know_no, wait_for_user_input_5])                  # Level 3
 
     # Sub selector 2.2
@@ -131,12 +132,12 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 3.1.1.1.2.1.1.1.1
     check_if_user_ok_with_new_seq_2 = CheckUserOkWithNewSeq(name="Check if user is ok with new sequence", conversation=conversation)
-    execute_new_sequence_2 = ExecuteNewSequence(name="Execute New Sequence")
+    execute_new_sequence_2 = ExecuteNewSequence(name="Execute New Sequence", conversation=conversation)
     sub_sequence_3_1_1_1_2_1_1_1_1.add_children([check_if_user_ok_with_new_seq_2, execute_new_sequence_2])      # Level 9
     
     # Sub sequence 3.1.1.1.2.1.1.1.2
     ask_user_for_new_request_2 = AskUserForNewRequest(name="Ask User for New Request", conversation=conversation)
-    wait_for_user_input_8 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_8 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_3_1_1_1_2_1_1_1_2.add_children([ask_user_for_new_request_2, wait_for_user_input_8])            # Level 9
     
     # Sub selector 3.1.1.1.2.1.1.1
@@ -149,7 +150,7 @@ def build_tree(conversation, process_user_input):
 
     # Sub sequence 3.1.1.1.2.1.2
     report_failure_2 = ReportFailureBackToUser(name="Report Failure Back to User", conversation=conversation)
-    wait_for_user_input_7 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_7 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_3_1_1_1_2_1_2.add_children([report_failure_2, wait_for_user_input_7])                          # Level 7
 
     # Sub Selector 3.1.1.1.2.1
@@ -161,8 +162,8 @@ def build_tree(conversation, process_user_input):
     
     # Sub Sequence 3.1.1.1.1
     check_var_inf_2 = CheckVarInf(name="Check for var_inf")
-    decline_request_2 = DeclineRequest(name="Decline Request")
-    wait_for_user_input_6 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    decline_request_2 = DeclineRequest(name="Decline Request", conversation=conversation)
+    wait_for_user_input_6 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sub_sequence_3_1_1_1_1.add_children([check_var_inf_2, decline_request_2, wait_for_user_input_6])            # Level 5
 
     # Sub Selector 3.1.1.1
@@ -174,7 +175,7 @@ def build_tree(conversation, process_user_input):
     sub_sequence_3_1_1.add_children([check_for_new_seq_2, run_safety_check_2, sub_selector_3_1_1_1])            # Level 3
 
     # Sub Selector 3.1
-    set_var_known_true = SetVarKnownTrue(name="Set var_known to True")
+    set_var_known_true = SetVarKnownTrue(name="Set var_known to True", process_user_input_func=process_user_input, conversation=conversation)
     sub_selector_3_1.add_children([sub_sequence_3_1_1, set_var_known_true])                                     # Level 2
 
     # Sequence 3
@@ -186,7 +187,7 @@ def build_tree(conversation, process_user_input):
 
     # Fallback action: Say youre confused and ask the user if he wants you to do something
     fallback_answer = FallbackAnswer(name="Answer that user instruction is unclear", conversation=conversation)
-    wait_for_user_input_9 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input)
+    wait_for_user_input_9 = WaitForUserInput(name="Wait for User Input", process_user_input_func=process_user_input, conversation=conversation)
     sequence_4.add_children([fallback_answer, wait_for_user_input_9])                                           # Level 1
 
     root.add_children([sequence_1, sequence_2, sequence_3, sequence_4])                                         # Level 0
@@ -194,11 +195,12 @@ def build_tree(conversation, process_user_input):
 
 def build_test_tree():
     # just for testing conditions and actions directly
-    root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
+    root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
 
-    check_for_new_seq2 = CheckForNewSeq2(name="Check for New Sequence", conversation=conversation)
+    generate_new_seq = GenerateNewSequence(name="Generate New Sequence", conversation=conversation)
+    check_new_seq = CheckNewSeq(name="Check New Sequence")
 
-    root.add_children([check_for_new_seq2])
+    root.add_children([generate_new_seq, check_new_seq])
 
     return root
 
@@ -206,7 +208,7 @@ def test_conditions_and_actions(user_input):
     global conversation
     conversation = DUMMY_CONVERSATION
     state.var_KnowNo = ['pancakes with maple syrup and berries', 'western breakfast sandwich with bacon and sausages']
-    state.var_generated_sequence = state.var_generated_sequence_test
+    state.var_generated_sequence = state.Generated_sequence_in_the_var
     state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
     
     if FURHAT:
@@ -222,17 +224,28 @@ def test_conditions_and_actions(user_input):
     #py_trees.display.render_dot_tree(behaviour_tree.root)
 
 def process_user_input(user_input):
-    global conversation
-    conversation.append({"role": "user", "content": user_input})
-    if FURHAT:
-        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+    global conversation, behaviour_tree  
 
-    tree = build_tree(conversation, process_user_input)
-    behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
+    if FURHAT and state.var_furhat is None:
+        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+        recorded_speech = record_speech(state.var_furhat)
+        conversation.append({"role": "user", "content": recorded_speech})
+        tree = build_tree(conversation, process_user_input)
+        behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
+        print("Tree is initialized and furhat is used")
+    elif state.var_furhat is None:
+        state.var_furhat = "furhat not used in this run"
+        tree = build_tree(conversation, process_user_input)
+        behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
+        conversation.append({"role": "user", "content": user_input})
+        print("Tree is initialized but furhat is not")
+        
     behaviour_tree.tick()
 
-    # Render the behavior tree
-    py_trees.display.render_dot_tree(behaviour_tree.root)
+    if len(conversation) < 2:
+        py_trees.display.render_dot_tree(behaviour_tree.root)
+
+
 
 # Initial user input processing
 print("User: ", user_input)
@@ -240,9 +253,15 @@ print("User: ", user_input)
 # Full BT is called with the user input
 process_user_input(user_input)
 
-# Test conditions and actions directly
+# Test conditions and actions directly   
 
 #test_conditions_and_actions(user_input)
 #print("conversation: ", conversation)
 
 print(state.var_total_llm_calls)
+if FURHAT:
+    time.sleep(5)
+    state.var_furhat.set_led(red =50 , green = 0 , blue = 0) # to indicate that the conversation is over
+    time.sleep(5)
+    state.var_furhat.set_led(red = 0, green = 0, blue = 0) # Turn off the LED to avoid overheating
+    state.var_furhat.attend(user="NONE") # Stop attending the user
