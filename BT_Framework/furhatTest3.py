@@ -44,7 +44,7 @@ voices = furhat.get_voices()
 voice_name = 'Gregory-Neural'
 furhat.set_voice(name=voice_name)
 
-#furhat.say(text = "Hello")
+furhat.say(text = "Hello")
 print("Saying hello")
 def listen():
     return furhat.listen()

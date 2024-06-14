@@ -27,7 +27,8 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
         if LLM:
             # Call the LLM to check for ambiguity
             response = self.check_ambiguity_with_llm(self.conversation)
-            print("Is it Ambiguous?: ", response)
+            print("Is it ambiguous?: ", response)
+            state.var_transcript += "Is it ambiguous?: " + response + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         elif 'ambig' in self.conversation[-1]['content'].lower():
@@ -41,6 +42,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -69,6 +71,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
             return "False"
         
 class CheckForNewSeq(py_trees.behaviour.Behaviour):
@@ -85,6 +88,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user wants a new sequence
             response = self.check_new_sequence_with_llm(self.conversation)
             print("Is a new sequence requested?: ", response)
+            state.var_transcript += "Is a new sequence requested?: " + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         elif 'new sequence' in self.conversation[-1]['content']:
@@ -98,6 +102,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -154,6 +159,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
             return "False"
 
 class CheckForNewSeq2(py_trees.behaviour.Behaviour):
@@ -170,6 +176,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user wants a new sequence
             response = self.check_new_sequence_with_llm(self.conversation)
             print("Is a new sequence actually requested?: ", response)
+            state.var_transcript += "Is a new sequence actually requested?" + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         elif 'new sequence' in self.conversation[-1]['content']:
@@ -183,6 +190,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -225,6 +233,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
             return "False"
         
 class CheckVarKnownCondition(py_trees.behaviour.Behaviour):
@@ -290,11 +299,13 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user input is known
             response = self.check_known_with_llm(self.conversation)
             print("Is it Known?: ", response)
+            state.var_transcript += "Is it Known?" + response + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         
         elif 'known' in self.conversation[-1]['content'].lower():
             print("Is it Known?: True")
+            state.var_transcript += "Is it Known? True\n"
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
     
@@ -305,6 +316,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -334,6 +346,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
             return "False"
         
 class CheckVarKnowNo(py_trees.behaviour.Behaviour):
@@ -365,6 +378,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user input maps to the action in var_KnowNo
             response = self.check_mapping_with_llm(self.conversation)
             print("Does it map to the action in var_KnowNo?: ", response)
+            state.var_transcript += "Does it map to the action in var_KnowNo:" + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         else:
@@ -378,6 +392,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -401,6 +416,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
             return "False"
         
 class CheckVarInf(py_trees.behaviour.Behaviour):
@@ -590,6 +606,7 @@ class CheckUserOkWithNewSeq(py_trees.behaviour.Behaviour):
         if FURHAT:
             recorded_text = record_speech()
             print("Total listened: ", recorded_text)
+            state.var_transcript += "Total listened:" + recorded_text + "\n"
             self.conversation.append({"role": "user", "content": recorded_text})
         else:
             user_input = input("Is it ok?: ")

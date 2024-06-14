@@ -6,7 +6,7 @@ import keyboard  # using module keyboard
 
 # Initialize OpenAI client
 client = OpenAI()
-
+                                                                                   
 # Initialize FurhatRemoteAPI with the IP address of your robot or the SDK running the virtual robot
 furhat = FurhatRemoteAPI("192.168.0.196")
 

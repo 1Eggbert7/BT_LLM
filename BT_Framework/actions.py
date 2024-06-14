@@ -26,11 +26,13 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             if FURHAT:
                 speak(state.var_furhat, response)
             print("Assistant Explanation: ", response)
+            state.var_transcript += "Assistant Explanation: " + response + "\n"
         elif LLM:
             # Call the LLM to generate the response
             #print("the conversation before the LLM call: ", self.conversation)
             response = self.generate_ambiguous_response_with_llm(self.conversation)
             print("Assistant: ", response.replace('\\n', '\n').replace('\\\'', '\''))
+            state.var_transcript += "Assistant: " + response.replace('\\n', '\n').replace('\\\'', '\'') + "\n"
             if FURHAT:
                 speak(state.var_furhat, response)
             self.conversation.append({"role": "assistant", "content": response}) 
@@ -39,6 +41,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             if FURHAT:
                 speak(state.var_furhat, "Yo I'm sorry, I cannot help you at the moment. The Large Language Model is not available.")
             print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
+            state.var_transcript += "The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.\n"
 
         formated_conversation = format_conversation(self.conversation)
         #print("The conversation log after the ambiguous answer: ", formated_conversation)
@@ -51,6 +54,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -74,6 +78,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "False"
         
 class WaitForUserInput(py_trees.behaviour.Behaviour):
@@ -92,6 +97,7 @@ class WaitForUserInput(py_trees.behaviour.Behaviour):
         else:
             new_user_input = input("User: ")
         self.conversation.append({"role": "user", "content": new_user_input})
+        state.var_transcript += "User: " + new_user_input + "\n"
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the user input: ", formatted_conversation)
 
@@ -151,9 +157,11 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             # next we fill the state of var_KnowNo with the options that are above a certain threshold
             self.fill_var_KnowNo(logprobs, the_options_list)
             print("var_KnowNo: ", state.var_KnowNo)
+            state.var_transcript += "var_KnowNo: " + str(state.var_KnowNo) + "\n"
         else:
             state.var_KnowNo = ['Magical robot soup']
             print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
+            state.var_transcript += "The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.\n"
 
         return py_trees.common.Status.SUCCESS
     
@@ -175,7 +183,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
 
         # print
         #print('Softmax scores:', mc_smx_all)
-        print('Prediction set of the KnowNo operation:', prediction_set)
+        #print('Prediction set of the KnowNo operation:', prediction_set)
 
         case = {
                 'A': 1,
@@ -211,6 +219,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -242,6 +251,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
     
     def get_logprobs(self, options, conversation):
@@ -250,6 +260,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         """
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
 
@@ -307,6 +318,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             return option_logprobs
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
 
     def process_mc_raw(self, mc_raw, add_mc='an option not listed here'):
@@ -368,6 +380,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         self.conversation.append({"role": "assistant", "content": response})
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the action execution: ", formatted_conversation)
 
@@ -401,6 +414,7 @@ class ExecuteNewSequence(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the new sequence execution: ", formatted_conversation)
@@ -426,9 +440,11 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
     def update(self):
         if LLM:
             response = self.run_safety_check(self.conversation)
-            #print("Did it pass the safety check?: ", response)
+            print("Did it pass the safety check?: ", response)
+            state.var_transcript += "Did it pass the safety check?: " + response + "\n"
         else:
             print("Safety Check 1")
+            state.var_transcript += "Safety Check 1.\n"
             response = 'False'  # Default to 'False' if LLM is not used
 
         if 'true' in response.strip()[:10].lower():
@@ -451,6 +467,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         formatted_conversation = format_conversation(conversation)
@@ -470,6 +487,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
         
 class DeclineRequest(py_trees.behaviour.Behaviour):
@@ -490,6 +508,7 @@ class DeclineRequest(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
         
         # append the response to the conversation
         self.conversation.append({"role": "assistant", "content": response})
@@ -513,9 +532,11 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
         if LLM:
             response = self.generate_new_sequence(self.conversation)
             print("The generated sequence is: ", response)
+            state.var_transcript += "The generated sequence is: " + response + "\n"
             state.var_generated_sequence = response
         else:
             print("Generate New Sequence 1")
+            state.var_transcript += "Generate New Sequence 1.\n"
             response = 'False'
         return py_trees.common.Status.SUCCESS
 
@@ -526,6 +547,7 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -557,12 +579,13 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
             
             # Parse the JSON response and save it to the variable
             state.var_generated_sequence = json.loads(response_content)
-            print("Generated sequence in the var: ", state.var_generated_sequence)
+            #print("Generated sequence in the var: ", state.var_generated_sequence)
 
             # Extract and return the response content
             return response_content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
 
 # needs testing
@@ -580,11 +603,15 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
         if LLM:
             response, sequence_name = self.explain_sequence(self.conversation)
             print("Assistant: ", response)
+            state.var_transcript += "Assistant: " + response + "\n"
             state.var_generated_sequence_name = sequence_name  # Save the sequence name
             print("var_generated_sequence_name is: ", state.var_generated_sequence_name)
+            state.var_transcript += "var_generated_sequence_name is: " + state.var_generated_sequence_name + "\n"
         else:
             print("The sequence to explain is the generated sequence: ", state.var_generated_sequence)
+            state.var_transcript += "The sequence to explain is the generated sequence.\n"
             print("The sequence is a very great sequence. \nIt is a very good sequence.")
+            state.var_transcript += "The sequence is a very great sequence. \nIt is a very good sequence.\n"
             response = 'False'
         return py_trees.common.Status.SUCCESS
     
@@ -595,6 +622,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -656,6 +684,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             return full_response, sequence_name
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
         
 class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
@@ -679,6 +708,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after reporting the failure back to the user: ", formatted_conversation)
@@ -692,6 +722,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -713,7 +744,8 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             ]
 
             messages = predefined_messages_report_failure  # Start with the predefined context.
-            print("prepromt Messages for reporting failure in the sequence: ", messages)
+            #print("prepromt Messages for reporting failure in the sequence: ", messages)
+            #state.var_transcript += "prepromt Messages for reporting failure in the sequence: " + str(messages) + "\n"
 
             # Make the API call
             completion = client.chat.completions.create(
@@ -725,6 +757,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
 
 class AskUserForNewRequest(py_trees.behaviour.Behaviour):
     """
@@ -745,6 +778,7 @@ class AskUserForNewRequest(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after asking the user for a new request: ", formatted_conversation)
@@ -773,6 +807,7 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after asking the user to specify their request with KnowNo: ", formatted_conversation)
@@ -799,6 +834,7 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
         state.var_known = True
         
         formatted_conversation = format_conversation(self.conversation)
@@ -827,6 +863,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
+        state.var_transcript += "Assistant: " + response + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation at Fallback step is: ", formatted_conversation)
@@ -840,6 +877,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -865,6 +903,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
+            state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
 
 

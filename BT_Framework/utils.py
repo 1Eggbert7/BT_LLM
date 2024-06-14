@@ -1,10 +1,11 @@
 # utils.py
 # Alexander Leszczynski
-# 13-06-2024 
+# 14-06-2024 
 
 from furhat_remote_api import FurhatRemoteAPI
 import keyboard
 import time
+import os
 
 
 def format_conversation(conversation):
@@ -26,7 +27,7 @@ def initialize_furhat(ip_address, voice_name):
     """
     
     furhat = FurhatRemoteAPI(ip_address)
-    furhat.set_face(mask="adult", character = "Isabel")
+    furhat.set_face(mask="adult", character = "Titan")
     furhat.set_voice(name=voice_name)
     # attend closest user
     furhat.attend(user="CLOSEST")
@@ -70,3 +71,22 @@ def speak(furhat, text):
     This function makes the Furhat speak the given text.
     """
     furhat.say(text = text)
+
+def save_transcript(transcript):
+    """
+    This function saves the transcript to a file in the 'Transkript of Conversation' folder.
+    If the folder or file does not exist, it creates them.
+    """
+    folder_name = "Transkript of Conversation"
+    file_name = "transcripts.txt"
+    file_path = os.path.join(folder_name, file_name)
+
+    # Create the folder if it doesn't exist
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    # Append the transcript to the file
+    with open(file_path, "a") as file:
+        file.write(transcript + "\n")
+
+    print(f"Transcript saved to {file_path}")

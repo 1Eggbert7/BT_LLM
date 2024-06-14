@@ -5,10 +5,10 @@
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
 from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse
-from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT
+from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION
 import state
 from prompts import DUMMY_CONVERSATION
-from utils import format_conversation, initialize_furhat, record_speech
+from utils import format_conversation, initialize_furhat, record_speech, save_transcript
 #import cProfile
 import time
 
@@ -228,24 +228,27 @@ def process_user_input(user_input):
 
     if FURHAT and state.var_furhat is None:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+        state.var_furhat.say(text = "Hello! I am Gregory. How can I help you today?")
         recorded_speech = record_speech(state.var_furhat)
         conversation.append({"role": "user", "content": recorded_speech})
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         print("Tree is initialized and furhat is used")
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\nUser: " + recorded_speech + "\n" + "Tree is initialized and furhat is used" + "\n"
     elif state.var_furhat is None:
         state.var_furhat = "furhat not used in this run"
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         conversation.append({"role": "user", "content": user_input})
+        print("user input: ", user_input)
         print("Tree is initialized but furhat is not")
+        
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\nUser: " + user_input + "\n" + "Tree is initialized but furhat is not" + "\n"
         
     behaviour_tree.tick()
 
     if len(conversation) < 2:
         py_trees.display.render_dot_tree(behaviour_tree.root)
-
-
 
 # Initial user input processing
 print("User: ", user_input)
@@ -260,8 +263,11 @@ process_user_input(user_input)
 
 print(state.var_total_llm_calls)
 if FURHAT:
+    save_transcript(state.var_transcript)
     time.sleep(5)
     state.var_furhat.set_led(red =50 , green = 0 , blue = 0) # to indicate that the conversation is over
+    state.var_furhat.say(text = "That was all for the demo. Thank you for listening! Have a great day!")
     time.sleep(5)
     state.var_furhat.set_led(red = 0, green = 0, blue = 0) # Turn off the LED to avoid overheating
     state.var_furhat.attend(user="NONE") # Stop attending the user
+

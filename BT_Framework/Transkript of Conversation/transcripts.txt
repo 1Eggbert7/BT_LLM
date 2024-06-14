@@ -1,0 +1,332 @@
+
+Press 'space' to start/continue recording, 'Enter' to stop.
+hey I was wondering if I can get the bacon and eggs sandwich
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it Ambiguous?:  True
+Assistant:  Of course! Would you like me to prepare a bacon and egg sandwich for you?
+Press 'space' to start/continue recording, 'Enter' to stop.
+yes that's exactly what I want you to do can you do that
+You Pressed Enter!
+Is it Ambiguous?:  False
+Is it Known?:  True
+Prediction set of the KnowNo operation: ['D']
+var_KnowNo:  ['bacon and egg sandwich']
+Does it map to the action in var_KnowNo?:  True
+Assistant:  Great choice! I will execute the sequence for bacon and egg sandwich.
+7
+
+
+Press 'space' to start/continue recording, 'Enter' to stop.
+hey how are you doing today
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it Ambiguous?:  True
+Assistant:  Hello! I'm here and ready to assist you. How can I help you today?
+Press 'space' to start/continue recording, 'Enter' to stop.
+I would like some pancakes
+You Pressed Enter!
+Is it Ambiguous?:  False
+Is it Known?:  True
+Prediction set of the KnowNo operation: ['A']
+var_KnowNo:  ['pancakes with maple syrup and berries']
+Does it map to the action in var_KnowNo?:  True
+Assistant:  Great choice! I will execute the sequence for pancakes with maple syrup and berries.
+7
+
+
+Press 'space' to start/continue recording, 'Enter' to stop.
+hello Isabelle um can you make me something to eat
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it Ambiguous?:  True
+Assistant:  Of course! I'd be happy to help with that. What type of dish are you in the mood for today?
+Press 'space' to start/continue recording, 'Enter' to stop.
+something sweet
+You Pressed Enter!
+Is it Ambiguous?:  False
+Is it Known?:  False
+Is a new sequence requested?:  False
+Assistant:  Assistant: Great choice! How about a dessert like brownies, cookies, cake, or something else specific? Let me know your preference so I can assist you better.
+Press 'space' to start/continue recording, 'Enter' to stop.
+I would love some
+some cookies
+You Pressed Enter!
+Is it Ambiguous?:  False
+Is it Known?:  False
+Is a new sequence requested?:  True
+Is a new sequence actually requested?:  True
+Assistant:  I'm sorry, I cannot execute the action you requested. The reason is: The user's request for cookies involves an unknown dish type and specific ingredients for making cookies like flour, sugar, butter, etc., which are not listed in the known ingredients provided. Therefore, it is not safe or feasible for the assistant to execute this request.
+Press 'space' to start/continue recording, 'Enter' to stop.
+well uh then how about some pancakes can you make me some pancakes
+You Pressed Enter!
+Is it Ambiguous?:  False
+Is it Known?:  True
+Prediction set of the KnowNo operation: ['C']
+var_KnowNo:  ['pancakes with maple syrup and berries']
+Does it map to the action in var_KnowNo?:  True
+Assistant:  Great choice! I will execute the sequence for pancakes with maple syrup and berries.
+16
+
+Version: 1.0
+Fri Jun 14 11:53:15 2024
+User: Good day sir
+Tree is initialized but furhat is not
+Is it ambiguous?: True
+Assistant: Good day! How can I assist you today?
+User: I think some pancakes would do me good
+Is it ambiguous?: False
+Is it Known?False
+Is a new sequence requested?: True
+Is a new sequence actually requested?False
+Assistant: Hold on dear user, I think I know what you want. Let me execute the action for you.
+var_KnowNo: ['pancakes with maple syrup and berries']
+Does it map to the action in var_KnowNo:True
+Assistant: Great choice! I will execute the sequence for pancakes with maple syrup and berries.
+
+Version: 1.0
+Fri Jun 14 12:54:35 2024
+User: can you get me the bacon and eggs sandwich please 
+Tree is initialized and furhat is used
+Is it ambiguous?: False
+Is it Known?True
+var_KnowNo: ['bacon and egg sandwich']
+Does it map to the action in var_KnowNo:True
+Assistant: Great choice! I will execute the sequence for bacon and egg sandwich.
+
+Version: 1.0
+Fri Jun 14 13:45:59 2024
+User: I like vegetable stir fry with rice 
+Tree is initialized and furhat is used
+Is it ambiguous?: False
+Is it Known?True
+var_KnowNo: ['vegetable stir fry with rice']
+Does it map to the action in var_KnowNo:True
+Assistant: Great choice! I will execute the sequence for vegetable stir fry with rice.
+
+Version: 1.0
+Fri Jun 14 13:57:44 2024
+Press 'space' to start/continue recording, 'Enter' to stop.
+I would like to have some rice noodle
+k
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it ambiguous?:  True
+Assistant:  I'm sorry for any confusion, could you please provide more details or clarify your request so I can assist you better? Thank you!
+Press 'space' to start/continue recording, 'Enter' to stop.
+I would like to like it's 1 variant of noodles but it's made from rice
+thank you
+You Pressed Enter!
+Is it ambiguous?:  True
+Assistant:  Thank you for the clarification! Based on your request for rice noodles, I recommend the following options for you:
+1. Vegetable stir fry with rice
+2. Tortilla with tomatoes beans and egg (huevos rancheros)
+
+Please let me know if you would like more information on any of these options or if you have a different preference.
+Press 'space' to start/continue recording, 'Enter' to stop.
+that's perfect thank you
+You Pressed Enter!
+Is it ambiguous?:  False
+Is it Known?:  True
+var_KnowNo:  ['vegetable stir fry with rice', 'an option not listed here']
+Assistant:  I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? 
+Option 1: vegetable stir fry with rice
+Option 2: an option not listed here
+Or do you want me to do something else?
+Press 'space' to start/continue recording, 'Enter' to stop.
+Is it ambiguous?:  True
+
+Version: 1.0
+Fri Jun 14 13:58:26 2024
+Press 'space' to start/continue recording, 'Enter' to stop.
+I like vegetable stir fry with rice
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it ambiguous?:  False
+Is it Known?:  True
+var_KnowNo:  ['vegetable stir fry with rice']
+Does it map to the action in var_KnowNo?:  True
+Assistant:  Great choice! I will execute the sequence for vegetable stir fry with rice.
+5
+
+Version: 1.0
+Fri Jun 14 14:19:43 2024
+User: um could I have some whoever's Rancheros please 
+Tree is initialized and furhat is used
+Is it ambiguous?: True
+Assistant: Sure! Would you like me to prepare some huevos rancheros for you?
+User: I would like that please 
+Is it ambiguous?: False
+Is it Known?True
+var_KnowNo: ['tortilla with tomatoes beans and egg (huevos rancheros)']
+Does it map to the action in var_KnowNo:True
+Assistant: Great choice! I will execute the sequence for tortilla with tomatoes beans and egg (huevos rancheros).
+
+Version: 1.0
+Fri Jun 14 14:21:15 2024
+User: I can you make me hachapuri  
+Tree is initialized and furhat is used
+Is it ambiguous?: True
+Assistant: I apologize for any confusion, but could you please provide more details or clarify your request for hachapuri? Are you looking for a specific type of hachapuri or any particular ingredients or preferences? Once I have more information, I can assist you better.
+User: I have more information I can assist you better hachapuri aari 
+Is it ambiguous?: True
+Assistant: Thank you for clarifying! Unfortunately, the sequence for "hachapuri aari" is not within my known sequences. However, I can offer you some other options:
+
+1. "Bean and Cheese Quesadilla": Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The quesadilla is served hot and ready to enjoy.
+
+2. "Grilled Tomato and Mushroom Bruschetta": Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms on toasted bread, making a simple yet delicious appetizer.
+
+3. "Tortilla with Tomatoes, Beans, and Egg (Huevos Rancheros)": Prepares huevos rancheros with a tortilla, beans, tomatoes, and eggs in a flavorful breakfast dish.
+
+Please let me know if any of these options interest you, or if you have any other preferences or requests.
+User: the first 1 
+Is it ambiguous?: False
+Is it Known?False
+Is a new sequence requested?: True
+Is a new sequence actually requested?False
+Assistant: Hold on dear user, I think I know what you want. Let me execute the action for you.
+var_KnowNo: ['bean and cheese quesadilla']
+Does it map to the action in var_KnowNo:True
+Assistant: Great choice! I will execute the sequence for bean and cheese quesadilla.
+
+Version: 1.0
+Fri Jun 14 14:58:49 2024
+Press 'space' to start/continue recording, 'Enter' to stop.
+um I'm not sure what to eat
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it ambiguous?:  True
+Assistant:  Hello! If you're not sure what to eat, here are a few options you can consider:
+1. Pancakes with maple syrup and berries
+2. Full English breakfast
+3. Vegetable stir fry with rice
+
+Let me know if any of these options sound good to you, or if you need more suggestions!
+Press 'space' to start/continue recording, 'Enter' to stop.
+what do you recommend
+You Pressed Enter!
+Is it ambiguous?:  True
+Assistant:  I can suggest a few options for you to consider. Which of the following sequences are you in the mood for:
+1. Avocado toast with sausage on the side
+2. Peanut butter and jelly sandwich
+3. Bean and cheese quesadilla
+
+Feel free to let me know your preference or if you have any dietary restrictions!
+Press 'space' to start/continue recording, 'Enter' to stop.
+uh yeah I would like the the cheese quesadilla but without cheese
+You Pressed Enter!
+Is it ambiguous?:  False
+Is it Known?:  False
+Is a new sequence requested?:  True
+Is a new sequence actually requested?:  True
+Did it pass the safety check?:  
+False
+
+Explanation: The user's request for a cheese quesadilla without cheese is contradictory and not feasible since cheese is a key ingredient in a quesadilla. Additionally, the user's request involves an unknown ingredient (cheese) and is not aligned with the known sequences or ingredients provided.
+Assistant:  I'm sorry, I cannot execute the action you requested. The reason is: The user's request for a cheese quesadilla without cheese is contradictory and not feasible since cheese is a key ingredient in a quesadilla. Additionally, the user's request involves an unknown ingredient (cheese) and is not aligned with the known sequences or ingredients provided.
+Press 'space' to start/continue recording, 'Enter' to stop.
+idea with beans
+uh can I just have a kiss the uh with beans and no cheese
+You Pressed Enter!
+Is it ambiguous?:  True
+Assistant:  I'm sorry, I'm having trouble understanding your request clearly. Could you please provide more details or rephrase your request so that I can assist you better? Thank you!
+Press 'space' to start/continue recording, 'Enter' to stop.
+I would like because Dia with beans but no cheese
+You Pressed Enter!
+Is it ambiguous?:  True
+Assistant:  Thank you for the clarification. Here is a sequence that matches your description:
+
+Bean and Cheese Quesadilla:
+- Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans, and served without the cheese.
+
+I hope this aligns with what you are looking for! Let me know if you would like any other suggestions or modifications.
+Press 'space' to start/continue recording, 'Enter' to stop.
+yeah that would be good
+
+You Pressed Enter!
+Is it ambiguous?:  False
+Is it Known?:  False
+Is a new sequence requested?:  True
+Is a new sequence actually requested?:  True
+Did it pass the safety check?:  True
+
+Explanation: The user's request for a bean and cheese quesadilla without cheese is feasible and safe. The modification aligns with a known sequence (Bean and Cheese Quesadilla) where the cheese is omitted, making it a reasonable adjustment to the recipe. This request involves known ingredients (beans, tortilla) and a logical modification, making it safe and feasible for the assistant to execute.
+The generated sequence is:  {
+"sequence": [
+{"step": "1", "action": "heat_beans(1)"},
+{"step": "2", "action": "prepare_tortilla(1)"},
+{"step": "3", "action": "place_on_plate(prepared_tortilla, 1)"},
+{"step": "4", "action": "place_on_plate(heated_beans, 1)"},
+{"step": "5", "action": "cook_quesadilla()"},
+{"step": "6", "action": "place_on_plate(cooked_quesadilla, 1)"},
+{"step": "7", "action": "serve()"}
+]
+}
+Assistant:  To create your meal, the robot will start by toasting two pieces of bread. 
+It will then fry one egg and place it on one piece of the toasted bread.
+Next, it will cook two bacons and place them on the other piece of the toasted bread.
+Following that, it will place the bacon-topped bread on top of the egg-topped bread to form a sandwich.
+Afterwards, it will grill two sausages, place them on a plate, and serve the sandwich and sausages together.
+Does this sequence sound good to you?
+var_generated_sequence_name is:  egg and bacon sandwich with grilled sausages
+Traceback (most recent call last):
+  ...lexa\Documents\Studium\Informatik\Master\Thesis\Git\Thesis\BT_Framework\conditions.py", line 607, in update
+    recorded_text = record_speech()
+TypeError: record_speech() missing 1 required positional argument: 'furhat'
+
+Version: 1.0
+Fri Jun 14 15:43:50 2024
+User:  Good day sir
+Press 'space' to start/continue recording, 'Enter' to stop.
+can you wash the dishes
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it ambiguous?:  False
+Is it Known?:  False
+Is a new sequence requested?:  True
+Is a new sequence actually requested?:  False
+Assistant:  Hold on dear user, I think I know what you want. Let me execute the action for you.
+Traceback (most recent call last):
+ctions.py", line 340, in process_mc_raw
+    raise Exception('Cannot extract four options from the raw output.')
+Exception: Cannot extract four options from the raw output.
+
+Version: 1.0
+Fri Jun 14 15:44:45 2024
+User:  Good day sir
+Press 'space' to start/continue recording, 'Enter' to stop.
+can I have a grilled tomato and mushroom to set up please
+You Pressed Enter!
+Tree is initialized and furhat is used
+Is it ambiguous?:  True
+Assistant:  It seems like you're requesting a "grilled tomato and mushroom bruschetta." I can prepare that for you. Would you like anything else with it?
+Press 'space' to start/continue recording, 'Enter' to stop.
+no
+You Pressed Enter!
+Is it ambiguous?:  False
+Is it Known?:  True
+var_KnowNo:  ['bacon and egg sandwich', 'grilled tomato and mushroom bruschetta']
+Assistant:  I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options?
+Option 1: bacon and egg sandwich
+Option 2: grilled tomato and mushroom bruschetta
+Or do you want me to do something else?
+Press 'space' to start/continue recording, 'Enter' to stop.
+option 2
+You Pressed Enter!
+Is it ambiguous?:  False
+Is it Known?:  True
+var_KnowNo:  ['grilled tomato and mushroom bruschetta', 'an option not listed here']
+Assistant:  I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? 
+Option 1: grilled tomato and mushroom bruschetta
+Option 2: an option not listed here
+Or do you want me to do something else?
+Press 'space' to start/continue recording, 'Enter' to stop.
+1
+can you get angry
+You Pressed Enter!
+Is it ambiguous?:  True
+Assistant:  I'm here to assist you with known sequences like cooking and cleaning tasks. If you have a specific request related to those, feel free to let me know so I can help you accordingly.
+Press 'space' to start/continue recording, 'Enter' to stop.
+anyone else wants to he doesn't deserve you
+You Pressed Enter!
+
