@@ -6,6 +6,7 @@ from furhat_remote_api import FurhatRemoteAPI
 import keyboard
 import time
 import os
+from config import BASELINE
 
 
 def format_conversation(conversation):

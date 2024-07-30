@@ -5,7 +5,7 @@
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
 from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse
-from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, BASELINE
+from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, BASELINE, RUNS
 from baseline import run_baseline
 import state
 from prompts import DUMMY_CONVERSATION, BASELINE_PROMPT
@@ -230,14 +230,14 @@ def process_user_input(user_input):
     global conversation, behaviour_tree  
 
     if FURHAT and state.var_furhat is None:
-        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+        #state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
         state.var_furhat.say(text = "Hello! I am Gregory. How can I help you today?")
         recorded_speech = record_speech(state.var_furhat)
         conversation.append({"role": "user", "content": recorded_speech})
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         print("Tree is initialized and furhat is used")
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\nUser: " + recorded_speech + "\n" + "Tree is initialized and furhat is used" + "\n"
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "Tree is initialized and furhat is used" + "\n"+ "\nUser: " + recorded_speech + "\n" 
     elif state.var_furhat is None:
         state.var_furhat = "furhat not used in this run"
         tree = build_tree(conversation, process_user_input)
@@ -254,10 +254,17 @@ def process_user_input(user_input):
         py_trees.display.render_dot_tree(behaviour_tree.root)
 
 # Full BT is called with the user input
-if BASELINE:
-    run_baseline()
-else:
-    process_user_input(user_input)
+if FURHAT and state.var_furhat is None:
+        state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
+while state.var_run < RUNS:
+    state.var_run += 1
+    print("Run: ", state.var_run)
+    if BASELINE:
+        run_baseline()
+    else:
+        process_user_input(user_input)
+    if FURHAT:
+            save_transcript(state.var_transcript)    
 
 # Test conditions and actions directly   
 
@@ -266,7 +273,6 @@ else:
 
 print(state.var_total_llm_calls)
 if FURHAT:
-    save_transcript(state.var_transcript)
     time.sleep(5)
     state.var_furhat.set_led(red =50 , green = 0 , blue = 0) # to indicate that the conversation is over
     state.var_furhat.say(text = "That's all for now. Thank you for the talk!")

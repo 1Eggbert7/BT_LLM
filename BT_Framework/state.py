@@ -17,6 +17,7 @@ var_generated_sequence_name = ""
 var_furhat = None
 var_func_run = 0
 var_transcript = ""
+var_run = 0
 
 # example sequence
 var_generated_sequence_test = {"sequence": [

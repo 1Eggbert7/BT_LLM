@@ -330,3 +330,28 @@ Press 'space' to start/continue recording, 'Enter' to stop.
 anyone else wants to he doesn't deserve you
 You Pressed Enter!
 
+Version: 1.0
+Tue Jul 30 17:28:51 2024
+Furhat is being used with Baseline
+User: I don't know um I'm Italian and I would like something from my home uh country can you make me something 
+Assistant: I can certainly help you with that! Since you mentioned you're Italian, I can offer you a variation of a classic Italian dish. Here are a few options you can choose from:
+
+1. Pasta Carbonara
+2. Margherita Pizza
+3. Caprese Salad
+4. Tiramisu
+
+Please let me know which one you'd like me to prepare for you!
+User: the pasta carbonara sounds good I'll have that 
+Assistant: Alright I will create that sequence for you.
+Assistant: The sequence is: Ok, I will now proceed with the sequence: "1", "task": "pasta carbonara". Here's the detailed sequence in JSON format:
+
+{"step": "1", "action": "cook_bacon(2)"},
+{"step": "2", "action": "fry_eggs(1)"},
+{"step": "3", "action": "cook_pasta(1)"},
+{"step": "4", "action": "combine_bacon_with_pasta(2, 1)"},
+{"step": "5", "action": "mix_in_eggs(1)"},
+{"step": "6", "action": "serve()"}
+
+I will start preparing the Pasta Carbonara for you now. Let me know if you need any further assistance or have any specific preferences. Enjoy your meal!
+
