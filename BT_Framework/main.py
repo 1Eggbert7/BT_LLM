@@ -1,16 +1,19 @@
 # main.py
 # Alexander Leszczynski
-# 12-06-2024 
+# 30-07-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
 from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse
-from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION
+from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, BASELINE
+from baseline import run_baseline
 import state
-from prompts import DUMMY_CONVERSATION
+from prompts import DUMMY_CONVERSATION, BASELINE_PROMPT
 from utils import format_conversation, initialize_furhat, record_speech, save_transcript
 #import cProfile
+import keyboard
 import time
+from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 
@@ -250,11 +253,11 @@ def process_user_input(user_input):
     if len(conversation) < 2:
         py_trees.display.render_dot_tree(behaviour_tree.root)
 
-# Initial user input processing
-print("User: ", user_input)
-
 # Full BT is called with the user input
-process_user_input(user_input)
+if BASELINE:
+    run_baseline()
+else:
+    process_user_input(user_input)
 
 # Test conditions and actions directly   
 
@@ -266,7 +269,7 @@ if FURHAT:
     save_transcript(state.var_transcript)
     time.sleep(5)
     state.var_furhat.set_led(red =50 , green = 0 , blue = 0) # to indicate that the conversation is over
-    state.var_furhat.say(text = "That was all for the demo. Thank you for listening! Have a great day!")
+    state.var_furhat.say(text = "That's all for now. Thank you for the talk!")
     time.sleep(5)
     state.var_furhat.set_led(red = 0, green = 0, blue = 0) # Turn off the LED to avoid overheating
     state.var_furhat.attend(user="NONE") # Stop attending the user

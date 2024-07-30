@@ -54,7 +54,7 @@ def record_speech(furhat):
                 furhat.set_led(red=66, green=135, blue=245)  # Set the LED to blue to indicate listening
                 listened = listen(furhat)
                 furhat.set_led(red=66, green=245, blue=105)  # Set the LED to green to indicate not listening anymore
-                print(listened.message)
+                print("User: " + listened.message)
                 total_listened += listened.message + " "
 
             elif keyboard.is_pressed('enter'):
