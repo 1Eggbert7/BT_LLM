@@ -1,11 +1,11 @@
 # main.py
 # Alexander Leszczynski
-# 30-07-2024 
+# 31-07-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
-from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse
-from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, BASELINE, RUNS
+from conditions import CheckForAmbiguity, CheckForNewSeq, CheckVarKnownCondition, CheckForKnown, CheckVarKnowNo, CheckMapping, CheckVarInf, CheckNewSeq, CheckUserOkWithNewSeq, CheckForNewSeq2, CheckVarKnownFalse, CheckCapability
+from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, BASELINE, RUNS, DEBUG
 from baseline import run_baseline
 import state
 from prompts import DUMMY_CONVERSATION, BASELINE_PROMPT
@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 
-user_input =  "Good day sir" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "uh yeah I would like the the cheese quesadilla but without cheese" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 conversation = []  # Contains the conversation history between the user and the system
 
 def build_tree(conversation, process_user_input):
@@ -182,8 +182,9 @@ def build_tree(conversation, process_user_input):
     sub_selector_3_1.add_children([sub_sequence_3_1_1, set_var_known_true])                                     # Level 2
 
     # Sequence 3
+    check_capability = CheckCapability(name="Check Capability", conversation=conversation)
     check_for_new_seq = CheckForNewSeq(name="Check for New Sequence", conversation=conversation)
-    sequence_3.add_children([check_for_new_seq, sub_selector_3_1])                                              # Level 1
+    sequence_3.add_children([check_capability, check_for_new_seq, sub_selector_3_1])                                              # Level 1
 
     # Sequence 4: Fallback action
     sequence_4 = py_trees.composites.Sequence(name="Sequence 4", memory=False)
@@ -200,17 +201,16 @@ def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
 
-    generate_new_seq = GenerateNewSequence(name="Generate New Sequence", conversation=conversation)
-    check_new_seq = CheckNewSeq(name="Check New Sequence")
-
-    root.add_children([generate_new_seq, check_new_seq])
+    explain_sequence = ExplainSequence(name="Explain Sequence", conversation=conversation)
+    
+    root.add_children([explain_sequence])
 
     return root
 
 def test_conditions_and_actions(user_input):
     global conversation
     conversation = DUMMY_CONVERSATION
-    state.var_KnowNo = ['pancakes with maple syrup and berries', 'western breakfast sandwich with bacon and sausages']
+    state.var_KnowNo = ['Bean and cheese Quesadilla']
     state.var_generated_sequence = state.Generated_sequence_in_the_var
     state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
     
@@ -256,16 +256,19 @@ def process_user_input(user_input):
 # Full BT is called with the user input
 if FURHAT and state.var_furhat is None:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
-while state.var_run < RUNS:
-    state.var_run += 1
-    print("Run: ", state.var_run)
-    if BASELINE:
-        run_baseline()
-    else:
-        process_user_input(user_input)
-    if FURHAT:
-            save_transcript(state.var_transcript)    
 
+if not DEBUG:
+    while state.var_run < RUNS:
+        state.var_run += 1
+        print("Run: ", state.var_run)
+        if BASELINE:
+            run_baseline()
+        else:
+            process_user_input(user_input)
+        if FURHAT:
+            save_transcript(state.var_transcript)    
+else:
+    test_conditions_and_actions(user_input)
 # Test conditions and actions directly   
 
 #test_conditions_and_actions(user_input)

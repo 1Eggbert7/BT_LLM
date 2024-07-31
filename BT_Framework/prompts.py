@@ -4,11 +4,41 @@
 
 import json
 
+
+# Define the format_scheme_new_seq dictionary
+format_scheme_new_seq = {
+    "sequence": [
+        {"step": "1", "action": "function_name()"},
+        {"step": "2", "action": "function_name()"},
+        {"step": "3", "action": "function_name()"}
+    ]
+}
+
+# Load JSON files
+with open('sequences.json', 'r') as f:
+    known_sequences = json.load(f)
+
+with open('ingredients.json', 'r') as f:
+    ingredients_list = json.load(f)
+
+with open('functions.json', 'r') as f:
+    available_functions = json.load(f)
+
+with open('sequences_descriptions.json', 'r') as f:
+    sequence_descriptions = json.load(f)
+
+# Convert Python objects to JSON strings
+format_scheme_new_seq_json = json.dumps(format_scheme_new_seq)
+available_functions_json = json.dumps(available_functions)
+ingredients_list_json = json.dumps(ingredients_list)
+known_sequences_json = json.dumps(known_sequences)
+sequence_descriptions_json = json.dumps(sequence_descriptions)
+
+
+
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': 'Can I have the pancakes?'},
-    {'role': 'assistant', 'content': 'Sure! Would you like the pancakes with maple syrup and berries on top?'},
-    {'role': 'user', 'content': 'Yes, um but can you add some bacon to it?'}
+    {'role': 'user', 'content': "uh yeah I would like the the cheese quesadilla but without cheese"}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
@@ -74,9 +104,11 @@ You are a service robot that can cook and even clean. The sequences you are able
     "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
 }}
 '''
-Given the ambiguous user requests, reply to the user in a polite manner in the following way:
+Given the conversation between user and assistant, reply to the user in a polite manner in the following way:
 - If the user request asks for suggestions, provide up to three known sequences as options.
 - If the user request is vague or unclear, ask for more details or clarification.
+- If the user requests for something outside the known sequences, apologize that it's outside the scope of your capabilities and offer suggestions that might be similar and within your capabilities.
+- If the user asks for a recommendation, provide a suggestion based on the known sequences.
 """
 
 AMBIGUOUS_SHOT = """
@@ -396,112 +428,29 @@ now based on the given conversation, select the letter that best fits the user i
 """
 
 
+
 # Prompt to check if the user input maps to the action in var_KnowNo 
 # needs fixing (it works on chatgpt page but not with api calls)
-PRE_PROMPT_CHECK_MAPPING = """
-You are an assistant robot that can cook and clean by executing the following actions:
-{{
-    "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",
-    "avocado toast with sausage on the side": "Creates avocado toast accompanied by a grilled sausage on the side, starting with toasting bread and grilling the sausage before assembly and serving.",
-    "peanut butter and jelly sandwich": "Makes a peanut butter and jelly sandwich by toasting bread, spreading peanut butter on one slice and jelly on the other, combining them, and serving.",
-    "vegetable stir fry with rice": "Prepares a vegetable stir fry with rice by cooking rice, preparing and cooking vegetables, plating the rice and vegetables together, adding sauce, and serving.",
-    "pancakes with maple syrup and berries": "Cooks pancakes, plates them, adds maple syrup and berries on top, and serves. The process includes mixing batter, cooking the pancakes, and assembling the final dish with toppings.",
-    "full English breakfast": "Prepares a full English breakfast by cooking sausages, bacon, tomatoes, and mushrooms, toasting bread, heating beans, and frying an egg. Each cooked component is placed on a plate as it's ready. The meal is served with all items arranged together on the plate, providing a hearty and traditional breakfast experience.",
-    "tortilla with tomatoes beans and egg (huevos rancheros)": "Prepares huevos rancheros by first cooking tomatoes and then heating beans. An egg is cooked to the desired doneness. A tortilla is prepared and placed on a plate, followed by the heated beans, cooked tomatoes, and the egg. The dish is served as a flavorful and hearty breakfast option.",
-    "bean and cheese quesadilla": "Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans and grated cheese. The quesadilla is then cooked until the cheese melts and the tortilla is golden brown. The cooked quesadilla is placed back on the plate and served hot.",
-    "grilled tomato and mushroom bruschetta": "Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms. Bread is toasted and placed on a plate. The grilled tomatoes and mushrooms are then placed on the toasted bread, creating a simple yet delicious appetizer or snack. The dish is served immediately.",
-    "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
-}}
-
-Decide whether the User wants the assistant to execute the action: '{}'. Respond with 'True' if the conversation indicates the user wants the assistant to execute the action, and 'False' if the user requests for another dish or task. Modifying the action like doubling, removing, or adding ingredients should be considered as a different action.
-
-Examples for True:
-User : I want the bacon and egg sandwich
-(action: 'bacon and egg sandwich')
-Assistant : True
-
-
-User: I am hungry.
-Assistant: Sure! I could make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.
-User: Option 2 sounds good.
-(action:'full English breakfast')
-Assistant: True
-
-
-Examples for False:
-User: What can you make?
-Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.
-User: I like the sound of the avocado toast with sausage on the side, but can you add some bacon?
-(action:'avocado toast with sausage on the side')
-Assistant: False
-
-User: I am craving the pancakes but can you double the syrup?
-(action:'pancakes with maple syrup')
-Assistant: False
-
-Classify the following conversation based on the action '{}':
-{}
-"""
+PRE_PROMPT_CHECK_MAPPING = (
+"You are an assistant robot that can cook and clean by executing the following actions: " + sequence_descriptions_json + "\n"
+    
+"Decide whether the User wants the assistant to execute the action. Respond with 'True' if the conversation indicates the user wants the assistant to execute the action, and 'False' if the user requests for another dish or task. Modifying the action like doubling, removing, or adding ingredients should be considered as a different action.\n"
+)
 
 # Safety feasibility check
-PRE_PROMPT_SAFETY_FEASIBILITY = """
-You are a part of my Robot Instruction Understanding Framework.
+PRE_PROMPT_SAFETY_FEASIBILITY = (
+"You are a part of my Robot Instruction Understanding Framework.\n"
+"Objective: Determine whether a user request for a new sequence is feasible. A request is considered feasible if it involves known ingredients and logical, reasonable quantities for the context. \n"
+"Known Sequences: " + sequence_descriptions_json + "\n"
+"Known Ingredients:" + ingredients_list_json + "\n"
+"Instructions for you:\n"
+"1. Go trough the known ingredients and check if the user's request contains ingredients that are not listed. If the user's request involves unknown ingredients, respond 'False', because the assistant can only work with known ingredients. (e.g. requests to add choclate chips, chilli flakes, etc.)\n"
+"2. Check if the user's request involves logical and reasonable quantities of known ingredients respond 'True'. Reasonable ammounts are anything below 10000 kcal. If the user's request involves illogical quantities, respond 'False', because the assistant can only work with reasonable quantities. For example doubling or adding extra ingredients is considered reasonable, but asking for 500 eggs is not. (e.g. requests to double the syrup, add extra bacon, etc.)\n"
 
-Objective: Determine whether a user request for a new sequence is safe and feasible. A request is considered safe and feasible if it involves known ingredients and logical, reasonable quantities for the context. 
+"User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.\n"
+"If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or illogical quantities, respond 'False'.\n"
+)
 
-Known Sequences:
-'''
-{{
-  "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",
-  "avocado toast with sausage on the side": "Creates avocado toast accompanied by a grilled sausage on the side, starting with toasting bread and grilling the sausage before assembly and serving.",
-  "peanut butter and jelly sandwich": "Makes a peanut butter and jelly sandwich by toasting bread, spreading peanut butter on one slice and jelly on the other, combining them, and serving.",
-  "vegetable stir fry with rice": "Prepares a vegetable stir fry with rice by cooking rice, preparing and cooking vegetables, plating the rice and vegetables together, adding sauce, and serving.",
-  "pancakes with maple syrup and berries": "Cooks pancakes, plates them, adds maple syrup and berries on top, and serves. The process includes mixing batter, cooking the pancakes, and assembling the final dish with toppings.",
-  "full English breakfast": "Prepares a full English breakfast by cooking sausages, bacon, tomatoes, and mushrooms, toasting bread, heating beans, and frying an egg. Each cooked component is placed on a plate as it's ready. The meal is served with all items arranged together on the plate, providing a hearty and traditional breakfast experience.",
-  "tortilla with tomatoes beans and egg (huevos rancheros)": "Prepares huevos rancheros by first cooking tomatoes and then heating beans. An egg is cooked to the desired doneness. A tortilla is prepared and placed on a plate, followed by the heated beans, cooked tomatoes, and the egg. The dish is served as a flavorful and hearty breakfast option.",
-  "bean and cheese quesadilla": "Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans and grated cheese. The quesadilla is then cooked until the cheese melts and the tortilla is golden brown. The cooked quesadilla is placed back on the plate and served hot.",
-  "grilled tomato and mushroom bruschetta": "Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms. Bread is toasted and placed on a plate. The grilled tomatoes and mushrooms are then placed on the toasted bread, creating a simple yet delicious appetizer or snack. The dish is served immediately.",
-  "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
-}}
-'''
-
-Known Ingredients:
-'''
-    1. "avocado": "A ripe mashed avocado, seasoned and ready to use in dishes."
-    2. "avocado_toast": "A slice of bread with mashed avocado spread on top."
-    3. "bacon": "Thin raw slices of pork"
-    4. "beans": "Pre-cooked or canned beans, heated for use in dishes."
-    5. "berries": "Fresh berries, washed and ready to eat or use in recipes."
-    6. "bread": "Sliced bread."
-    7. "cheese": "Grated cheese used as a topping or filling, melts when heated."
-    8. "cooked_quesadilla": "A quesadilla that has been filled and cooked until the cheese is melted and the exterior crispy."
-    9. "egg": "A raw egg."
-    10. "fried_bacon": "Thin slices of pork that have been fried until crispy."
-    11. "fried_egg": "A fried egg made sunny side up."
-    12. "grilled_mushrooms": "Mushrooms that have been grilled, ready to be added to dishes."
-    13. "grilled_sausages": "Sausages that have been cooked thoroughly by grilling."
-    14. "grilled_tomatoes": "Tomatoes that have been grilled and seasoned."
-    15. "heated_beans": "Beans that have been warmed through, ready for serving."
-    16. "jelly": "A fruit preserve, used as a spread or topping."
-    17. "jelly_toast": "A slice of toasted bread with jelly spread on top."
-    18. "maple_syrup": "A sweet syrup made from the sap of sugar maple trees, used as a topping or sweetener."
-    19. "mushrooms": "Fresh mushrooms."
-    20. "peanut_butter": "A spread made from ground peanuts, used in sandwiches, baking, etc."
-    21. "peanut_butter_toast": "A slice of toasted bread with peanut butter spread on top."
-    22. "prepared_tortilla": "A tortilla that has been heated and is ready for dish assembly."
-    23. "sausages": "Raw meat sausages, ready to be cooked thoroughly by grilling."
-    24. "toasted_bread": "Bread that has been toasted to a crispy texture and golden color."
-    25. "tomatoes": "Used raw, often cooked or seasoned in recipes."
-    26. "tortilla": "A flatbread used as a base for wraps, quesadillas, and other dishes, heated before assembly."
-'''
-
-Instructions for you:
-
-1. Go trough the known ingredients and check if the user's request contains ingredients that are not listed. If the user's request involves unknown ingredients, respond 'False', because the assistant can only work with known ingredients. (e.g. requests to add choclate chips, chilli flakes, etc.)
-2. Check if the user's request involves logical and reasonable quantities of known ingredients respond 'True'. Reasonable ammounts are anything below 10000 kcal. If the user's request involves illogical quantities, respond 'False', because the assistant can only work with reasonable quantities. For example doubling or adding extra ingredients is considered reasonable, but asking for 500 eggs is not. (e.g. requests to double the syrup, add extra bacon, etc.)
-
-User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is safe and feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the safety/feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.
-"""
 # few shots for the safety feasibility check
 FIRST_SHOT_SAFETY_FEASIBILITY_USER = """
 User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?
@@ -510,7 +459,7 @@ User: I want the pancakes but can you do it with bananas and chocolate chips ins
 FIRST_SHOT_SAFETY_FEASIBILITY_ASSISTANT = """
 False
 
-Explanation: The user's request involves unknown ingredients (chocolate chips, bananas) that can't be found in the provided list of known ingredients, making it not safe or feasible for the assistant to execute.
+Explanation: The user's request involves unknown ingredients (chocolate chips, bananas) that can't be found in the provided list of known ingredients, making it not feasible for the assistant to execute.
 """
 
 SECOND_SHOT_SAFETY_FEASIBILITY_USER = """
@@ -522,7 +471,7 @@ User: I like the sound of the avocado toast with sausage on the side, but can yo
 SECOND_SHOT_SAFETY_FEASIBILITY_ASSISTANT = """
 True
 
-Explanation: The user's request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it safe and feasible for the assistant to execute.
+Explanation: The user's request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it feasible for the assistant to execute.
 """
 
 THIRD_SHOT_SAFETY_FEASIBILITY_USER = """
@@ -532,7 +481,7 @@ User: I want the bacon and eggs sandwich but can you add 500 eggs?
 THIRD_SHOT_SAFETY_FEASIBILITY_ASSISTANT = """
 False
 
-Explanation: The user's request involves an illogical quantity of eggs (500), making it not safe or feasible for the assistant to execute.
+Explanation: The user's request involves an illogical quantity of eggs (500), making it not feasible for the assistant to execute.
 """
 # create the Predefined Feasibility Check message
 PREDEFINED_SAFETY_FEASIBILITY = [
@@ -542,33 +491,13 @@ PREDEFINED_SAFETY_FEASIBILITY = [
             {"role": "user", "content": SECOND_SHOT_SAFETY_FEASIBILITY_USER},
             {"role": "assistant", "content": SECOND_SHOT_SAFETY_FEASIBILITY_ASSISTANT},
             {"role": "user", "content": THIRD_SHOT_SAFETY_FEASIBILITY_USER},
-            {"role": "assistant", "content": THIRD_SHOT_SAFETY_FEASIBILITY_ASSISTANT}
+            {"role": "assistant", "content": THIRD_SHOT_SAFETY_FEASIBILITY_ASSISTANT},
+            {"role": "user", "content": "uh yeah I would like the the cheese quesadilla but without cheese"},
+            {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (beans, tortilla) that can be found in the list of known ingredients (No. 4, 28) and a reasonable modification (removing cheese), making it feasible for the assistant to execute."}
         ]
 
-# Define the format_scheme_new_seq dictionary
-format_scheme_new_seq = {
-    "sequence": [
-        {"step": "1", "action": "function_name()"},
-        {"step": "2", "action": "function_name()"},
-        {"step": "3", "action": "function_name()"}
-    ]
-}
 
-# Load JSON files
-with open('sequences.json', 'r') as f:
-    known_sequences = json.load(f)
 
-with open('ingredients.json', 'r') as f:
-    ingredients_list = json.load(f)
-
-with open('functions.json', 'r') as f:
-    available_functions = json.load(f)
-
-# Convert Python objects to JSON strings
-format_scheme_new_seq_json = json.dumps(format_scheme_new_seq)
-available_functions_json = json.dumps(available_functions)
-ingredients_list_json = json.dumps(ingredients_list)
-known_sequences_json = json.dumps(known_sequences)
 
 # Construct the PRE_PROMPT_NEW_SEQ string
 PRE_PROMPT_NEW_SEQ = (
@@ -684,6 +613,49 @@ User: Hello how are you?
 Assistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?
 User: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving please.
 """
+
+# Check for capability
+
+PRE_PROMPT_CAPABILITY_CHECK = (
+    "You are part of my Robot Instruction Understanding Framework:\n"
+    "Objective: Determine whether you are capable of executing a user request. Respond with 'True' if the request falls within your capabilities, and 'False' if the request is beyond your current capabilities.\n"
+    "The robot is a cooking and cleaning robot with the following capabilities:\n"
+    "Known Sequences: " + known_sequences_json + "\n"
+    "Instructions for you:\n"
+    "1. Check if the user's request can be fulfilled using the known sequences, ingredients, and functions provided. If the request involves known sequences, ingredients, and functions, respond 'True'.\n"
+    "2. If the user's request involves unknown sequences that are not similar to the known ones respond 'False'.\n"
+    "3. If the user's request involves known sequences but with modifications (e.g., additional ingredients, different quantities), respond 'True'.\n"
+    "4. If the user's request involves known sequences but with a different order of steps, respond 'True'.\n"
+    "5. If the user's request involves known sequences but with a different combination of steps, respond 'True'.\n"
+    "6. If the user's request involves known sequences but with a different sequence of ingredients, respond 'True'.\n"
+    "7. If the user's request involves known sequences but with a different sequence of functions, respond 'True'.\n"
+)
+
+PREDEFINED_CAPABILITY_CHECK = [
+    {"role": "system", "content": PRE_PROMPT_CAPABILITY_CHECK},
+    {"role": "user", "content": "User: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?"},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "User: I'm hungry, what can I eat?\nAssistant: I can suggest a few options for you to consider. Which of the following sequences are you in the mood for:\n1. Avocado toast with sausage on the side\n2. Peanut butter and jelly sandwich\n3. Bean and cheese quesadilla\nFeel free to let me know your preference!\nUser: I want option A, but can you add some bacon?"},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "User: I want the bacon and egg sandwich, but can you add extra bacon?"},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "User: Hello how are you?\nAssistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?\nUser: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving please."},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "User: I'm in the mood for some Italian pasta bolognese."},
+    {"role": "assistant", "content": "False"},
+    {"role": "user", "content": "User: Can you paint the walls blue?"},
+    {"role": "assistant", "content": "False"},
+    {"role": "user", "content": "User: Can I get the quesadilla without cheese?"},
+    {"role": "assistant", "content": "True"}
+
+]
+
+
+
+
+
+
+
 
 # BASELINE stuff here
 

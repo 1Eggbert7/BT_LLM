@@ -64,7 +64,16 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             predefined_messages_ambiguous_answer = [
                     {"role": "system", "content": PRE_PROMPT_AMBIGUOUS_ANSWER}
                 ]
-            messages = predefined_messages_ambiguous_answer + conversation  # Start with the predefined context.
+            formatted_conversation = format_conversation(conversation)
+
+            # Append the formatted conversation to the predefined messages
+            predefined_messages_ambiguous_answer.append(
+                {
+                    "role": "user",
+                    "content": f"Given this conversation, can you help me with my request?\n{formatted_conversation}"
+                }
+            )
+            messages = predefined_messages_ambiguous_answer
             #print("prepromt Messages for answering: ", messages)
 
             # Make the API call
@@ -328,7 +337,12 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         mc_processed_all = []
         
         # Assuming mc_raw is a JSON string
-        mc_gen_raw_json = json.loads(mc_raw)
+        #print("mc_raw: ", mc_raw)
+        try:
+            mc_gen_raw_json = json.loads(mc_raw)
+        except json.JSONDecodeError as e:
+            print("Error decoding JSON:", e)
+            raise Exception('Invalid JSON format in mc_raw.')
 
         # Now mc_gen_raw_json is a dictionary, we access its 'choices' key
         for choice in mc_gen_raw_json["choices"]:
@@ -336,15 +350,15 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             option_action = f"{choice['action']}"
             # Append the combined string to the list
             mc_processed_all.append(option_action)
-        if len(mc_processed_all) < 4:
-            raise Exception('Cannot extract four options from the raw output.')
+        #if len(mc_processed_all) < 4:
+        #    print("mc_processed_all: ", mc_processed_all)
+        #    raise Exception('Cannot extract four options from the raw output.')
         
         # Check if any repeated option - use do nothing as substitue
         mc_processed_all = list(set(mc_processed_all))
-        if len(mc_processed_all) < 4:
-            num_need = 4 - len(mc_processed_all)
-            for _ in range(num_need):
-                mc_processed_all.append('do nothing')
+        while len(mc_processed_all) < 4:
+            mc_processed_all.append('do nothing')
+
         prefix_all = ['A) ', 'B) ', 'C) ', 'D) ']
         if add_mc is not None:
             mc_processed_all.append(add_mc)
@@ -607,6 +621,8 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             state.var_generated_sequence_name = sequence_name  # Save the sequence name
             print("var_generated_sequence_name is: ", state.var_generated_sequence_name)
             state.var_transcript += "var_generated_sequence_name is: " + state.var_generated_sequence_name + "\n"
+            if FURHAT:
+                speak(state.var_furhat, response)
         else:
             print("The sequence to explain is the generated sequence: ", state.var_generated_sequence)
             state.var_transcript += "The sequence to explain is the generated sequence.\n"
@@ -645,12 +661,27 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             predefined_messages_explain_sequence.append(first_shot)
             predefined_messages_explain_sequence.append(first_shot_answer)
 
-            # Convert the sequence to a string format
-            sequence_str = "\n".join([f"Step {item['step']}: {item['action']}" for item in state.var_generated_sequence_test['sequence']])
+            #print("got here and the sequence is: ", state.var_generated_sequence)
+            #print("The type of the sequence is: ", type(state.var_generated_sequence))
 
+            # Parse the sequence JSON if it's not already parsed
+            if isinstance(state.var_generated_sequence, str):
+                try:
+                    state.var_generated_sequence = json.loads(state.var_generated_sequence)
+                    #print("Parsed sequence: ", state.var_generated_sequence)
+                except json.JSONDecodeError as e:
+                    print("Error parsing JSON: ", e)
+                    state.var_transcript += "Error parsing JSON: " + str(e) + "\n"
+                    return "Failed to parse sequence JSON", None
+
+
+            #print("can i access it: ", state.var_generated_sequence['sequence'])
+            # Convert the sequence to a string format
+            sequence_str = "\n".join([f"Step {item['step']}: {item['action']}" for item in state.var_generated_sequence['sequence']])
+            #print("The sequence string: ", sequence_str)
             # Format the conversation
             formated_conversation = format_conversation(conversation)
-
+            #print("the formatted conversation: ", formated_conversation)
             # Append the formatted conversation and sequence to the predefined messages
             predefined_messages_explain_sequence.append(
                 {
@@ -662,7 +693,8 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             messages = predefined_messages_explain_sequence  # Start with the predefined context.
             #print("prepromt Messages for explaining the sequence: ", messages)
             
-
+            # Print debug information before the API call
+            #print("Pre-prompt messages for explaining the sequence: ", messages)
 
             # Make the API call
             completion = client.chat.completions.create(
@@ -672,9 +704,10 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             
             # Extract and return the response content
             full_response = completion.choices[0].message.content
+            #print("Full response from the model: ", full_response)
 
             # Extract the sequence name from the response
-            sequence_name = None
+            sequence_name = "None"
             if "var_generated_sequence_name" in full_response:
                 start_index = full_response.index("var_generated_sequence_name: '") + len("var_generated_sequence_name: '")
                 end_index = full_response.index("'", start_index)
@@ -685,7 +718,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
-            return "Failed LLM call"
+            return "Failed LLM call", None
         
 class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
     """
@@ -826,9 +859,10 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
 
     def update(self):
         if EXPLAIN:
-            response = "I thought your request requires me to  generate a new sequence, but after double checking I think your request matches an action I know."
+            response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know."
         else:
-            response = "Hold on dear user, I think I know what you want. Let me execute the action for you."
+            #response = "Hold on dear user, I think I know what you want. Let me execute the action for you."
+            response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know."
         self.conversation.append({"role": "assistant", "content": response})
         
         if FURHAT:
@@ -883,9 +917,14 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
         try:
             # Construct the final prompt by inserting the user input
-            predefined_messages_fallback = [
-                    {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Your job is to find out what the user wants from you and ask him for more information if necessary."}
-                ]
+            if state.var_capable:
+                predefined_messages_fallback = [
+                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Your job is to find out what the user wants from you and ask him for more information if necessary."}
+                    ]
+            else:
+                predefined_messages_fallback = [
+                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Unfortunately, you are not able to execute the task the user requested. Your job is to decline the request and ask the user for a new different request."}
+                    ]
             formatted_conversation = format_conversation(conversation)
 
             predefined_messages_fallback.append({"role": "user", "content": formatted_conversation})

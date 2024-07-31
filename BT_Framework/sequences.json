@@ -102,7 +102,7 @@
         {"step": "2", "action": "prepare_tortilla(1)"},
         {"step": "3", "action": "place_on_plate(prepared_tortilla, 1)"},
         {"step": "4", "action": "place_on_plate(heated_beans, 1)"},
-        {"step": "5", "action": "place_on_plate(grated_cheese, 1)"},
+        {"step": "5", "action": "place_on_plate(cheese, 1)"},
         {"step": "6", "action": "cook_quesadilla()"},
         {"step": "7", "action": "place_on_plate(cooked_quesadilla, 1)"},
         {"step": "8", "action": "serve()"}

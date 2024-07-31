@@ -18,6 +18,7 @@ var_furhat = None
 var_func_run = 0
 var_transcript = ""
 var_run = 0
+var_capable = False
 
 # example sequence
 var_generated_sequence_test = {"sequence": [
@@ -34,15 +35,7 @@ var_generated_sequence_test = {"sequence": [
       ]}
 
 
-Generated_sequence_in_the_var = {'sequence': [
-    {'step': '1', 'action': 'cook_pancakes(3)'},
-    {'step': '2', 'action': 'place_on_plate(cooked_pancakes, 3)'},
-    {'step': '3', 'action': 'cook_bacon(2)'},
-    {'step': '4', 'action': 'place_on_plate(fried_bacon, 2)'},
-    {'step': '5', 'action': 'place_on_plate(maple_syrup, 1)'},
-    {'step': '6', 'action': 'place_on_plate(berries, 1)'},
-    {'step': '7', 'action': 'serve()'}
-  ]}
+Generated_sequence_in_the_var = {"sequence": [{"step": "1", "action": "heat_beans(1)"}, {"step": "2", "action": "prepare_tortilla(1)"}, {"step": "3", "action": "place_on_plate(prepared_tortilla, 1)"}, {"step": "4", "action": "place_on_plate(heated_beans, 1)"}, {"step": "5", "action": "cook_quesadilla()"}, {"step": "6", "action": "place_on_plate(cooked_quesadilla, 1)"}, {"step": "7", "action": "serve()"}]}
 
 
 #The generated sequence is:  {"sequence": [{"step": "1", "action": "cook_pancakes(3)"}, {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"}, {"step": "3", "action": "cook_bacon(2)"}, {"step": "4", "action": "place_on_plate(fried_bacon, 2)"}, {"step": "5", "action": "place_on_plate(maple_syrup, 1)"}, {"step": "6", "action": "place_on_plate(berries, 1)"}, {"step": "7", "action": "serve()"}]}

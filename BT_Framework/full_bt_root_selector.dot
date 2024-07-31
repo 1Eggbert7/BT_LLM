@@ -90,6 +90,8 @@ edge [fontname="times-roman"];
 "Sub Sequence 2.2.3" -> "Wait for User Input****";
 "Sequence 3" [fillcolor=orange, fontcolor=black, fontsize=9, label="Sequence 3", shape=box, style=filled];
 "Full BT Root Selector" -> "Sequence 3";
+"Check Capability" [fillcolor=gray, fontcolor=black, fontsize=9, label="Check Capability", shape=ellipse, style=filled];
+"Sequence 3" -> "Check Capability";
 "Check for New Sequence" [fillcolor=gray, fontcolor=black, fontsize=9, label="Check for New Sequence", shape=ellipse, style=filled];
 "Sequence 3" -> "Check for New Sequence";
 "Sub Selector 3.1" [fillcolor=cyan, fontcolor=black, fontsize=9, label="Sub Selector 3.1", shape=octagon, style=filled];

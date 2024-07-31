@@ -1,10 +1,10 @@
 # conditions.py
 # Alexander Leszczynski
-# 12-06-2024
+# 31-07-2024
 
 import py_trees
 from openai import OpenAI
-from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING, PRE_PROMPT_NEW_SEQ_CHECK, PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FOURTH_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FIFTH_SHOT
+from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, PRE_PROMPT_AMBIGUOUS2, PRE_PROMPT_CHECK_MAPPING, PRE_PROMPT_NEW_SEQ_CHECK, PRE_PROMPT_NEW_SEQ_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT, PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FOURTH_SHOT, PRE_PROMPT_NEW_SEQ_CHECK_FIFTH_SHOT, PREDEFINED_CAPABILITY_CHECK
 from config import MAX_LLM_CALL, LLM, FURHAT
 import state
 import json
@@ -27,8 +27,8 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
         if LLM:
             # Call the LLM to check for ambiguity
             response = self.check_ambiguity_with_llm(self.conversation)
-            print("Is it ambiguous?: ", response)
-            state.var_transcript += "Is it ambiguous?: " + response + "\n"
+            print("Is it ambiguous? ", response)
+            state.var_transcript += "Is it ambiguous? " + response + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         elif 'ambig' in self.conversation[-1]['content'].lower():
@@ -298,14 +298,14 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
         if LLM:
             # Call the LLM to check if the user input is known
             response = self.check_known_with_llm(self.conversation)
-            print("Is it Known?: ", response)
-            state.var_transcript += "Is it Known?" + response + "\n"
+            print("Is it known? ", response)
+            state.var_transcript += "Is it known? " + response + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         
         elif 'known' in self.conversation[-1]['content'].lower():
-            print("Is it Known?: True")
-            state.var_transcript += "Is it Known? True\n"
+            print("Is it known?: True")
+            state.var_transcript += "Is it known? True\n"
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
     
@@ -401,10 +401,20 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             # Construct the final prompt by inserting the user input
             formatted_conversation = format_conversation(conversation)
             predefined_messages = [
-                    {"role": "system", "content": PRE_PROMPT_CHECK_MAPPING.format(state.var_KnowNo[0], state.var_KnowNo[0], formatted_conversation)},
+                    {"role": "system", "content": PRE_PROMPT_CHECK_MAPPING},
+                    {"role": "user", "content": "Does the following action" + 'bacon and egg sandwich' + "map to the user input: \n" + "I want the bacon and egg sandwich"},
+                    {"role": "assistant", "content": "True"},
+                    {"role": "user", "content": "Does the following action" + 'full english breakfast' + "map to the user input: \n" + "User: I am hungry.\n" + "Assistant: Sure! I could make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\n" + "User: Option 2 sounds good.\n"},
+                    {"role": "assistant", "content": "True"},
+                    {"role": "user", "content": "Does the following action" + 'avocado toast with sausage on the side' + "map to the user input: \n" + "User: What can you make?\n" + "Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\n" + "User: I like the sound of the avocado toast with sausage on the side, but can you add some bacon?\n"},
+                    {"role": "assistant", "content": "False"},
+                    {"role": "user", "content": "Does the following action" + 'pancakes with maple syrup and berries' + "map to the user input: \n" + "User: I am craving the pancakes but can you double the syrup?\n"},
+                    {"role": "assistant", "content": "False"},
+                    {"role": "user", "content": "Does the following action" + state.var_KnowNo[0] + "map to the user input: \n" + formatted_conversation},
                 ]
             messages = predefined_messages # Start with the predefined context.
-            #print("PRE_PROMPT_CHECK_MAPPING: ", PRE_PROMPT_CHECK_MAPPING.format(state.var_KnowNo[0], state.var_KnowNo[0], formatted_conversation))
+            #print("varKnowNo: ", state.var_KnowNo[0])
+            #print("formatted_conversation: ", formatted_conversation)
             # Make the API call
             completion = client.chat.completions.create(
                     model="gpt-3.5-turbo",
@@ -479,7 +489,7 @@ class CheckNewSeq(py_trees.behaviour.Behaviour):
             functions_message = "The sequence contains errors. Please check the following:\n" + "\n".join(state.var_found_errors_in_sequence)
             self.logger.error(functions_message)
             return py_trees.common.Status.FAILURE
-
+        print("Sequence is valid.")
         return py_trees.common.Status.SUCCESS
 
     def load_json(self, filepath):
@@ -660,7 +670,70 @@ class CheckUserOkWithNewSeq(py_trees.behaviour.Behaviour):
     
         return "needs further checking"  # Default if it does not match any quick check
 
+class CheckCapability(py_trees.behaviour.Behaviour):
+    """
+    This condition checks if the robot is capable of performing the requested action.
+    """
 
+    def __init__(self, name, conversation):
+        super(CheckCapability, self).__init__(name)
+        self.conversation = conversation
+
+    def update(self):
+        if LLM:
+            # Call the LLM to check if the user input is known
+            response = self.check_capability_with_llm(self.conversation)
+            print("Is it within the capabilities of the robot? ", response)
+            if response == "True":
+                state.var_capable = True
+            else:
+                state.var_capable = False
+            state.var_transcript += "Is it within the capabilities of the robot? " + response + "\n"
+            if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
+                return py_trees.common.Status.SUCCESS
+        
+        elif 'capable' in self.conversation[-1]['content'].lower():
+            print("Is it within the capabilities of the robot? True")
+            state.var_transcript += "Is it within the capabilities of the robot? True\n"
+            return py_trees.common.Status.SUCCESS
+        return py_trees.common.Status.FAILURE
+    
+    def check_capability_with_llm(self, conversation):
+        """
+        This function checks if the robot is capable of executing the users request using the Chatgpt 3.5 turbo model.
+        """
+        # This logic is to prevent the LLM from being called too many times
+        if state.var_total_llm_calls >= MAX_LLM_CALL:
+            print("Exceeded the maximum number of LLM calls.")
+            state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            return "False"
+        state.var_total_llm_calls += 1
+        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+
+        try:
+            predefined_messages_capability = PREDEFINED_CAPABILITY_CHECK
+            formatted_conversation = format_conversation(conversation)
+            #print("formatted_conversation: ", formatted_conversation)
+            convo_to_add = {"role": "user", "content": formatted_conversation}
+            predefined_messages_capability.append(convo_to_add)
+
+            #print("The conversation before the LLM call: ", conversation)
+            #print("Messages for Known: ", messages)
+
+            # Make the API call
+            completion = client.chat.completions.create(
+                    model="gpt-3.5-turbo",
+                    # response_format={ "type": "json_object" },
+                    messages=predefined_messages_capability
+                    )
+            
+            # Extract and return the response content
+            return completion.choices[0].message.content
+        except Exception as e:
+            print(f"Error in LLM call: {e}")
+            state.var_transcript += f"Error in LLM call: {e}\n"
+            return "False"
+ 
 
 
 
