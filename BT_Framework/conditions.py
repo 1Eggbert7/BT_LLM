@@ -175,7 +175,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
         if LLM:
             # Call the LLM to check if the user wants a new sequence
             response = self.check_new_sequence_with_llm(self.conversation)
-            print("Is a new sequence actually requested?: ", response)
+            print("Is a new sequence actually requested? ", response)
             state.var_transcript += "Is a new sequence actually requested?" + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
@@ -327,13 +327,68 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
                 predefined_messages_known = [
                     {"role": "system", "content": PRE_PROMPT_KNOWN},
                 ]
+                # idea is to add shots here
+                first_shot = {"role": "user", "content": "User: Make me a bacon and egg sandwich."}
+                first_shot_answer = {"role": "assistant", "content": "True"}
+
+                second_shot = {"role": "user", "content":"User: Can you suggest something to eat?"}
+                second_shot_answer = {"role": "assistant", "content": "False"}
+
+                third_shot = {"role": "user", "content":"User: Prepare a vegetable stir fry with rice."}
+                third_shot_answer = {"role": "assistant", "content": "True"}
+
+                fourth_shot = {"role": "user", "content":"User: What can you do?"}
+                fourth_shot_answer = {"role": "assistant", "content": "False"}
+
+                fifth_shot = {"role": "user", "content":"User: I heard the grilled tomato and mushroom bruschetta is good. I'll have that."}
+                fifth_shot_answer = {"role": "assistant", "content": "True"}
+
+                sixth_shot = {"role": "user", "content":"User: Please make me a chicken salad without tomatoes."}
+                sixth_shot_answer = {"role": "assistant", "content": "False"}
+
+                seventh_shot = {"role": "user", "content":"User: I'd like a peanut butter and jelly sandwich, but can you add bananas?"}
+                seventh_shot_answer = {"role": "assistant", "content": "False"}
+
+                eighth_shot = {"role": "user", "content":"User: I'm craving a grilled cheese sandwich."}
+                eighth_shot_answer = {"role": "assistant", "content": "False"}
+
+                nineth_shot = {"role": "user", "content":"User: Allegedly, the PB&J sandwich is good. I'll have that."}
+                nineth_shot_answer = {"role": "assistant", "content": "True"}
+
+                tenth_shot = {"role": "user", "content":"User: I think some pancakes would do me good."}
+                tenth_shot_answer = {"role": "assistant", "content": "True"}
+
+                # now add the shots to the predefined messages
+                predefined_messages_known = predefined_messages_known + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, sixth_shot, sixth_shot_answer, seventh_shot, seventh_shot_answer, eighth_shot, eighth_shot_answer, nineth_shot, nineth_shot_answer, tenth_shot, tenth_shot_answer]
+
+
             else:
                 predefined_messages_known = [
                         {"role": "system", "content": PRE_PROMPT_KNOWN_2},
                     ]
-            messages = predefined_messages_known + conversation  # Start with the predefined context.
+                
+                first_shot = {"role": "user", "content": "User: I'm hungry, what can I eat?\nAssistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich.\nUser: I want option A."}
+                first_shot_answer = {"role": "assistant", "content": "True"}
+
+                second_shot = {"role": "user", "content":"User: I don't know um I'm Italian and I would like something from my home uh country can you make me something\nAssistant: I'd be happy to help you with a dish from your home country! 🇮🇹 Could you please provide more details or preferences for the Italian dish you would like? It could be a specific name or ingredients you enjoy.\nUser: anything you can do thats italian is fine\nAssistant: I'm sorry, but creating specific Italian dishes is outside the known sequences I can perform. However, I can suggest making a grilled tomato and mushroom bruschetta, which is a simple and delicious Italian appetizer. Would you like me to proceed with that suggestion, or is there anything else you'd prefer within the known sequences I can execute?\nUser: yeah that then"}
+                second_shot_answer = {"role": "assistant", "content": "True"}
+
+                third_shot = {"role": "user", "content":"User: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider: \n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend\nAssistant: I can suggest a few options for you to consider. Which of the following sequences are you in the mood for:\n1. Avocado toast with sausage on the side\n2. Peanut butter and jelly sandwich\n3. Bean and cheese quesadilla\nFeel free to let me know your preference or if you have any dietary restrictions!\nUser: uh yeah I would like the the cheese quesadilla but without cheese"}
+                third_shot_answer = {"role": "assistant", "content": "False"}
+                
+                fourth_shot = {"role": "user", "content":"User: can I have a grilled tomato and mushroom to set up please\nAssistant: It seems like you're requesting a 'grilled tomato and mushroom bruschetta.' I can prepare that for you. Would you like anything else with it?\nUser: no"}
+                fourth_shot_answer = {"role": "assistant", "content": "True"}
+
+                fifth_shot = {"role": "user", "content":"User: I can you make me hachapuri\nAssistant: I apologize for any confusion, but could you please provide more details or clarify your request for hachapuri? Are you looking for a specific type of hachapuri or any particular ingredients or preferences? Once I have more information, I can assist you better.\nUser: I have more information I can assist you better hachapuri aari\nAssistant: Thank you for clarifying! Unfortunately, the sequence for 'hachapuri aari' is not within my known sequences. However, I can offer you some other options:\n1. 'Bean and Cheese Quesadilla': Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The quesadilla is served hot and ready to enjoy.\n2. 'Grilled Tomato and Mushroom Bruschetta': Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms on toasted bread, making a simple yet delicious appetizer.\n3. 'Tortilla with Tomatoes, Beans, and Egg (Huevos Rancheros)': Prepares huevos rancheros with a tortilla, beans, tomatoes, and eggs in a flavorful breakfast dish.\nPlease let me know if any of these options interest you, or if you have any other preferences or requests.\nUser: the first 1"}
+                fifth_shot_answer = {"role": "assistant", "content": "True"}
+
+                #now add the shots to the predefined messages
+                predefined_messages_known = predefined_messages_known + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer]
+                
+            convo_to_add = {"role": "user", "content": format_conversation(conversation)}
+            messages = predefined_messages_known + [convo_to_add]
+            print("Messages for Known: ", messages)
             #print("The conversation before the LLM call: ", conversation)
-            #print("Messages for Known: ", messages)
 
             # Make the API call
             completion = client.chat.completions.create(
@@ -377,8 +432,8 @@ class CheckMapping(py_trees.behaviour.Behaviour):
         if LLM:
             # Call the LLM to check if the user input maps to the action in var_KnowNo
             response = self.check_mapping_with_llm(self.conversation)
-            print("Does it map to the action in var_KnowNo?: ", response)
-            state.var_transcript += "Does it map to the action in var_KnowNo:" + response + "\n"
+            print("Does it map to the action in var_KnowNo? ", response)
+            state.var_transcript += "Does it map to the action in var_KnowNo? " + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         else:

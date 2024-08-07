@@ -38,7 +38,7 @@ sequence_descriptions_json = json.dumps(sequence_descriptions)
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': "uh yeah I would like the the cheese quesadilla but without cheese"}
+    {'role': 'user', 'content': "I don't know um I'm Italian and I would like something from my home uh country can you make me something"}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
@@ -150,26 +150,7 @@ Instructions for you:
 3. Modification Required: Respond 'False' if the user request implies a modification to an existing sequence (e.g., omitting or adding ingredients, changing quantities). Example: "I want the huevos rancheros but without the tomatoes, and add bacon" should return 'False'.
 4. Ambiguous Requests: Respond 'False' for requests that are vague or ask for suggestions. Example: "Is there anything you would recommend?" should return 'False'.
 
-Example Known (True):
-- "Make me a bacon and egg sandwich."
-- "Prepare a vegetable stir fry with rice."
-- "Clean the living room floor."
-- "I would like some pancakes with maple syrup and berries."
-- "Can I get a full English breakfast?"
-- "I heard the grilled tomato and mushroom bruschetta is good. I'll have that."
-- "I'd love to have your famous rice and veggie mix dish."
-
-Example Unknown (False):
-- "Can you suggest something to eat?"
-- "What can you do?"
-- "Please make me a chicken salad without tomatoes."
-- "I'd like a smoothie with my breakfast."
-- "Can you prepare a dish with spinach and feta?"
-- "I'd like a peanut butter and jelly sandwich, but can you add bananas?"
-
 User Request Evaluation: Determine if the following user request matches a known sequence. Only answer 'True' or 'False'.
-
-The answer should only be 'True' or 'False', with no further text given.
 """
 
 PRE_PROMPT_KNOWN_2 = """
@@ -199,29 +180,7 @@ Instructions for you:
 3. Modification Required: Respond 'False' if the user request implies a modification to an existing sequence (e.g., omitting or adding ingredients, changing quantities). Example: "I want the huevos rancheros but without the tomatoes, and add bacon" should return 'False'.
 4. Ambiguous Requests: Respond 'False' for requests that are vague or ask for suggestions. Example: "Is there anything you would recommend?" should return 'False'.
 
-Example Known (True):
-- "Make me a bacon and egg sandwich."
-- "Prepare a vegetable stir fry with rice."
-- "Clean the living room floor."
-- "I would like some pancakes with maple syrup and berries."
-- "Can I get a full English breakfast?"
-- "I heard the grilled tomato and mushroom bruschetta is good. I'll have that."
-- "I'd love to have your famous rice and veggie mix dish."
-- conversation: user: "I'm hungry, what can I eat?" assistant: "You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich." user: "I want option A."
-
-Example Unknown (False):
-- "Can you suggest something to eat?"
-- "What can you do?"
-- "Please make me a chicken salad without tomatoes."
-- "I'd like a smoothie with my breakfast."
-- "Can you prepare a dish with spinach and feta?"
-- "I'd like a peanut butter and jelly sandwich, but can you add bananas?"
-- conversation: user: "I'm hungry, what can I eat?" assistant: "You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich" user: "I want the peanut butter and jelly sandwich, but can you add bananas?"
-- conversation: user: "I'm hungry, what can I eat?" assistant: "You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich" user: "I don't know, what do you recommend?"
-
 User Request Evaluation: Determine if the following conversation between user and assistant matches a known sequence. Only answer 'True' or 'False'.
-
-The answer should only be 'True' or 'False', with no further text given.
 """
 
 # KNOWNO stuff here
@@ -422,9 +381,6 @@ Being a robot that can cook and clean, you are able to execute the following act
     "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
 }}
 '''
-The options are:
-{}
-now based on the given conversation, select the letter that best fits the user input.
 """
 
 

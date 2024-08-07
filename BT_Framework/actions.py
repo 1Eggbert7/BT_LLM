@@ -22,7 +22,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
 
     def update(self):
         if EXPLAIN:
-            response = "Your request is ambiguous to me. I will need more information to help you. Could you please provide more details or clarify your request?"
+            response = "Sorry ,but your request is ambiguous to me. I will need more information to help you. Could you please provide more details or clarify your request?"
             if FURHAT:
                 speak(state.var_furhat, response)
             print("Assistant Explanation: ", response)
@@ -64,13 +64,26 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             predefined_messages_ambiguous_answer = [
                     {"role": "system", "content": PRE_PROMPT_AMBIGUOUS_ANSWER}
                 ]
+            
+            # this is where shots are added
+            first_shot = {"role": "user", "content": "User: Hello there, I'm hungry. What can I eat?"}
+            first_shot_answer = {"role": "assistant", "content": "Assistant: Hello there! I can help you with that. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
+
+            second_shot = {"role": "user", "content": "User: I can you make me hachapuri"}
+            second_shot_answer = {"role": "assistant", "content": "Assistant: Hi, I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
+            
+            third_shot = {"role": "user", "content": "User: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
+            third_shot_answer = {"role": "assistant", "content": "Assistant: Well if you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
+            
             formatted_conversation = format_conversation(conversation)
+
+            predefined_messages_ambiguous_answer = predefined_messages_ambiguous_answer + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer]
 
             # Append the formatted conversation to the predefined messages
             predefined_messages_ambiguous_answer.append(
                 {
                     "role": "user",
-                    "content": f"Given this conversation, can you help me with my request?\n{formatted_conversation}"
+                    "content": formatted_conversation
                 }
             )
             messages = predefined_messages_ambiguous_answer
@@ -219,6 +232,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         logits -= logits.max()
         logits = logits - np.log(np.sum(np.exp(logits)))
         smx = np.exp(logits)
+        #print('Scaled logits:', smx)
         return smx
 
     def create_mc_KnowNo(self, conversation):   
@@ -257,6 +271,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
                     )
             
             # Extract and return the response content
+            #print("The choices are: ", completion.choices[0].message.content)
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Error in LLM call: {e}")
@@ -274,9 +289,20 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         state.var_total_llm_calls += 1
 
         predefined_messages_mc_scores = [
-                    {"role": "system", "content": PRE_PROMPT_MC_SCORES.format(options)}
+                    {"role": "system", "content": PRE_PROMPT_MC_SCORES}
                 ]
-        messages = predefined_messages_mc_scores + conversation # Start with the predefined context.
+        
+        # idea: add more shots to the conversation
+        first_shot = {"role": "user", "content": "The options are: A) grilled tomato and mushroom bruschetta\nB) an option not listed here\nC) bacon and egg sandwich\nD) full English breakfast\nE) vegetable stir fry with rice. Now select the letter that fits best to the following conversation: \nUser: can I have a grilled tomato and mushroom to set up please\nAssistant: It seems like you're requesting a 'grilled tomato and mushroom bruschetta.' I can prepare that for you. Would you like anything else with it?\nUser: no\n"}
+        first_shot_answer = {"role": "assistant", "content": "A"}
+
+        second_shot = {"role": "user", "content": "The options are: A) an option not listed here\nB) full English breakfast\nC) bean and cheese quesadilla\nD) pancakes with maple syrup and berries\nE) grilled tomato and mushroom bruschetta. Now select the letter that fits best to the following conversation: \nUser: I can you make me hachapuri\nAssistant: I apologize for any confusion, but could you please provide more details or clarify your request for hachapuri? Are you looking for a specific type of hachapuri or any particular ingredients or preferences? Once I have more information, I can assist you better.?\nUser: I have more information I can assist you better hachapuri aari\nAssistant: Thank you for clarifying! Unfortunately, the sequence for 'hachapuri aari' is not within my known sequences. However, I can offer you some other options:\n 1. 'Bean and Cheese Quesadilla': Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The quesadilla is served hot and ready to enjoy.\n2. 'Grilled Tomato and Mushroom Bruschetta': Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms on toasted bread, making a simple yet delicious appetizer.\n3. 'Tortilla with Tomatoes, Beans, and Egg (Huevos Rancheros)': Prepares huevos rancheros with a tortilla, beans, tomatoes, and eggs in a flavorful breakfast dish.\nPlease let me know if any of these options interest you, or if you have any other preferences or requests.\nUser: the first 1\n"}
+        second_shot_answer = {"role": "assistant", "content": "C"}
+
+        convo_to_add = {"role": "user", "content": "The options are: " + options + ". Now select the letter that fits best to the following conversation: \n" + format_conversation(conversation)}
+        #print("formatted conversation: ", convo_to_add)
+        
+        messages = predefined_messages_mc_scores + [first_shot, first_shot_answer, second_shot, second_shot_answer, convo_to_add]
         
 
         try:
@@ -322,6 +348,10 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             top_tokens = ['A', 'B', 'C', 'D', 'E']  # Define the order of tokens explicitly
             top_logprobs = [option_logprobs[token] if token in option_logprobs else float('-inf') for token in top_tokens]  # Use '-inf' for missing options
 
+            #print('\n====== Raw log probabilities for each option ======')
+            #for option, logprob in option_logprobs.items():
+            #    print(f'Option: {option} \t log prob: {logprob}')
+            #print("options are: ", options)
 
             # Extract and return the response content
             return option_logprobs
@@ -372,6 +402,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             if mc_ind < len(mc_processed_all) - 1:
                 mc_prompt += '\n'
         add_mc_prefix = prefix_all[mc_processed_all.index(add_mc)][0]
+
         return mc_prompt, mc_processed_all, add_mc_prefix
 
 class ExecuteAction(py_trees.behaviour.Behaviour):
