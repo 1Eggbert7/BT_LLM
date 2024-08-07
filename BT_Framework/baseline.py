@@ -19,7 +19,7 @@ def run_baseline():
     if FURHAT:
         state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\n" + "Furhat is being used with Baseline" + "\n"
         if state.var_run == 1:
-            speak(state.var_furhat, "Hello I am Furhat. How can I help you today?")
+            speak(state.var_furhat, "Hello I am Gregory. How can I help you today?")
         else:
             time.sleep(2)
             speak(state.var_furhat, "Let's go again... Hello. How can I help you today?")
@@ -43,7 +43,7 @@ def run_baseline():
             break
 
         completion = client.chat.completions.create(
-            model = "gpt-3.5-turbo",
+            model = "gpt-4o-mini",
             messages = conversation
         )
         model_response = completion.choices[0].message.content

@@ -1,6 +1,6 @@
 # config.py
 # Alexander Leszczynski
-# 31-07-2024
+# 07-08-2024
 
 DEBUG = True           # True when debugging is enabled
 RUNS = 1                # Number of runs for the system

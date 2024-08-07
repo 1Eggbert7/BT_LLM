@@ -1,6 +1,6 @@
 # prompts.py
 # Alexander Leszczynski
-# 12-06-2024
+# 07-08-2024
 
 import json
 
@@ -104,7 +104,7 @@ You are a service robot that can cook and even clean. The sequences you are able
     "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
 }}
 '''
-Given the conversation between user and assistant, reply to the user in a polite manner in the following way:
+Given the conversation between user and assistant, reply to the user in a polite manner by first stating that his request was classified to be ambiguous and then operate in the following way:
 - If the user request asks for suggestions, provide up to three known sequences as options.
 - If the user request is vague or unclear, ask for more details or clarification.
 - If the user requests for something outside the known sequences, apologize that it's outside the scope of your capabilities and offer suggestions that might be similar and within your capabilities.

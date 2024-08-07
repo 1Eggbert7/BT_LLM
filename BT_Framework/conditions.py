@@ -1,6 +1,6 @@
 # conditions.py
 # Alexander Leszczynski
-# 31-07-2024
+# 07-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -62,7 +62,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -150,7 +150,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -224,7 +224,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -392,7 +392,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -472,7 +472,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             #print("formatted_conversation: ", formatted_conversation)
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -777,7 +777,7 @@ class CheckCapability(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=predefined_messages_capability
                     )

@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 12-06-2024
+# 07-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -31,7 +31,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             # Call the LLM to generate the response
             #print("the conversation before the LLM call: ", self.conversation)
             response = self.generate_ambiguous_response_with_llm(self.conversation)
-            print("Assistant: ", response.replace('\\n', '\n').replace('\\\'', '\''))
+            print("Assistant says: ", response.replace('\\n', '\n').replace('\\\'', '\''))
             state.var_transcript += "Assistant: " + response.replace('\\n', '\n').replace('\\\'', '\'') + "\n"
             if FURHAT:
                 speak(state.var_furhat, response)
@@ -67,13 +67,13 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             
             # this is where shots are added
             first_shot = {"role": "user", "content": "User: Hello there, I'm hungry. What can I eat?"}
-            first_shot_answer = {"role": "assistant", "content": "Assistant: Hello there! I can help you with that. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
+            first_shot_answer = {"role": "assistant", "content": "Hello there! Your request was classified to be ambiguous. I can help you with the hunger. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
 
             second_shot = {"role": "user", "content": "User: I can you make me hachapuri"}
-            second_shot_answer = {"role": "assistant", "content": "Assistant: Hi, I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
+            second_shot_answer = {"role": "assistant", "content": "Hi, your request was classified to be ambiguous. I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
             
             third_shot = {"role": "user", "content": "User: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
-            third_shot_answer = {"role": "assistant", "content": "Assistant: Well if you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
+            third_shot_answer = {"role": "assistant", "content": "Your last request was classified to be ambiguous. If you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
             
             formatted_conversation = format_conversation(conversation)
 
@@ -91,7 +91,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -265,7 +265,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         try:
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -308,7 +308,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         try:
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     messages=messages,
                     logprobs=True,
                     top_logprobs=20,
@@ -524,7 +524,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
         try:
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     messages=messages
                     )
             
@@ -614,7 +614,7 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     response_format={ "type": "json_object" },
                     messages=messages
                     )
@@ -729,7 +729,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     messages=messages
                     )
             
@@ -813,7 +813,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     messages=messages
                     )
             
@@ -964,7 +964,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
 
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
+                    model="gpt-4o-mini",
                     # response_format={ "type": "json_object" },
                     messages=messages
                     )

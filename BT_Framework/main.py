@@ -1,6 +1,6 @@
 # main.py
 # Alexander Leszczynski
-# 31-07-2024 
+# 07-08-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
@@ -213,6 +213,8 @@ def test_conditions_and_actions(user_input):
     state.var_KnowNo = ['Bean and cheese Quesadilla']
     state.var_generated_sequence = state.Generated_sequence_in_the_var
     state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
+    formatted_conversation = format_conversation(conversation)
+    print("Formatted conversation: ", formatted_conversation)
     
     if FURHAT:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
@@ -232,6 +234,7 @@ def process_user_input(user_input):
     if FURHAT and state.var_furhat is None:
         #state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
         state.var_furhat.say(text = "Hello! I am Gregory. How can I help you today?")
+        conversation.append({"role": "assistant", "content": "Hello! I am Gregory. How can I help you today?"})
         recorded_speech = record_speech(state.var_furhat)
         conversation.append({"role": "user", "content": recorded_speech})
         tree = build_tree(conversation, process_user_input)
