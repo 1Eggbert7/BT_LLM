@@ -17,9 +17,9 @@ def format_conversation(conversation):
         formatted_conversation = ""
         for i, message in enumerate(conversation):
             if i % 2 == 0:
-                formatted_conversation += f"User: {message['content']}\n"
-            else:
                 formatted_conversation += f"Assistant: {message['content']}\n"
+            else:
+                formatted_conversation += f"User: {message['content']}\n"
         return formatted_conversation
 
 def initialize_furhat(ip_address, voice_name):

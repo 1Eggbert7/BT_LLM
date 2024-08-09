@@ -46,6 +46,10 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
+        
+        # for debugging purposes
+        formatted_conversation = format_conversation(conversation)
+        #print("Formatted conversation: ", formatted_conversation)
 
         try:
             # Construct the final prompt by inserting the user input#
@@ -387,7 +391,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
                 
             convo_to_add = {"role": "user", "content": format_conversation(conversation)}
             messages = predefined_messages_known + [convo_to_add]
-            print("Messages for Known: ", messages)
+            #print("Messages for Known: ", messages)
             #print("The conversation before the LLM call: ", conversation)
 
             # Make the API call
@@ -669,12 +673,12 @@ class CheckUserOkWithNewSeq(py_trees.behaviour.Behaviour):
 
     def update(self):
         if FURHAT:
-            recorded_text = record_speech()
+            recorded_text = record_speech(state.var_furhat)
             print("Total listened: ", recorded_text)
             state.var_transcript += "Total listened:" + recorded_text + "\n"
             self.conversation.append({"role": "user", "content": recorded_text})
         else:
-            user_input = input("Is it ok?: ")
+            user_input = input("User: ")
             self.conversation.append({"role": "user", "content": user_input})
         sentiment_analyzer = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
         user_answer = self.conversation[-1]['content']

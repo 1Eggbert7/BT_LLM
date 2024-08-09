@@ -4,7 +4,7 @@
 
 import py_trees
 from openai import OpenAI
-from prompts import PRE_PROMPT_AMBIGUOUS_ANSWER, PRE_PROMPT_KNOWN, FORMAT_SCHEME, FIRST_SHOT, SECOND_SHOT, THIRD_SHOT, PRE_PROMPT_KNOWNO, SECOND_SHOT_ASSISTANT_ANSWER, TEST_JSON_MC_RAW, PRE_PROMPT_MC_SCORES, AMBIGUOUS_SHOT, PREDEFINED_SAFETY_FEASIBILITY, PRE_PROMPT_NEW_SEQ, FIRST_SHOT_EXPLAIN_SEQ, FIRST_SHOT_EXPLAIN_SEQ_ANSWER
+from prompts import PRE_PROMPT_AMBIGUOUS_ANSWER, PRE_PROMPT_KNOWN, FORMAT_SCHEME, FIRST_SHOT, SECOND_SHOT, THIRD_SHOT, PRE_PROMPT_KNOWNO, SECOND_SHOT_ASSISTANT_ANSWER, TEST_JSON_MC_RAW, PRE_PROMPT_MC_SCORES, AMBIGUOUS_SHOT, PREDEFINED_SAFETY_FEASIBILITY, PRE_PROMPT_NEW_SEQ, FIRST_SHOT_EXPLAIN_SEQ, FIRST_SHOT_EXPLAIN_SEQ_ANSWER, PRE_PROMPT_SAFETY_FEASIBILITY
 from config import MAX_LLM_CALL, LLM, FURHAT, EXPLAIN
 from utils import format_conversation, speak, record_speech
 import state
@@ -31,7 +31,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             # Call the LLM to generate the response
             #print("the conversation before the LLM call: ", self.conversation)
             response = self.generate_ambiguous_response_with_llm(self.conversation)
-            print("Assistant says: ", response.replace('\\n', '\n').replace('\\\'', '\''))
+            print("Assistant: ", response.replace('\\n', '\n').replace('\\\'', '\''))
             state.var_transcript += "Assistant: " + response.replace('\\n', '\n').replace('\\\'', '\'') + "\n"
             if FURHAT:
                 speak(state.var_furhat, response)
@@ -517,14 +517,44 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
         state.var_total_llm_calls += 1
         formatted_conversation = format_conversation(conversation)
         #print("formatted conversation: ", formatted_conversation)
-        predefined_messages_safety_feasibility = PREDEFINED_SAFETY_FEASIBILITY
-        convo_to_add = {"role": "user", "content": formatted_conversation}
-        predefined_messages_safety_feasibility.append(convo_to_add)
-        messages = predefined_messages_safety_feasibility        
+
         try:
+            predefined_messages_sfty_check = [
+                    {"role": "system", "content": PRE_PROMPT_SAFETY_FEASIBILITY}
+                ]
+            
+            # this is where shots are added
+            first_shot = {"role": "user", "content": "User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?"}
+            first_shot_answer = {"role": "assistant", "content": "False\nExplanation: The user's request involves unknown ingredients (chocolate chips, bananas) that can't be found in the provided list of known ingredients, making it not feasible for the assistant to execute."}
+
+            second_shot = {"role": "user", "content": "User: I want something to eat.\n Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\nUser: I like the sound of the avocado toast with sausage on the side, but can you add some bacon?"}
+            second_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it feasible for the assistant to execute."}
+            
+            third_shot = {"role": "user", "content": "User: I want the bacon and eggs sandwich but can you add 500 eggs?"} 
+            third_shot_answer = {"role": "assistant", "content": "False\nExplanation: The user's request involves an illogical quantity of eggs (500), making it not feasible for the assistant to execute."}
+
+            fourth_shot = {"role": "user", "content": "User: can i get the bacon and egg sandwich but can you add five times the ammount of bacon?"}
+            fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for the assistant to execute."}
+            
+            formatted_conversation = format_conversation(conversation)
+
+            predefined_messages_sfty_check = predefined_messages_sfty_check + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer]
+
+            # Append the formatted conversation to the predefined messages
+            predefined_messages_sfty_check.append(
+                {
+                    "role": "user",
+                    "content": formatted_conversation
+                }
+            )
+
+            messages = predefined_messages_sfty_check
+            #print("prepromt Messages for answering: ", messages)
+
             # Make the API call
             completion = client.chat.completions.create(
                     model="gpt-4o-mini",
+                    # response_format={ "type": "json_object" },
                     messages=messages
                     )
             
@@ -548,7 +578,7 @@ class DeclineRequest(py_trees.behaviour.Behaviour):
         if EXPLAIN:
             response = "I'm sorry, I cannot execute the action you requested. Because it was declared unsafe or infeasible by me."
         else:
-            response = "I'm sorry, I cannot execute the action you requested. The reason is: {}".format(state.var_decline_explanation)
+            response = "I'm sorry, your request was classified to be unsafe and or unfeasible. The reason is: {}".format(state.var_decline_explanation)
     
         if FURHAT:
             speak(state.var_furhat, response)
@@ -765,7 +795,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             response = "I’m sorry, but I ran into an issue while trying to create what you requested."
         if LLM:
             #response = self.report_failure_back_to_user()
-            response = "I’m sorry, but I ran into an issue while trying to create what you requested. Would you like to try again, or do you have any other questions I can help with?"
+            response = "I’m sorry, but I ran into an issue while trying to create a new sequence to accomodate your request. Would you like to try again, or do you have any other questions I can help with?"
         else:
             response = "The sequence failed the automated check."
         self.conversation.append({"role": "assistant", "content": response})
@@ -862,7 +892,7 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         if EXPLAIN:
             response = "I matched your request to multiple possible actions. I need you to make a clearer request."
         else:
-            response = "I'm sorry, I'm not sure what you mean. Could you specify your request with one of the following options? "
+            response = "I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct? "
             for i, option in enumerate(state.var_KnowNo):
                 response += f"\nOption {i + 1}: {option}"
             response += "\nOr do you want me to do something else?"
@@ -893,7 +923,7 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
             response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know."
         else:
             #response = "Hold on dear user, I think I know what you want. Let me execute the action for you."
-            response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know."
+            response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know." # explaining
         self.conversation.append({"role": "assistant", "content": response})
         
         if FURHAT:
@@ -922,7 +952,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         elif LLM:
             response = self.generate_fallback_answer(self.conversation)
         else:
-            response = "I'm sorry, I'm confused. Is there anything I can do for you? I could give you suggestions if you want me to."
+            response = "I'm sorry, but i couldn't classify your request. Is there anything I can do for you? I could give you suggestions if you want me to."
         self.conversation.append({"role": "assistant", "content": response})
 
         if FURHAT:
@@ -956,6 +986,13 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
                 predefined_messages_fallback = [
                         {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Unfortunately, you are not able to execute the task the user requested. Your job is to decline the request and ask the user for a new different request."}
                     ]
+                
+                first_shot = {"role": "user", "content": "User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?"}
+                first_shot_answer = {"role": "assistant", "content": "Your request classified to be outside of my capabilities. I can't execute the task you requested, please provide a different request."}
+
+                second_shot = {"role": "user", "content": "User: I want something to eat.\n Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\nUser: I like the sound of the avocado toast with sausage on the side, but can you add 500 eggs?"}
+                second_shot_answer = {"role": "assistant", "content": "Your request classified to be outside of my capabilities. I can't execute the task you requested, please provide a different request, maybe with a reasonable amount of eggs."}
+
             formatted_conversation = format_conversation(conversation)
 
             predefined_messages_fallback.append({"role": "user", "content": formatted_conversation})

@@ -38,7 +38,7 @@ sequence_descriptions_json = json.dumps(sequence_descriptions)
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': "I don't know um I'm Italian and I would like something from my home uh country can you make me something"}
+    {'role': 'user', 'content': "Hello Gregory, can I get the bacon and egg sandwich but with nine times the bacon"}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
@@ -89,7 +89,7 @@ please classify the latest user input based on the given conversation:
 
 # need to test this
 PRE_PROMPT_AMBIGUOUS_ANSWER =  """
-You are a service robot that can cook and even clean. The sequences you are able to execute are the known sequences:
+You are a service robot that can cook and even clean. You are even adjust quantities of ingredients in the recipes. The sequences you are able to execute are the known sequences:
 '''
 {{
     "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",
@@ -107,6 +107,7 @@ You are a service robot that can cook and even clean. The sequences you are able
 Given the conversation between user and assistant, reply to the user in a polite manner by first stating that his request was classified to be ambiguous and then operate in the following way:
 - If the user request asks for suggestions, provide up to three known sequences as options.
 - If the user request is vague or unclear, ask for more details or clarification.
+- If the user requests for a dish but changes quantities or ingredients, make sure to understand the changes and provide a response accordingly.
 - If the user requests for something outside the known sequences, apologize that it's outside the scope of your capabilities and offer suggestions that might be similar and within your capabilities.
 - If the user asks for a recommendation, provide a suggestion based on the known sequences.
 """
@@ -396,12 +397,12 @@ PRE_PROMPT_CHECK_MAPPING = (
 # Safety feasibility check
 PRE_PROMPT_SAFETY_FEASIBILITY = (
 "You are a part of my Robot Instruction Understanding Framework.\n"
-"Objective: Determine whether a user request for a new sequence is feasible. A request is considered feasible if it involves known ingredients and logical, reasonable quantities for the context. \n"
+"Objective: Determine whether a user request for a new sequence is feasible. A request is considered feasible if it involves known ingredients. \n"
 "Known Sequences: " + sequence_descriptions_json + "\n"
 "Known Ingredients:" + ingredients_list_json + "\n"
 "Instructions for you:\n"
 "1. Go trough the known ingredients and check if the user's request contains ingredients that are not listed. If the user's request involves unknown ingredients, respond 'False', because the assistant can only work with known ingredients. (e.g. requests to add choclate chips, chilli flakes, etc.)\n"
-"2. Check if the user's request involves logical and reasonable quantities of known ingredients respond 'True'. Reasonable ammounts are anything below 10000 kcal. If the user's request involves illogical quantities, respond 'False', because the assistant can only work with reasonable quantities. For example doubling or adding extra ingredients is considered reasonable, but asking for 500 eggs is not. (e.g. requests to double the syrup, add extra bacon, etc.)\n"
+"2. Check if the quantities of the ingredients are below 10. Any ingredient can occur up to 10 times in a dish. So if the number of an ingredient requested is below 10 answer with 'True'.\n"
 
 "User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.\n"
 "If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or illogical quantities, respond 'False'.\n"

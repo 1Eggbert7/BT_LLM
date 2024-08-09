@@ -6,7 +6,7 @@ import keyboard  # using module keyboard
 client = OpenAI()
 
 # Create an instance of the FurhatRemoteAPI class, providing the address of the robot or the SDK running the virtual robot
-furhat = FurhatRemoteAPI("192.168.0.196")
+furhat = FurhatRemoteAPI("192.168.0.103")
 
 # get the gestures on the robot
 #gestures = furhat.get_gestures()
