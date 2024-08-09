@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 07-08-2024
+# 09-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -15,6 +15,9 @@ import numpy as np
 client = OpenAI()
 
 class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
+    """
+    This action prints an ambiguous answer to the user. Informing the user that the request is ambiguous and offering to help with more information.
+    """
 
     def __init__(self, name, conversation):
         super(PrintAmbiguousAnswer, self).__init__(name)
@@ -49,7 +52,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
     
     def generate_ambiguous_response_with_llm(self, conversation):
         """
-        This function generates a response to an ambiguous user input using the Chatgpt 3.5 turbo model.
+        This function generates a response to an ambiguous user input using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -507,7 +510,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
 
     def run_safety_check(self, conversation):
         """
-        This function runs a safety check to ensure that the action to be executed is safe, with ChatGPT 3.5 Turbo.
+        This function runs a safety check to ensure that the action to be executed is safe, with Chatgpt-4o-mini.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -694,7 +697,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
     
     def explain_sequence(self, conversation):
         """
-        This function explains the generated sequence to the user with the ChatGPT 3.5 Turbo model.
+        This function explains the generated sequence to the user with the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -811,7 +814,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
 
     def report_failure_back_to_user(self):
         """
-        This function reports the failure back to the user with the ChatGPT 3.5 Turbo model.
+        This function reports the failure back to the user with the ChatGPT-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:

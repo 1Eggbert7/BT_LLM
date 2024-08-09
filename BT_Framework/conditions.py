@@ -1,6 +1,6 @@
 # conditions.py
 # Alexander Leszczynski
-# 07-08-2024
+# 09-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -37,7 +37,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
 
     def check_ambiguity_with_llm(self, conversation):
         """
-        This function checks if the user input is ambiguous using the Chatgpt 3.5 turbo model.
+        This function checks if the user input is ambiguous using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -172,7 +172,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
 
     def check_new_sequence_with_llm(self, conversation):
         """
-        This function checks if the user wants a new sequence using the Chatgpt 3.5 turbo model.
+        This function checks if the user wants a new sequence using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -260,7 +260,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
 
     def check_new_sequence_with_llm(self, conversation):
         """
-        This function checks if the user wants a new sequence using the Chatgpt 3.5 turbo model.
+        This function checks if the user wants a new sequence using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -384,7 +384,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
     
     def check_known_with_llm(self, conversation):
         """
-        This function checks if the user input is known using the Chatgpt 3.5 turbo model.
+        This function checks if the user input is known using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -515,7 +515,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
 
     def check_mapping_with_llm(self, conversation):
         """
-        This function checks if the user input actually maps to the action in var_KnowNo using the Chatgpt 3.5 turbo model.
+        This function checks if the user input actually maps to the action in var_KnowNo using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
@@ -828,7 +828,7 @@ class CheckCapability(py_trees.behaviour.Behaviour):
     
     def check_capability_with_llm(self, conversation):
         """
-        This function checks if the robot is capable of executing the users request using the Chatgpt 3.5 turbo model.
+        This function checks if the robot is capable of executing the users request using the Chatgpt-4o-mini model.
         """
         # This logic is to prevent the LLM from being called too many times
         if state.var_total_llm_calls >= MAX_LLM_CALL:
