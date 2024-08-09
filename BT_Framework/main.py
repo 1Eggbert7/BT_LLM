@@ -1,6 +1,6 @@
 # main.py
 # Alexander Leszczynski
-# 08-08-2024 
+# 09-08-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
@@ -202,9 +202,9 @@ def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
 
-    sfty_check = RunSafetyCheck(name="Safety Check", conversation=conversation)
+    check_ambiguity = CheckForAmbiguity(name="Check for Ambiguity", conversation=conversation)
 
-    root.add_children([sfty_check])
+    root.add_children([check_ambiguity])
 
     return root
 

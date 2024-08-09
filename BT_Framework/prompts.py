@@ -38,51 +38,20 @@ sequence_descriptions_json = json.dumps(sequence_descriptions)
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'user', 'content': "Hello Gregory, can I get the bacon and egg sandwich but with nine times the bacon"}
+    {'role': 'assistant', 'content': "Hello I'm Gregory! How can I help you today?"},
+    {'role': 'user', 'content': "I am hungry"},
+    {'role': 'assistant', 'content': "I can make you a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Which one would you like?"},
+    {'role': 'user', 'content': "I'll take option 2 then that sounds great."}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
 Please classify the user input as either 'True' if it's ambiguous or 'False' if it's not. Respond strictly with only the word 'True' or 'False' and nothing else. Consider requests that lack specificity, invite a range of responses, or ask for suggestions as ambiguous. Identify specific requests with modifications, detailed actions, or sequences as non-ambiguous. If unsure, err on the side of categorizing it as ambiguous.
 
-Example Ambiguous (True):
-"What's the best thing on the menu?"
-"Can you suggest something to eat?"
-"What can you do?"
-
-Example Non-Ambiguous (False):
-"Please make me a chicken salad without tomatoes."
-"Clean the tables and then refill the salt shakers."
-"I'd like a medium-rare steak with mashed potatoes and steamed vegetables."
-
-Please classify the user input:
+Please classify the user conversation:
 """
 
 PRE_PROMPT_AMBIGUOUS2 = """
 Please classify the user input as either 'True' if it's ambiguous or 'False' if it's not. Respond strictly with only the word 'True' or 'False' and nothing else. Consider requests that lack specificity, invite a range of responses, or ask for suggestions as ambiguous. Identify specific requests with modifications, detailed actions, or sequences as non-ambiguous. If unsure, err on the side of categorizing it as ambiguous.
-
-Example Ambiguous (True):
-User : "What's the best thing on the menu?"
-Assistant : "Here are a few suggestions that are popular:
-    
-        1. Bacon and egg sandwich
-        2. Avocado toast with sausage on the side
-        3. Peanut butter and jelly sandwich
-        If any of these options sound good to you, feel free to let me know!"
-User : "I am not sure, what do you recommend?"
-
-Example Ambiguous (False):
-User : "What's the best thing on the menu?"
-Assistant : "Here are a few suggestions that are popular:
-
-    1. Bacon and egg sandwich
-    2. Avocado toast with sausage on the side
-    3. Peanut butter and jelly sandwich
-    If any of these options sound good to you, feel free to let me know!"
-User : "I want option A."
-
-User: "Can I get the pancakes?"
-Assistant: "Of course! Would you like the pancakes with maple syrup and berries on top?"
-User: "Yes"
 
 please classify the latest user input based on the given conversation:
 """
@@ -406,6 +375,7 @@ PRE_PROMPT_SAFETY_FEASIBILITY = (
 
 "User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.\n"
 "If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or illogical quantities, respond 'False'.\n"
+"Bear in mind that the user input is text that was generated from speech-to-text and may contain errors or inconsistencies. For example when the user is talking about 'serum' it might be 'syrup' or 'outdoor berries' might be 'without berries' in a given context.\n"
 )
 
 # few shots for the safety feasibility check

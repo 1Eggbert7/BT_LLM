@@ -53,15 +53,86 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
 
         try:
             # Construct the final prompt by inserting the user input#
-            if len(conversation) == 1:
+            if len(conversation) == 2:
                 predefined_messages_ambiguous = [
                         {"role": "system", "content": PRE_PROMPT_AMBIGUOUS},
                     ]
+                # shots can be added here
+
+                first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: What's the best thing on the menu?"}
+                first_shot_answer = {"role": "system", "content": "True"}
+
+                second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Please make me a chicken salad without tomatoes."}
+                second_shot_answer = {"role": "system", "content": "False"}
+
+                third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Can you suggest something to eat?"}
+                third_shot_answer = {"role": "system", "content": "True"}
+
+                fourth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: get me the bacon and egg sandwich but add 4 slices of bacon"}
+                fourth_shot_answer = {"role": "system", "content": "False"}                
+
+                fifth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Clean the tables and then refill the salt shakers."}
+                fifth_shot_answer = {"role": "system", "content": "False"}
+
+                sixth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I'd like a medium-rare steak with mashed potatoes and steamed vegetables."}
+                sixth_shot_answer = {"role": "system", "content": "False"}
+
+                seventh_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: What can you do?"}
+                seventh_shot_answer = {"role": "system", "content": "True"}
+
+                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, sixth_shot, sixth_shot_answer, seventh_shot, seventh_shot_answer]
+
             else:
+
+                """
+                Example Ambiguous (True):
+                User : "What's the best thing on the menu?"
+                Assistant : "Here are a few suggestions that are popular:
+                    
+                        1. Bacon and egg sandwich
+                        2. Avocado toast with sausage on the side
+                        3. Peanut butter and jelly sandwich
+                        If any of these options sound good to you, feel free to let me know!"
+                User : "I am not sure, what do you recommend?"
+
+                Example Ambiguous (False):
+                User : "What's the best thing on the menu?"
+                Assistant : "Here are a few suggestions that are popular:
+
+                    1. Bacon and egg sandwich
+                    2. Avocado toast with sausage on the side
+                    3. Peanut butter and jelly sandwich
+                    If any of these options sound good to you, feel free to let me know!"
+                User : "I want option A."
+
+                User: "Can I get the pancakes?"
+                Assistant: "Of course! Would you like the pancakes with maple syrup and berries on top?"
+                User: "Yes"
+
+                """
+
                 predefined_messages_ambiguous = [
                         {"role": "system", "content": PRE_PROMPT_AMBIGUOUS2},
                     ]
-            messages = predefined_messages_ambiguous + conversation  # Start with the predefined context.
+                
+                # shots can be added here
+
+                first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: What's the best thing on the menu?\nAssistant: Here are a few suggestions that are popular:\n1. Bacon and egg sandwich\n2. Avocado toast with sausage on the side\n3. Peanut butter and jelly sandwich\nIf any of these options sound good to you, feel free to let me know!\nUser: I am not sure, what do you recommend?"}
+                first_shot_answer = {"role": "system", "content": "True"}
+
+                second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: What's the best thing on the menu?\nAssistant: Here are a few suggestions that are popular:\n1. Bacon and egg sandwich\n2. Avocado toast with sausage on the side\n3. Peanut butter and jelly sandwich\nIf any of these options sound good to you, feel free to let me know!\nUser: I want option A."}
+                second_shot_answer = {"role": "system", "content": "False"}
+
+                third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Can I get the pancakes?\nAssistant: Of course! Would you like the pancakes with maple syrup and berries on top?\nUser: Yes"}
+                third_shot_answer = {"role": "system", "content": "False"}
+
+                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer]
+                
+            formatted_conversation = format_conversation(conversation)
+
+            convo_to_add = {"role": "user", "content": formatted_conversation}
+
+            messages = predefined_messages_ambiguous + [convo_to_add]
             #print("Messages: ", messages)
 
             # Make the API call
@@ -180,7 +251,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
             # Call the LLM to check if the user wants a new sequence
             response = self.check_new_sequence_with_llm(self.conversation)
             print("Is a new sequence actually requested? ", response)
-            state.var_transcript += "Is a new sequence actually requested?" + response + "\n"
+            state.var_transcript += "Is a new sequence actually requested? " + response + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         elif 'new sequence' in self.conversation[-1]['content']:
@@ -205,25 +276,23 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
                     {"role": "system", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK}
                 ]
            
-            first_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_FIRST_SHOT}
-            predefined_messages_new_sequence.append(first_shot)
+            first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?"}
             first_shot_answer = {"role": "system", "content": "False"}
-            predefined_messages_new_sequence.append(first_shot_answer)
 
-            second_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_SECOND_SHOT}
-            predefined_messages_new_sequence.append(second_shot)
+            second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I'm hungry, what can I eat?\nAssistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Let me know if any of these options sound good to you, or feel free to provide more details for a tailored recommendation!\nUser: I want the bacon and egg sandwich, but can you add extra bacon?"}
             second_shot_answer = {"role": "system", "content": "True"}
-            predefined_messages_new_sequence.append(second_shot_answer)
 
-            third_shot = {"role": "user", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK_THIRD_SHOT}
-            predefined_messages_new_sequence.append(third_shot)
+            third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Hello how are you?\nAssistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?\nUser: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving of syrup please."}
             third_shot_answer = {"role": "system", "content": "True"}
-            predefined_messages_new_sequence.append(third_shot_answer)
-                        
+
+            fourth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today\nUser: yes um I want the pancakes but with the outdoor berries and double the amount of syrup please\nAssistant: I'm sorry, your request was classified to be unsafe and or unfeasible. The reason is: The user's request involves an unknown ingredient (outdoor berries) that is not included in the list of known ingredients. Additionally, while maple syrup is a known ingredient, the request to double the amount implies a large quantity, which could exceed feasible limits. Therefore, the request is not feasible for the assistant to execute.\nUser: can you make me the pancakes without berries and just syrup"}
+            fourth_shot_answer = {"role": "system", "content": "True"}
+
             formatted_conversation = format_conversation(conversation)
+            #print("Formatted conversation: ", formatted_conversation)
             convo_to_add = {"role": "user", "content": formatted_conversation}
-            predefined_messages_new_sequence.append(convo_to_add)
-            messages = predefined_messages_new_sequence
+            
+            messages = predefined_messages_new_sequence + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, convo_to_add] 
             #print("Messages for New Sequence: ", messages)
 
             # Make the API call
