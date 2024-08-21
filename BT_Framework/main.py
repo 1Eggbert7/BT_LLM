@@ -283,6 +283,15 @@ if not DEBUG:
         state.var_total_llm_calls = 0 # Reset the total number of LLM calls
         print("Run: ", state.var_run)
         if BASELINE:
+            if state.var_run > 1:
+                if FURHAT:
+                    while True:
+                        try:
+                            if keyboard.is_pressed('r'):
+                                print('You Pressed r the next round is about to start!')                          
+                                break
+                        except:
+                            break  # if user pressed a key other than the given key the loop will break
             run_baseline()
         else:
             if state.var_run > 1:

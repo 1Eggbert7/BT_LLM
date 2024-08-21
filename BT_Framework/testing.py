@@ -1,4 +1,11 @@
-import time
+import keyboard
 
-# print todays date and time
-print(time.strftime("%c"))
+while True:
+    try:
+        if keyboard.('r'):
+            print('You Pressed Enter!')
+            break
+    except:
+        break
+print("Hello World")                                     
+r                         

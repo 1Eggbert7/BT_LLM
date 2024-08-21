@@ -517,3 +517,102 @@ var_KnowNo: ['pancakes with maple syrup and berries']
 Does it map to the action in var_KnowNo? True
 Assistant: Great choice! I will execute the sequence for pancakes with maple syrup and berries.
 
+Version: 1.2
+Wed Aug 21 15:09:17 2024
+Furhat is being used with Baseline
+User: hey Gregory I would like to have a bacon and egg sandwich please 
+Assistant: Ok I will now proceed with the sequence: '1',  'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:15:21 2024
+Furhat is being used with Baseline
+User: hello Gregory um can you recommend me something 
+Assistant: Hello! I can assist you with several tasks. Here are a few options you might consider:
+
+1. Prepare a bacon and egg sandwich.
+2. Make avocado toast with sausages on the side.
+3. Cook a vegetable stir fry with rice.
+4. Clean the living room floor.
+
+Please let me know which one you're interested in or if you have something else in mind!
+User: uh I'll have option 3 sounds good 
+Assistant: Ok I will now proceed with the sequence: '4', 'vegetable stir fry with rice'.
+
+Version: 1.2
+Wed Aug 21 15:16:16 2024
+Furhat is being used with Baseline
+User: well I would like to have something sweet to eat 
+Assistant: Could you please be more specific about what you'd like? Here are some sweet options I can prepare for you:
+
+1. Pancakes with maple syrup and berries.
+2. Peanut butter and jelly sandwich.
+3. Avocado toast with sausage on the side (if you like a savory-sweet combo).
+4. I'll be glad to create something new if you provide more details!
+
+Let me know your preference!
+User: um I'll take the peanut butter and jelly sandwich 
+Assistant: Ok, I will now proceed with the sequence: '3', 'peanut butter and jelly sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:18:26 2024
+Furhat is being used with Baseline
+User: I want the bacon and egg sandwich 
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:18:41 2024
+Furhat is being used with Baseline
+User: I would like to have the spacing and X sandwich 
+Assistant: It seems your request is a bit unclear. Could you please provide more details about the kind of sandwich you're looking for? Here are a few options I can help you with:
+
+1. Bacon and Egg Sandwich
+2. Peanut Butter and Jelly Sandwich
+3. Grilled Tomato and Mushroom Bruschetta
+4. Avocado Toast with Sausage on the Side
+
+Let me know which one you would like!
+User: let me know yeah the bacon and egg sandwich 
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:19:48 2024
+Furhat is being used with Baseline
+User: hey Gregory 
+Assistant: Hello! I'm here to help. How can I assist you today?
+User: I want a bacon and egg sandwich please 
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:20:32 2024
+Furhat is being used with Baseline
+User: I want a bacon and egg sandwich 
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:45:44 2024
+Furhat is being used with Baseline
+User: hey I want the bacon and egg sandwich 
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:46:19 2024
+Furhat is being used with Baseline
+User: yeah can you please clean the rivet living room floor for me 
+Assistant: It seems there might have been a small misunderstanding in your request. I can clean the living room floor, but I do not recognize "rivet" as a specific task or command. 
+
+Would you like me to proceed with cleaning the living room floor? If so, I will follow the standard cleaning sequence. Please confirm!
+User: yes 
+Assistant: Ok, I will now proceed with the sequence: '10', 'clean living room floor'.
+
+Version: 1.2
+Wed Aug 21 15:48:20 2024
+Furhat is being used with Baseline
+User: hey can you uh make me a bacon and egg sandwich 
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.2
+Wed Aug 21 15:49:25 2024
+Furhat is being used with Baseline
+User: hey can you make me a bacon and egg sandwich please 
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
