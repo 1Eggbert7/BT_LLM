@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 09-08-2024
+# 22-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -171,7 +171,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
 
             result = self.create_mc_KnowNo(self.conversation)
             #print("Result: ", result)
-            the_options, the_options_list , the_add_mc_prefix = self.process_mc_raw(result, add_mc='an option not listed here')
+            the_options, the_options_list , the_add_mc_prefix = self.process_mc_raw(result, add_mc='something else')
             #print("the options: ", the_options)
             #print("the add mc prefix: ", the_add_mc_prefix)
             logprobs = self.get_logprobs(the_options, self.conversation)
@@ -194,7 +194,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         """
         This function fills the var_KnowNo list with the options that are above a certain threshold.
         """
-        qhat = 0.8
+        qhat = 0.900
         top_tokens = list(logprobs.keys())
         top_logprobs = [logprob if logprob is not None else -1e10 for logprob in logprobs.values()]  # Replace None with a large negative number to avoid errors
 
@@ -363,7 +363,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             return "Failed LLM call"
 
-    def process_mc_raw(self, mc_raw, add_mc='an option not listed here'):
+    def process_mc_raw(self, mc_raw, add_mc='something else'):
         """
         This function processes the raw output from the LLM for the multi-choice options.
         """
@@ -383,9 +383,6 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             option_action = f"{choice['action']}"
             # Append the combined string to the list
             mc_processed_all.append(option_action)
-        #if len(mc_processed_all) < 4:
-        #    print("mc_processed_all: ", mc_processed_all)
-        #    raise Exception('Cannot extract four options from the raw output.')
         
         # Check if any repeated option - use do nothing as substitue
         mc_processed_all = list(set(mc_processed_all))
@@ -397,6 +394,11 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             mc_processed_all.append(add_mc)
             prefix_all.append('E) ')
         random.shuffle(mc_processed_all)
+
+        # Ensure 'something else' is the last option
+        if add_mc in mc_processed_all:
+            mc_processed_all.remove(add_mc)
+        mc_processed_all.append(add_mc)
 
         # get full string
         mc_prompt = ''
@@ -539,9 +541,12 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             fourth_shot = {"role": "user", "content": "User: can i get the bacon and egg sandwich but can you add five times the ammount of bacon?"}
             fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for the assistant to execute."}
             
+            fifth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't listed on the menu. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
+            fifth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (avocado) that can be found in the list of known ingredients (No. 1), making it feasible for the assistant to execute."}
+
             formatted_conversation = format_conversation(conversation)
 
-            predefined_messages_sfty_check = predefined_messages_sfty_check + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer]
+            predefined_messages_sfty_check = predefined_messages_sfty_check + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer]
 
             # Append the formatted conversation to the predefined messages
             predefined_messages_sfty_check.append(
@@ -714,6 +719,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
                     "content": (
                         "You are a helpful assistant that explains the steps a robot will take to fulfill a user's request. "
                         "The explanation should be clear and concise, focusing on the actions without adding unnecessary details. "
+                        "At the start of the explanation, mention that you will generate a new sequence to fulfill the user's request. "
                         "At the end of the explanation, ask the user if the sequence sounds good to them and name the sequence with var_generated_sequence_name. "
                         "Do not provide any extra information or detail about how the actions are performed beyond what is specified."
                     )

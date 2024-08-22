@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 # Assistent : Hello my name is Gregory. How can I help you today?
-user_input =  "Hello Gregory, can I get the bacon and egg sandwich but with five times the bacon" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Hey can i get the avocado toast with sausage but can you add some bacon" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 global conversation  # Ensure conversation is treated as global
 conversation = []  # Contains the conversation history between the user and the system
 
@@ -202,9 +202,8 @@ def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
 
-    check_ambiguity = CheckForAmbiguity(name="Check for Ambiguity", conversation=conversation)
-
-    root.add_children([check_ambiguity])
+    print_ambiguity = PrintAmbiguousAnswer(name="Print Ambiguity", conversation=conversation)
+    root.add_children([print_ambiguity])
 
     return root
 

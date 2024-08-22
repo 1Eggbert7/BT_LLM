@@ -38,10 +38,7 @@ sequence_descriptions_json = json.dumps(sequence_descriptions)
 
 # dummy conversation
 DUMMY_CONVERSATION = [
-    {'role': 'assistant', 'content': "Hello I'm Gregory! How can I help you today?"},
-    {'role': 'user', 'content': "I am hungry"},
-    {'role': 'assistant', 'content': "I can make you a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Which one would you like?"},
-    {'role': 'user', 'content': "I'll take option 2 then that sounds great."}
+    {'role': 'assistant', 'content': "Hey what can you recommend?"}
 ]
 
 PRE_PROMPT_AMBIGUOUS = """
@@ -458,7 +455,7 @@ Step 7: serve()
 """
 
 FIRST_SHOT_EXPLAIN_SEQ_ANSWER = """
-Sure, to accommodate your request, I'll start by cooking three pancakes. 
+Sure, to accommodate your request I will generate a new sequence. I'll start by cooking three pancakes. 
 Once they are done, I'll place them on a plate. 
 Next, I'll add some maple syrup and berries. 
 After that, I'll fry some bacon and place it on the plate as well. 

@@ -1,6 +1,6 @@
 # conditions.py
 # Alexander Leszczynski
-# 09-08-2024
+# 22-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -126,7 +126,10 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
                 third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Can I get the pancakes?\nAssistant: Of course! Would you like the pancakes with maple syrup and berries on top?\nUser: Yes"}
                 third_shot_answer = {"role": "system", "content": "False"}
 
-                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer]
+                fourth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't listed on the menu. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
+                fourth_shot_answer = {"role": "system", "content": "True"}
+
+                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer]
                 
             formatted_conversation = format_conversation(conversation)
 
