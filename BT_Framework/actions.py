@@ -70,13 +70,13 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             
             # this is where shots are added
             first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Hello there, I'm hungry. What can I eat?"}
-            first_shot_answer = {"role": "assistant", "content": "Your request was classified to be ambiguous. I can help you with the hunger. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
+            first_shot_answer = {"role": "assistant", "content": "There are multiple options that fit your request. I can help you with the hunger. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
 
             second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I can you make me hachapuri"}
-            second_shot_answer = {"role": "assistant", "content": "Your request was classified to be ambiguous. I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
+            second_shot_answer = {"role": "assistant", "content": "There are multiple options that fit your request. I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
             
             third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
-            third_shot_answer = {"role": "assistant", "content": "Your last request was classified to be ambiguous. If you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
+            third_shot_answer = {"role": "assistant", "content": "There are multiple options that fit your request. If you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
             
             formatted_conversation = format_conversation(conversation)
 
@@ -901,7 +901,7 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         if EXPLAIN:
             response = "I matched your request to multiple possible actions. I need you to make a clearer request."
         else:
-            response = "I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct? "
+            response = "I'm sorry, I found more than one option to fit your request, can you say which of the following options is correct? "
             for i, option in enumerate(state.var_KnowNo):
                 response += f"\nOption {i + 1}: {option}"
             response += "\nOr do you want me to do something else?"
