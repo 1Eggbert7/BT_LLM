@@ -1,6 +1,6 @@
 # actions.py
 # Alexander Leszczynski
-# 22-08-2024
+# 29-08-2024
 
 import py_trees
 from openai import OpenAI
@@ -586,7 +586,7 @@ class DeclineRequest(py_trees.behaviour.Behaviour):
         if EXPLAIN:
             response = "I'm sorry, I cannot execute the action you requested. Because it was declared unsafe or infeasible by me."
         else:
-            response = "I'm sorry, your request was classified to be unsafe and or unfeasible. The reason is: {}".format(state.var_decline_explanation)
+            response = "I'm sorry, but i can't fulfill your request it is unsafe and or unfeasible to me. The reason is: {}".format(state.var_decline_explanation)
     
         if FURHAT:
             speak(state.var_furhat, response)
@@ -804,7 +804,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             response = "I’m sorry, but I ran into an issue while trying to create what you requested."
         if LLM:
             #response = self.report_failure_back_to_user()
-            response = "I’m sorry, but I ran into an issue while trying to create a new sequence to accomodate your request. Would you like to try again, or do you have any other questions I can help with?"
+            response = "I’m sorry, but I ran into an issue while trying to create a new sequence to accomodate your request. Would you like to try again, or do you have any other requests I can help with?"
         else:
             response = "The sequence failed the automated check."
         self.conversation.append({"role": "assistant", "content": response})
@@ -993,14 +993,14 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
                     ]
             else:
                 predefined_messages_fallback = [
-                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. Unfortunately, you are not able to execute the task the user requested. Your job is to decline the request and ask the user for a new different request."}
+                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. You are not able to execute the task the user requested as it is outside of your capabilities. Your job is to decline the request and ask the user for a new different request. Firstly state that the task is outside of your capabilities with 'Your request seems to be outside of my capabilities.' and ask the user for a new different request."}
                     ]
                 
                 first_shot = {"role": "user", "content": "User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?"}
-                first_shot_answer = {"role": "assistant", "content": "Your request classified to be outside of my capabilities. I can't execute the task you requested, please provide a different request."}
+                first_shot_answer = {"role": "assistant", "content": "Your request seems to be outside of my capabilities. I can't execute the task you requested, please provide a different request."}
 
                 second_shot = {"role": "user", "content": "User: I want something to eat.\n Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\nUser: I like the sound of the avocado toast with sausage on the side, but can you add 500 eggs?"}
-                second_shot_answer = {"role": "assistant", "content": "Your request classified to be outside of my capabilities. I can't execute the task you requested, please provide a different request, maybe with a reasonable amount of eggs."}
+                second_shot_answer = {"role": "assistant", "content": "Your request seems to be outside of my capabilities. I can't execute the task you requested, please provide a different request, maybe with a reasonable amount of eggs."}
 
             formatted_conversation = format_conversation(conversation)
 

@@ -35,8 +35,18 @@ var_generated_sequence_test = {"sequence": [
       ]}
 
 
-Generated_sequence_in_the_var = {"sequence": [{"step": "1", "action": "heat_beans(1)"}, {"step": "2", "action": "prepare_tortilla(1)"}, {"step": "3", "action": "place_on_plate(prepared_tortilla, 1)"}, {"step": "4", "action": "place_on_plate(heated_beans, 1)"}, {"step": "5", "action": "cook_quesadilla()"}, {"step": "6", "action": "place_on_plate(cooked_quesadilla, 1)"}, {"step": "7", "action": "serve()"}]}
-
+Generated_sequence_in_the_var = {"sequence": [
+        {"step": "1", "action": "toast_breads(2)"},
+        {"step": "2", "action": "fry_egg(1)"},
+        {"step": "3", "action": "initiate_sandwich(toasted_bread)"},
+        {"step": "4", "action": "place_on_sandwich(fried_eggs, 1)"},
+        {"step": "5", "action": "cook_bacon(2)"},
+        {"step": "6", "action": "place_on_sandwich(fried_bacon, 2)"},
+        {"step": "7", "action": "place_on_sandwich(toasted_bread, 1)"},
+        {"step": "8", "action": "grill_sausages(2, toasted_bread)"},
+        {"step": "9", "action": "place_on_plate(grilled_sausages, 1)"},
+        {"step": "10", "action": "serve()"}
+      ]}
 
 #The generated sequence is:  {"sequence": [{"step": "1", "action": "cook_pancakes(3)"}, {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"}, {"step": "3", "action": "cook_bacon(2)"}, {"step": "4", "action": "place_on_plate(fried_bacon, 2)"}, {"step": "5", "action": "place_on_plate(maple_syrup, 1)"}, {"step": "6", "action": "place_on_plate(berries, 1)"}, {"step": "7", "action": "serve()"}]}
 

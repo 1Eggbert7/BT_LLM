@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 # Assistent : Hello my name is Gregory. How can I help you today?
-user_input =  "Hey can i get the avocado toast with sausage but can you add some bacon" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Please paint the kitchen walls red" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 global conversation  # Ensure conversation is treated as global
 conversation = []  # Contains the conversation history between the user and the system
 
@@ -200,10 +200,10 @@ def build_tree(conversation, process_user_input):
 
 def build_test_tree():
     # just for testing conditions and actions directly
-    root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
+    root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
 
-    print_ambiguity = PrintAmbiguousAnswer(name="Print Ambiguity", conversation=conversation)
-    root.add_children([print_ambiguity])
+    set_var_known_true = SetVarKnownTrue(name="Set var_known to True", process_user_input_func=process_user_input, conversation=conversation)
+    root.add_children([set_var_known_true])
 
     return root
 
@@ -214,7 +214,7 @@ def test_conditions_and_actions(user_input):
     state.var_generated_sequence = state.Generated_sequence_in_the_var
     state.var_generated_sequence_name = "western breakfast sandwich with bacon and sausages"
     formatted_conversation = format_conversation(conversation)
-    print("Formatted conversation: ", formatted_conversation)
+    #print("Formatted conversation: ", formatted_conversation)
     
     if FURHAT:
         state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)

@@ -1,6 +1,6 @@
 # baseline.py
 # Alexander Leszczynski
-# 30-07-2024
+# 29-08-2024
 
 from prompts import BASELINE_PROMPT
 from config import FURHAT, LLM, VERSION
@@ -55,7 +55,8 @@ def run_baseline():
             #print("Assistant: ", "The sequence is: " + model_response)
             if FURHAT:
                 speak(state.var_furhat, "Alright I will create that sequence for you.")
-                speak(state.var_furhat, model_response)    
+                model_response_without_json = model_response.split("{")[0]
+                speak(state.var_furhat, model_response_without_json)    
                 state.var_transcript += "Assistant: " + "Alright I will create that sequence for you." + "\n"
                 state.var_transcript += "Assistant: " + "The sequence is: " + model_response + "\n"           
             break
