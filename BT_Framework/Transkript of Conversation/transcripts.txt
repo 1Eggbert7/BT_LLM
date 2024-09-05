@@ -941,3 +941,105 @@ var_KnowNo: ['avocado toast with sausage on the side']
 Does it map to the action in var_KnowNo? True
 Assistant: Great choice! I will execute the sequence for avocado toast with sausage on the side.
 
+Version: 1.3
+Tue Sep  3 10:16:56 2024
+Furhat is being used with Baseline
+User: hello Gregory um I would like to have a bacon and accent sandwich please 
+Assistant: It seems there might have been a slight miscommunication with your request. I understand you would like a "bacon and egg sandwich." 
+
+Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+
+Version: 1.3
+Tue Sep  3 10:17:30 2024
+Furhat is being used with Baseline
+User: hey um can you suggest me something savory 
+Assistant: It seems that your request is a bit vague; I'll need a bit more specificity to assist you better. Here are a few savory options I can prepare:
+
+1. Bacon and Egg Sandwich
+2. Avocado Toast with Sausage on the Side
+3. Full English Breakfast
+4. Vegetable Stir Fry with Rice
+
+Please let me know which option you would like to proceed with, or if you have something specific in mind!
+User: uh option 2 sounds good I think I'll go with that 
+Assistant: Ok, I will now proceed with the sequence: '2', 'avocado toast with sausage on the side'.  I'll start preparing the dish now!
+
+Version: 1.3
+Tue Sep  3 10:18:33 2024
+Furhat is being used with Baseline
+User: hey um I would like to have the pancakes with the double syrup and bacon instead of berries if that's possible 
+Assistant: Alright I will create that sequence for you.
+Assistant: The sequence is: I can prepare pancakes for you, but I cannot specifically fulfill your request for "double syrup" as my functions do not have options for adjusting the amount of syrup. I can proceed with making pancakes with maple syrup and bacon on the side instead of berries.
+
+Here’s the modified sequence I will follow:
+
+```json
+{
+  "task": "pancakes with maple syrup and bacon on the side",
+  "ID": "5.1",
+  "sequence": [
+    {"step": "1", "action": "cook_pancakes(3)"},
+    {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"},
+    {"step": "3", "action": "place_on_plate(maple_syrup, 1)"},
+    {"step": "4", "action": "cook_bacon(2)"},
+    {"step": "5", "action": "place_on_plate(fried_bacon, 2)"},
+    {"step": "6", "action": "serve()"}
+  ]
+}
+```
+
+Let me know if you'd like me to proceed with this sequence!
+
+Version: 1.3
+Tue Sep  3 10:24:34 2024Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory. How can I help you today?
+User: hey Gregory uh I would like to have the bacon and egg sandwich please 
+Is it ambiguous? False
+Is it known? True
+var_KnowNo: ['bacon and egg sandwich']
+Does it map to the action in var_KnowNo? True
+Assistant: Great choice! I will execute the sequence for bacon and egg sandwich.
+
+Run: 2
+Tue Sep  3 10:24:59 2024
+Assistant: Let's go again... Hello. How can I help you today?
+User: um yes hey I would like to have some Savory can you suggest me something 
+Is it ambiguous? True
+Assistant: There are multiple options in the menu that might fit your request for something savory. Here are a few suggestions:
+
+1. A 'full English breakfast' - a hearty and savory meal with various components.
+2. A 'bacon and egg sandwich' - a classic savory option.
+3. A 'bean and cheese quesadilla' - a delicious and warm choice.
+
+Please let me know if any of these options sound good to you!
+User: the bean and cheese quesadilla option 3 sounds really good I'll have that 
+Is it ambiguous? False
+Is it known? True
+var_KnowNo: ['bean and cheese quesadilla']
+Does it map to the action in var_KnowNo? True
+Assistant: Great choice! I will execute the sequence for bean and cheese quesadilla.
+
+Run: 3
+Tue Sep  3 10:26:04 2024
+Assistant: Let's go again... Hello. How can I help you today?
+User: hey um I would like to have the pancakes but can you double the syrup and instead of berries could I have bacon with it 
+Is it ambiguous? False
+Is it known? False
+Is it within the capabilities of the robot? True
+Is a new sequence requested?: True
+Is a new sequence actually requested? True
+Did it pass the safety check?: True
+Explanation: The user's request involves known ingredients (pancakes, bacon, and maple syrup) that can be found in the list of known ingredients (No. 5, 3, and 13), and doubling the syrup is a reasonable modification. This makes it feasible for the assistant to execute.
+The generated sequence is: {"sequence": [{"step": "1", "action": "cook_pancakes(3)"}, {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"}, {"step": "3", "action": "place_on_plate(maple_syrup, 2)"}, {"step": "4", "action": "cook_bacon(2)"}, {"step": "5", "action": "place_on_plate(fried_bacon, 2)"}, {"step": "6", "action": "serve()"}]}
+Assistant: To fulfill your request, I will generate a new sequence. First, I will cook three pancakes. 
+Then, I'll place the pancakes on a plate. 
+Next, I will add double the amount of maple syrup to the plate. 
+After that, I'll cook two pieces of bacon. 
+Once the bacon is cooked, I will place it on the plate. 
+Finally, I will serve the entire dish. 
+Does this sequence sound good to you?
+var_generated_sequence_name is: pancakes with double syrup and bacon
+Total listened:yes perfect 
+Assistant: Great then I will now proceed to make the: pancakes with double syrup and bacon
+
