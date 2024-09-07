@@ -8,6 +8,7 @@ from prompts import PRE_PROMPT_AMBIGUOUS, PRE_PROMPT_KNOWN, PRE_PROMPT_KNOWN_2, 
 from config import MAX_LLM_CALL, LLM, FURHAT
 import state
 import json
+import time
 from furhat_remote_api import FurhatRemoteAPI
 from transformers import pipeline
 from utils import record_speech, format_conversation
@@ -29,6 +30,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
             response = self.check_ambiguity_with_llm(self.conversation)
             print("Is it ambiguous? ", response)
             state.var_transcript += "Is it ambiguous? " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         elif 'ambig' in self.conversation[-1]['content'].lower():
@@ -43,6 +45,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -150,6 +153,7 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         
 class CheckForNewSeq(py_trees.behaviour.Behaviour):
@@ -167,6 +171,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
             response = self.check_new_sequence_with_llm(self.conversation)
             print("Is a new sequence requested?: ", response)
             state.var_transcript += "Is a new sequence requested?: " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         elif 'new sequence' in self.conversation[-1]['content']:
@@ -181,6 +186,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -238,6 +244,7 @@ class CheckForNewSeq(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
 
 class CheckForNewSeq2(py_trees.behaviour.Behaviour):
@@ -255,6 +262,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
             response = self.check_new_sequence_with_llm(self.conversation)
             print("Is a new sequence actually requested? ", response)
             state.var_transcript += "Is a new sequence actually requested? " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         elif 'new sequence' in self.conversation[-1]['content']:
@@ -269,6 +277,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -310,6 +319,7 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         
 class CheckVarKnownCondition(py_trees.behaviour.Behaviour):
@@ -376,12 +386,14 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
             response = self.check_known_with_llm(self.conversation)
             print("Is it known? ", response)
             state.var_transcript += "Is it known? " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         
         elif 'known' in self.conversation[-1]['content'].lower():
             print("Is it known?: True")
             state.var_transcript += "Is it known? True\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
     
@@ -393,6 +405,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -478,6 +491,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         
 class CheckVarKnowNo(py_trees.behaviour.Behaviour):
@@ -510,6 +524,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
             response = self.check_mapping_with_llm(self.conversation)
             print("Does it map to the action in var_KnowNo? ", response)
             state.var_transcript += "Does it map to the action in var_KnowNo? " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True":
                 return py_trees.common.Status.SUCCESS
         else:
@@ -524,6 +539,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -558,6 +574,7 @@ class CheckMapping(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         
 class CheckVarInf(py_trees.behaviour.Behaviour):
@@ -748,6 +765,7 @@ class CheckUserOkWithNewSeq(py_trees.behaviour.Behaviour):
             recorded_text = record_speech(state.var_furhat)
             print("Total listened: ", recorded_text)
             state.var_transcript += "Total listened:" + recorded_text + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             self.conversation.append({"role": "user", "content": recorded_text})
         else:
             user_input = input("User: ")
@@ -820,12 +838,14 @@ class CheckCapability(py_trees.behaviour.Behaviour):
             else:
                 state.var_capable = False
             state.var_transcript += "Is it within the capabilities of the robot? " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if response == "True": # for more flexible acceptance, one could also check if the response contains "True" within the first 15 characters
                 return py_trees.common.Status.SUCCESS
         
         elif 'capable' in self.conversation[-1]['content'].lower():
             print("Is it within the capabilities of the robot? True")
             state.var_transcript += "Is it within the capabilities of the robot? True\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return py_trees.common.Status.SUCCESS
         return py_trees.common.Status.FAILURE
     
@@ -837,6 +857,7 @@ class CheckCapability(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -863,6 +884,7 @@ class CheckCapability(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += f"Error in LLM call: {e}\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
  
 

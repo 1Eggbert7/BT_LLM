@@ -19,6 +19,7 @@ var_func_run = 0
 var_transcript = ""
 var_run = 0
 var_capable = False
+var_turns = 0
 
 # example sequence
 var_generated_sequence_test = {"sequence": [

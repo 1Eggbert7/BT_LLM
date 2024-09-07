@@ -9,7 +9,7 @@ from config import LLM, FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME, FURHAT, VERSION, B
 from baseline import run_baseline
 import state
 from prompts import DUMMY_CONVERSATION, BASELINE_PROMPT
-from utils import format_conversation, initialize_furhat, record_speech, save_transcript, speak
+from utils import format_conversation, initialize_furhat, record_speech, save_transcript, speak, count_turns
 #import cProfile
 import keyboard
 import time
@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 # Assistent : Hello my name is Gregory. How can I help you today?
-user_input =  "Please paint the kitchen walls red" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Chce ta kanapke z jajem i boczkiem" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 global conversation  # Ensure conversation is treated as global
 conversation = []  # Contains the conversation history between the user and the system
 
@@ -202,8 +202,10 @@ def build_test_tree():
     # just for testing conditions and actions directly
     root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
 
-    set_var_known_true = SetVarKnownTrue(name="Set var_known to True", process_user_input_func=process_user_input, conversation=conversation)
-    root.add_children([set_var_known_true])
+    run_safety_check = RunSafetyCheck(name="Run Safety Check", conversation=conversation) 
+
+
+    root.add_children([run_safety_check])                                         # Level 0
 
     return root
 
@@ -241,7 +243,7 @@ def process_user_input(user_input):
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         print("Tree is initialized and furhat is used")
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
         
     elif state.var_furhat is None:
         state.var_furhat = "furhat not used in this run"
@@ -252,7 +254,7 @@ def process_user_input(user_input):
         print("Assistant: Hello! I am Gregory. How can I help you today?")
         print("user input: ", user_input)
         print("Tree is initialized but furhat is not")        
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + user_input + "\n" 
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + user_input + "\n" 
 
     behaviour_tree.tick()
 
@@ -279,6 +281,7 @@ if FURHAT and state.var_furhat is None:
 if not DEBUG:
     while state.var_run < RUNS:
         state.var_run += 1
+        state.var_turns = 0 # Reset the number of turns
         state.var_total_llm_calls = 0 # Reset the total number of LLM calls
         print("Run: ", state.var_run)
         if BASELINE:
@@ -296,7 +299,7 @@ if not DEBUG:
             if state.var_run > 1:
                 conversation = [{"role": "assistant", "content": "Let's go again... Hello. How can I help you today?"}]
                 print("Assistant: Let's go again... Hello. How can I help you today?")
-                print("Conversation here at this point is: ", conversation)
+                #print("Conversation here at this point is: ", conversation)
                 if FURHAT:
                     while True:
                         try:
@@ -305,8 +308,9 @@ if not DEBUG:
                                 break
                         except:
                             break  # if user pressed a key other than the given key the loop will break
-                    speak(state.var_furhat, "Let's go again... Hello. How can I help you today?")
+                    speak(state.var_furhat, "That concludes this task. Let's go again... Hello. How can I help you today?")
                     user_input = record_speech(state.var_furhat)
+                    state.var_transcript = "Time: " + time.strftime("%c") + "\n"
                     print("User: " + user_input)
                 else:
                     user_input = input("User: ")
@@ -316,18 +320,29 @@ if not DEBUG:
                 state.var_transcript += "User: " + user_input + "\n"
             run_bt(user_input)
         if FURHAT:
+            # log the time of the run
+            state.var_transcript += "Run ended at: " + str(state.var_run) + "\n" + time.strftime("%c") + "\n"
+            if BASELINE:
+                state.var_transcript += "This run took " +  str(state.var_run) + " turns" + "\n"
+                #print("This run took ", state.var_turns, " turns")
+            else:
+                state.var_transcript += "This run took " + str(count_turns(format_conversation(conversation))) + " turns" + "\n"
+                #print("This run took ", count_turns(format_conversation(conversation)), " turns")
+            state.var_transcript += "Total number of LLM calls: " + str(state.var_total_llm_calls) + "\n" 
             save_transcript(state.var_transcript)    
-else:
+
+        
+else: 
     test_conditions_and_actions(user_input)
 # Test conditions and actions directly   
 
-#test_conditions_and_actions(user_input)
+#test_conditions_and_actions(user_input) 
 #print("conversation: ", conversation)
 
-print(state.var_total_llm_calls)
+#print(state.var_total_llm_calls)
 if FURHAT:
     time.sleep(5)
-    state.var_furhat.set_led(red =50 , green = 0 , blue = 0) # to indicate that the conversation is over
+    state.var_furhat.set_led(red = 50 , green = 0 , blue = 0) # to indicate that the conversation is over
     state.var_furhat.say(text = "That's all for now. Thank you for the talk!")
     time.sleep(5)
     state.var_furhat.set_led(red = 0, green = 0, blue = 0) # Turn off the LED to avoid overheating

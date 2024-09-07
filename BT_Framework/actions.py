@@ -11,6 +11,7 @@ import state
 import json
 import random
 import numpy as np
+import time
 
 client = OpenAI()
 
@@ -30,12 +31,14 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
                 speak(state.var_furhat, response)
             print("Assistant Explanation: ", response)
             state.var_transcript += "Assistant Explanation: " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         elif LLM:
             # Call the LLM to generate the response
             #print("the conversation before the LLM call: ", self.conversation)
             response = self.generate_ambiguous_response_with_llm(self.conversation)
             print("Assistant: ", response.replace('\\n', '\n').replace('\\\'', '\''))
             state.var_transcript += "Assistant: " + response.replace('\\n', '\n').replace('\\\'', '\'') + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if FURHAT:
                 speak(state.var_furhat, response)
             self.conversation.append({"role": "assistant", "content": response}) 
@@ -45,6 +48,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
                 speak(state.var_furhat, "Yo I'm sorry, I cannot help you at the moment. The Large Language Model is not available.")
             print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
             state.var_transcript += "The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formated_conversation = format_conversation(self.conversation)
         #print("The conversation log after the ambiguous answer: ", formated_conversation)
@@ -58,6 +62,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -107,6 +112,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "False"
         
 class WaitForUserInput(py_trees.behaviour.Behaviour):
@@ -126,10 +132,15 @@ class WaitForUserInput(py_trees.behaviour.Behaviour):
             new_user_input = input("User: ")
         self.conversation.append({"role": "user", "content": new_user_input})
         state.var_transcript += "User: " + new_user_input + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the user input: ", formatted_conversation)
 
-        self.process_user_input_func(new_user_input)  # Re-trigger the behavior tree with the new input
+        if new_user_input != "esc":
+            self.process_user_input_func(new_user_input)  # Re-trigger the behavior tree with the new input, don't retrigger when esc is pressed
+        else:
+            if FURHAT:
+                speak(state.var_furhat, "Alright, that's it for this task.")
         return py_trees.common.Status.SUCCESS
 
 class PrintExit1(py_trees.behaviour.Behaviour):
@@ -186,10 +197,12 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             self.fill_var_KnowNo(logprobs, the_options_list)
             print("var_KnowNo: ", state.var_KnowNo)
             state.var_transcript += "var_KnowNo: " + str(state.var_KnowNo) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         else:
             state.var_KnowNo = ['Magical robot soup']
             print("The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.")
             state.var_transcript += "The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         return py_trees.common.Status.SUCCESS
     
@@ -249,6 +262,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -282,6 +296,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
     
     def get_logprobs(self, options, conversation):
@@ -291,6 +306,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
 
@@ -364,6 +380,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
 
     def process_mc_raw(self, mc_raw, add_mc='something else'):
@@ -434,6 +451,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         self.conversation.append({"role": "assistant", "content": response})
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the action execution: ", formatted_conversation)
 
@@ -468,6 +486,7 @@ class ExecuteNewSequence(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after the new sequence execution: ", formatted_conversation)
@@ -495,9 +514,11 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             response = self.run_safety_check(self.conversation)
             print("Did it pass the safety check?: ", response)
             state.var_transcript += "Did it pass the safety check?: " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         else:
             print("Safety Check 1")
             state.var_transcript += "Safety Check 1.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             response = 'False'  # Default to 'False' if LLM is not used
 
         if 'true' in response.strip()[:10].lower():
@@ -521,6 +542,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         formatted_conversation = format_conversation(conversation)
@@ -533,19 +555,19 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             
             # this is where shots are added
             first_shot = {"role": "user", "content": "User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?"}
-            first_shot_answer = {"role": "assistant", "content": "False\nExplanation: The user's request involves unknown ingredients (chocolate chips, bananas) that can't be found in the provided list of known ingredients, making it not feasible for the assistant to execute."}
+            first_shot_answer = {"role": "assistant", "content": "False\nExplanation: The request involves unknown ingredients (chocolate chips, bananas) that can't be found in the provided list of known ingredients, making it not feasible for the me to execute."}
 
             second_shot = {"role": "user", "content": "User: I want something to eat.\n Assistant: I can make the 'avocado toast with sausage on the side', 'full English breakfast' or a 'bean and cheese quesadilla'. Let me know if you crave any of the suggestions or if you want something else.\nUser: I like the sound of the avocado toast with sausage on the side, but can you add some bacon?"}
-            second_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it feasible for the assistant to execute."}
+            second_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it feasible for me to execute."}
             
             third_shot = {"role": "user", "content": "User: I want the bacon and eggs sandwich but can you add 500 eggs?"} 
-            third_shot_answer = {"role": "assistant", "content": "False\nExplanation: The user's request involves an illogical quantity of eggs (500), making it not feasible for the assistant to execute."}
+            third_shot_answer = {"role": "assistant", "content": "False\nExplanation: The request involves an illogical quantity of eggs (500), making it not feasible for me to execute."}
 
             fourth_shot = {"role": "user", "content": "User: can i get the bacon and egg sandwich but can you add five times the ammount of bacon?"}
-            fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for the assistant to execute."}
+            fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for me to execute."}
             
             fifth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't listed on the menu. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
-            fifth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The user's request involves known ingredients (avocado) that can be found in the list of known ingredients (No. 1), making it feasible for the assistant to execute."}
+            fifth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (avocado) that can be found in the list of known ingredients (No. 1), making it feasible for me to execute."}
 
             formatted_conversation = format_conversation(conversation)
 
@@ -574,6 +596,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
         
 class DeclineRequest(py_trees.behaviour.Behaviour):
@@ -589,12 +612,13 @@ class DeclineRequest(py_trees.behaviour.Behaviour):
         if EXPLAIN:
             response = "I'm sorry, I cannot execute the action you requested. Because it was declared unsafe or infeasible by me."
         else:
-            response = "I'm sorry, but i can't fulfill your request it is unsafe and or unfeasible to me. The reason is: {}".format(state.var_decline_explanation)
+            response = "I'm sorry, but i can't fulfill your request it is unsafe or unfeasible to me. The reason is: {}".format(state.var_decline_explanation)
     
         if FURHAT:
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         
         # append the response to the conversation
         self.conversation.append({"role": "assistant", "content": response})
@@ -619,10 +643,12 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
             response = self.generate_new_sequence(self.conversation)
             print("The generated sequence is: ", response)
             state.var_transcript += "The generated sequence is: " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             state.var_generated_sequence = response
         else:
             print("Generate New Sequence 1")
             state.var_transcript += "Generate New Sequence 1.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             response = 'False'
         return py_trees.common.Status.SUCCESS
 
@@ -634,6 +660,7 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -672,6 +699,7 @@ class GenerateNewSequence(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
 
 # needs testing
@@ -690,16 +718,20 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
             response, sequence_name = self.explain_sequence(self.conversation)
             print("Assistant: ", response)
             state.var_transcript += "Assistant: " + response + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             state.var_generated_sequence_name = sequence_name  # Save the sequence name
             print("var_generated_sequence_name is: ", state.var_generated_sequence_name)
             state.var_transcript += "var_generated_sequence_name is: " + state.var_generated_sequence_name + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             if FURHAT:
                 speak(state.var_furhat, response)
         else:
             print("The sequence to explain is the generated sequence: ", state.var_generated_sequence)
             state.var_transcript += "The sequence to explain is the generated sequence.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             print("The sequence is a very great sequence. \nIt is a very good sequence.")
             state.var_transcript += "The sequence is a very great sequence. \nIt is a very good sequence.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             response = 'False'
         return py_trees.common.Status.SUCCESS
     
@@ -711,6 +743,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -745,6 +778,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
                 except json.JSONDecodeError as e:
                     print("Error parsing JSON: ", e)
                     state.var_transcript += "Error parsing JSON: " + str(e) + "\n"
+                    state.var_transcript += "Time: " + time.strftime("%c") + "\n"
                     return "Failed to parse sequence JSON", None
 
 
@@ -791,6 +825,7 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call", None
         
 class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
@@ -815,6 +850,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after reporting the failure back to the user: ", formatted_conversation)
@@ -829,6 +865,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -864,6 +901,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
 class AskUserForNewRequest(py_trees.behaviour.Behaviour):
     """
@@ -885,6 +923,7 @@ class AskUserForNewRequest(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after asking the user for a new request: ", formatted_conversation)
@@ -914,6 +953,7 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after asking the user to specify their request with KnowNo: ", formatted_conversation)
@@ -942,6 +982,7 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         state.var_known = True
         
         formatted_conversation = format_conversation(self.conversation)
@@ -971,6 +1012,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
             speak(state.var_furhat, response)
         print("Assistant: ", response)
         state.var_transcript += "Assistant: " + response + "\n"
+        state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation at Fallback step is: ", formatted_conversation)
@@ -985,6 +1027,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         if state.var_total_llm_calls >= MAX_LLM_CALL:
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
         state.var_total_llm_calls += 1
         #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
@@ -1023,6 +1066,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
+            state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
 
 

@@ -62,6 +62,11 @@ def record_speech(furhat):
                 print('You Pressed Enter!')
                 furhat.set_led(red=0, green=0, blue=0)  # Turn off the LED
                 break
+            elif keyboard.is_pressed('esc'):
+                print('You Pressed Esc!')
+                total_listened = "esc"
+                furhat.set_led(red=0, green=0, blue=0)  # Turn off the LED
+                break
         except:
             break  # if user pressed a key other than the given key the loop will break
 
@@ -91,3 +96,17 @@ def save_transcript(transcript):
         file.write(transcript + "\n")
 
     print(f"Transcript saved to {file_path}")
+
+def count_turns(formatted_conversation):
+    # Split the conversation into lines
+    lines = formatted_conversation.splitlines()
+    
+    # Initialize a counter for the turns
+    turn_count = 0
+    
+    # Loop through the lines and count if a line starts with 'User' or 'Assistant'
+    for line in lines:
+        if line.startswith("User") or line.startswith("Assistant"):
+            turn_count += 1
+    
+    return turn_count
