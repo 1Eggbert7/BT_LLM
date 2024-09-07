@@ -23,7 +23,7 @@ def run_baseline():
             state.var_turns += 1 # increment the number of turns
         else:
             time.sleep(2)
-            speak(state.var_furhat, "Let's go again... Hello. How can I help you today?")
+            speak(state.var_furhat, "That concludes this task. Let's go again... Hello. How can I help you today?")
             state.var_turns += 1 # increment the number of turns
     conversation.append({"role": "user", "content": BASELINE_PROMPT})
     print("You can start chatting with the model now. Press 'esc' to end the conversation.")
