@@ -446,7 +446,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
             response = self.execute_action(self.conversation)
         
         if FURHAT:
-            state.var_furhat.gesture(name="Nod")
+            #state.var_furhat.gesture(name="Nod") # Furhat nods to acknowledge the user input
             speak(state.var_furhat, response)
         self.conversation.append({"role": "assistant", "content": response})
         print("Assistant: ", response)

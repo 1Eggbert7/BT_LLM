@@ -20,10 +20,12 @@ def run_baseline():
         state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\n" + "Furhat is being used with Baseline" + "\n"
         if state.var_run == 1:
             speak(state.var_furhat, "Hello I am Gregory. How can I help you today?")
+            state.var_transcript += "Assistant: " + "Hello I am Gregory. How can I help you today?" + "\n"
             state.var_turns += 1 # increment the number of turns
         else:
             time.sleep(2)
-            speak(state.var_furhat, "Let's go again... Hello. How can I help you today?")
+            speak(state.var_furhat, "That's it for this task. Let's go onto the next one... Hello. How can I help you today?")
+            state.var_transcript += "Assistant: " + "That's it for this task. Let's go onto the next one... Hello. How can I help you today?" + "\n"
             state.var_turns += 1 # increment the number of turns
     conversation.append({"role": "user", "content": BASELINE_PROMPT})
     print("You can start chatting with the model now. Press 'esc' to end the conversation.")

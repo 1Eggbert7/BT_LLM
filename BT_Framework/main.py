@@ -256,7 +256,8 @@ def process_user_input(user_input):
         print("Tree is initialized but furhat is not")        
         state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + user_input + "\n" 
 
-    behaviour_tree.tick()
+    if user_input != "esc":
+        behaviour_tree.tick()
 
     if RENDER:
         RENDER = False
@@ -271,7 +272,8 @@ def run_bt(user_input):
     else:
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
-        behaviour_tree.tick()
+        if user_input != "esc":
+            behaviour_tree.tick()
 
 
 # Full BT is called with the user input
@@ -297,8 +299,8 @@ if not DEBUG:
             run_baseline()
         else:
             if state.var_run > 1:
-                conversation = [{"role": "assistant", "content": "Let's go again... Hello. How can I help you today?"}]
-                print("Assistant: Let's go again... Hello. How can I help you today?")
+                conversation = [{"role": "assistant", "content": "That's it for this task. Let's go onto the next one... Hello. How can I help you today?"}]
+                print("Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?")
                 #print("Conversation here at this point is: ", conversation)
                 if FURHAT:
                     while True:
@@ -308,7 +310,7 @@ if not DEBUG:
                                 break
                         except:
                             break  # if user pressed a key other than the given key the loop will break
-                    speak(state.var_furhat, "That concludes this task. Let's go again... Hello. How can I help you today?")
+                    speak(state.var_furhat, "That's it for this task. Let's go onto the next one... Hello. How can I help you today?")
                     user_input = record_speech(state.var_furhat)
                     state.var_transcript = "Time: " + time.strftime("%c") + "\n"
                     print("User: " + user_input)
@@ -316,12 +318,12 @@ if not DEBUG:
                     user_input = input("User: ")
                 conversation.append({"role": "user", "content": user_input})
                 state.var_transcript = "Run: " + str(state.var_run) + "\n" + time.strftime("%c") + "\n"
-                state.var_transcript += "Assistant: Let's go again... Hello. How can I help you today?" + "\n"
+                state.var_transcript += "Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?" + "\n"
                 state.var_transcript += "User: " + user_input + "\n"
             run_bt(user_input)
         if FURHAT:
             # log the time of the run
-            state.var_transcript += "Run ended at: " + str(state.var_run) + "\n" + time.strftime("%c") + "\n"
+            state.var_transcript += "Run number: " + str(state.var_run) + " ended at: " + time.strftime("%c") + "\n"
             if BASELINE:
                 state.var_transcript += "This run took " +  str(state.var_run) + " turns" + "\n"
                 #print("This run took ", state.var_turns, " turns")

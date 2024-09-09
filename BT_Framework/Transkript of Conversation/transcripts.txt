@@ -1852,3 +1852,380 @@ Sat Sep  7 19:04:47 2024
 This run took 5 turns
 Total number of LLM calls: 7
 
+Version: 1.3
+Sun Sep  8 10:41:17 2024
+Furhat is being used with Baseline
+User: hello can I get the bacon and egg sandwich please 
+Time: Sun Sep  8 10:42:00 2024
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+Time: Sun Sep  8 10:42:00 2024
+Run ended at: 1
+Sun Sep  8 10:42:00 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 10:42:11 2024
+Furhat is being used with Baseline
+User: esc
+Time: Sun Sep  8 10:42:29 2024
+Run ended at: 2
+Sun Sep  8 10:42:29 2024
+This run took 2 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 10:42:32 2024
+Furhat is being used with Baseline
+User: esc
+Time: Sun Sep  8 10:43:02 2024
+Run ended at: 3
+Sun Sep  8 10:43:02 2024
+This run took 3 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 10:43:06 2024
+Furhat is being used with Baseline
+User: esc
+Time: Sun Sep  8 10:43:12 2024
+Run ended at: 4
+Sun Sep  8 10:43:12 2024
+This run took 4 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 10:44:53 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory. How can I help you today?
+User:  hello can you get me the pancakes but with double syrup and no berries please 
+Is it ambiguous? False
+Time: Sun Sep  8 10:44:54 2024
+Is it known? False
+Time: Sun Sep  8 10:44:55 2024
+Is it within the capabilities of the robot? True
+Time: Sun Sep  8 10:44:55 2024
+Is a new sequence requested?: True
+Time: Sun Sep  8 10:44:56 2024
+Is a new sequence actually requested? True
+Time: Sun Sep  8 10:44:56 2024
+Did it pass the safety check?: True
+Explanation: The request involves known ingredients (pancakes and maple syrup) that can be found in the list of known ingredients (No. 5, 11) and a reasonable modification (adding double syrup and removing berries), making it feasible for me to execute.
+Time: Sun Sep  8 10:44:57 2024
+The generated sequence is: {"sequence": [{"step": "1", "action": "cook_pancakes(3)"}, {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"}, {"step": "3", "action": "place_on_plate(maple_syrup, 2)"}, {"step": "4", "action": "serve()"}]}
+Time: Sun Sep  8 10:44:58 2024
+Assistant: Sure, to fulfill your request I will generate a new sequence. I'll begin by cooking three pancakes. 
+Once they are cooked, I'll place them on a plate. 
+Next, I'll add double maple syrup onto the pancakes. 
+Finally, I'll serve the pancakes. 
+Does this sequence sound good to you?
+Time: Sun Sep  8 10:44:59 2024
+var_generated_sequence_name is: pancakes with double syrup
+Time: Sun Sep  8 10:44:59 2024
+Total listened:esc
+Time: Sun Sep  8 10:46:45 2024
+Assistant: Great then I will now proceed to make the: pancakes with double syrup
+Time: Sun Sep  8 10:46:47 2024
+Run ended at: 1
+Sun Sep  8 10:46:47 2024
+This run took 4 turns
+Total number of LLM calls: 8
+
+Version: 1.3
+Sun Sep  8 10:54:31 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory. How can I help you today?
+User: esc
+Is it ambiguous? True
+Time: Sun Sep  8 10:54:31 2024
+Assistant: It seems that your request is unclear. Could you please provide more details or clarify what you would like? I'm here to assist you!
+Time: Sun Sep  8 10:54:33 2024
+User: esc
+Time: Sun Sep  8 10:54:49 2024
+Run ended at: 1
+Sun Sep  8 10:54:49 2024
+This run took 4 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Sun Sep  8 10:56:36 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory. How can I help you today?
+User: esc
+Is it ambiguous? True
+Time: Sun Sep  8 10:56:36 2024
+Assistant: It seems that your request is a bit unclear. Could you please provide more details or clarify what you are looking for? I'd be happy to assist you!
+Time: Sun Sep  8 10:56:37 2024
+User: esc
+Time: Sun Sep  8 10:56:42 2024
+Run ended at: 1
+Sun Sep  8 10:56:42 2024
+This run took 4 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Sun Sep  8 10:58:14 2024
+Furhat is being used with Baseline
+User: esc
+Time: Sun Sep  8 10:58:18 2024
+Run ended at: 1
+Sun Sep  8 10:58:18 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+
+Participant: 01
+Version: 1.3
+Sun Sep  8 11:14:43 2024
+Furhat is being used with Baseline
+User: I would like a bacon and egg sandwich please 
+Time: Sun Sep  8 11:14:51 2024
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+Time: Sun Sep  8 11:14:52 2024
+Run ended at: 1
+Sun Sep  8 11:14:52 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 11:14:57 2024
+Furhat is being used with Baseline
+User: you get me a bacon and egg sandwich 
+Time: Sun Sep  8 11:15:13 2024
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+Time: Sun Sep  8 11:15:13 2024
+Run ended at: 2
+Sun Sep  8 11:15:13 2024
+This run took 2 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 11:15:21 2024
+Furhat is being used with Baseline
+User: get a bacon and egg sandwich please 
+Time: Sun Sep  8 11:16:13 2024
+Assistant: Ok I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+Time: Sun Sep  8 11:16:14 2024
+Run ended at: 3
+Sun Sep  8 11:16:14 2024
+This run took 3 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 11:16:32 2024
+Furhat is being used with Baseline
+User: can I get a bacon and egg sandwich please 
+Time: Sun Sep  8 11:16:41 2024
+Assistant: Ok, I will now proceed with the sequence: '1', 'bacon and egg sandwich'.
+Time: Sun Sep  8 11:16:41 2024
+Run ended at: 1
+Sun Sep  8 11:16:41 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 11:16:47 2024
+Furhat is being used with Baseline
+User: you suggest me something sweet 
+Time: Sun Sep  8 11:16:58 2024
+Assistant: I understand you're looking for a sweet suggestion. Here are a few options from my capabilities:
+
+1. **Pancakes with Maple Syrup and Berries** - Fluffy pancakes served with sweet maple syrup and fresh berries.
+2. **Peanut Butter and Jelly Sandwich** - A classic sandwich with creamy peanut butter and sweet jelly.
+
+Please let me know if you would like me to prepare one of these options!
+Time: Sun Sep  8 11:16:59 2024
+User: can I get the peanut butter and jelly sandwich 
+Time: Sun Sep  8 11:17:28 2024
+Assistant: Ok, I will now proceed with the sequence: '3', 'peanut butter and jelly sandwich'. 
+Time: Sun Sep  8 11:17:29 2024
+Run ended at: 2
+Sun Sep  8 11:17:29 2024
+This run took 2 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Sun Sep  8 11:17:35 2024
+Furhat is being used with Baseline
+User: I get uh full English breakfast without the sausages 
+Time: Sun Sep  8 11:17:49 2024
+Assistant: Alright I will create that sequence for you.
+Assistant: The sequence is: I cannot provide the full English breakfast without sausages as it deviates from the predefined sequence. However, I can proceed with a modified sequence that maintains all the other elements of the full English breakfast, excluding the sausages. 
+
+Here�s the new sequence I can generate for you:
+
+```json
+{
+  "task": "full English breakfast without sausages",
+  "ID": "6_modified",
+  "sequence": [
+    {"step": "1", "action": "cook_bacon(2)"},
+    {"step": "2", "action": "toast_bread(2)"},
+    {"step": "3", "action": "grill_tomatoes(1)"},
+    {"step": "4", "action": "grill_mushrooms(3)"},
+    {"step": "5", "action": "heat_beans(1)"},
+    {"step": "6", "action": "fry_eggs(1)"},
+    {"step": "7", "action": "place_on_plate(fried_bacon, 2)"},
+    {"step": "8", "action": "place_on_plate(toasted_bread, 2)"},
+    {"step": "9", "action": "place_on_plate(grilled_tomatoes, 1)"},
+    {"step": "10", "action": "place_on_plate(grilled_mushrooms, 3)"},
+    {"step": "11", "action": "place_on_plate(heated_beans, 1)"},
+    {"step": "12", "action": "place_on_plate(fried_egg, 1)"},
+    {"step": "13", "action": "serve()"}
+  ]
+}
+```
+
+If you'd like me to proceed with this modified sequence, just let me know!
+Time: Sun Sep  8 11:17:52 2024
+Run ended at: 3
+Sun Sep  8 11:17:52 2024
+This run took 3 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Sun Sep  8 11:18:18 2024
+Furhat is being used with Baseline
+User: drive me to my next location 
+Time: Sun Sep  8 11:18:29 2024
+Assistant: I'm sorry, but driving or transportation is beyond my current capabilities. I specialize in food preparation and cleaning tasks. However, if you need assistance with a meal or cleaning, I can certainly help with that! Please let me know what you'd like.
+Time: Sun Sep  8 11:18:30 2024
+User: you could help me clean 
+Time: Sun Sep  8 11:18:51 2024
+Assistant: Great! I can assist you with cleaning tasks. I can perform the following task:
+
+1. Clean the living room floor.
+
+Please confirm if you would like me to proceed with that task, or let me know if you have another specific cleaning request!
+Time: Sun Sep  8 11:18:52 2024
+User: yes proceed with the living room cleaning 
+Time: Sun Sep  8 11:19:12 2024
+Assistant: Ok, I will now proceed with the sequence: '10', 'clean living room floor'. 
+
+I'll start by retrieving the cleaning supplies.
+Time: Sun Sep  8 11:19:13 2024
+Run ended at: 4
+Sun Sep  8 11:19:13 2024
+This run took 4 turns
+Total number of LLM calls: 3
+
+Version: 1.3
+Sun Sep  8 11:21:43 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory. How can I help you today?
+User: can I get a bacon and egg sandwich please 
+Is it ambiguous? False
+Time: Sun Sep  8 11:21:44 2024
+Is it known? True
+Time: Sun Sep  8 11:21:45 2024
+var_KnowNo: ['bacon and egg sandwich']
+Time: Sun Sep  8 11:21:46 2024
+Does it map to the action in var_KnowNo? True
+Time: Sun Sep  8 11:21:47 2024
+Assistant: Great choice! I will execute the sequence for bacon and egg sandwich.
+Time: Sun Sep  8 11:21:47 2024
+Run ended at: 1
+Sun Sep  8 11:21:47 2024
+This run took 3 turns
+Total number of LLM calls: 5
+
+Run: 2
+Sun Sep  8 11:22:02 2024
+Assistant: Let's go again... Hello. How can I help you today?
+User: can you suggest me something savory 
+Is it ambiguous? True
+Time: Sun Sep  8 11:22:03 2024
+Assistant: There are multiple options in the menu that might fit your order. Here are a few savory options you might enjoy:
+1. A 'full English breakfast', which includes a variety of cooked items.
+2. 'Avocado toast with sausage on the side' for a delicious combination.
+3. A 'bean and cheese quesadilla' for a tasty snack.
+
+Let me know if any of these options sound good to you!
+Time: Sun Sep  8 11:22:04 2024
+User: could I get the bean and cheese quesadilla 
+Time: Sun Sep  8 11:22:33 2024
+Is it ambiguous? False
+Time: Sun Sep  8 11:22:34 2024
+Is it known? True
+Time: Sun Sep  8 11:22:34 2024
+var_KnowNo: ['bean and cheese quesadilla']
+Time: Sun Sep  8 11:22:36 2024
+Does it map to the action in var_KnowNo? True
+Time: Sun Sep  8 11:22:36 2024
+Assistant: Great choice! I will execute the sequence for bean and cheese quesadilla.
+Time: Sun Sep  8 11:22:36 2024
+Run ended at: 2
+Sun Sep  8 11:22:36 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Run: 3
+Sun Sep  8 11:22:55 2024
+Assistant: Let's go again... Hello. How can I help you today?
+User: can I get the grilled tomatoes and mushroom bruschetta without the tomatoes 
+Is it ambiguous? False
+Time: Sun Sep  8 11:22:56 2024
+Is it known? False
+Time: Sun Sep  8 11:22:56 2024
+Is it within the capabilities of the robot? True
+Time: Sun Sep  8 11:22:57 2024
+Is a new sequence requested?: True
+Time: Sun Sep  8 11:22:57 2024
+Is a new sequence actually requested? True
+Time: Sun Sep  8 11:22:58 2024
+Did it pass the safety check?: True
+Explanation: The request involves known ingredients (mushrooms and bread) that can be found in the list of known ingredients (No. 1 and 6), and modifying the dish by removing tomatoes is reasonable, making it feasible for me to execute.
+Time: Sun Sep  8 11:22:59 2024
+The generated sequence is: {"sequence": [{"step": "1", "action": "grill_mushrooms(2)"}, {"step": "2", "action": "toast_bread(2)"}, {"step": "3", "action": "initiate_sandwich(toasted_bread)"}, {"step": "4", "action": "place_on_sandwich(grilled_mushrooms, 1)"}, {"step": "5", "action": "initiate_sandwich(toasted_bread)"}, {"step": "6", "action": "place_on_sandwich(grilled_mushrooms, 1)"}, {"step": "7", "action": "serve()"}]}
+Time: Sun Sep  8 11:23:00 2024
+Assistant: Sure, I will generate a new sequence to fulfill your request. First, I'll grill two mushrooms. 
+Then, I'll toast two pieces of bread. 
+Next, I'll initiate a sandwich using the toasted bread. 
+I'll place one grilled mushroom on the sandwich. 
+I'll repeat the sandwich initiation for the second piece of toasted bread. 
+Afterward, I'll place one more grilled mushroom on that sandwich. 
+Finally, I'll serve the finished bruschetta. 
+Does this sequence sound good to you?
+Time: Sun Sep  8 11:23:02 2024
+var_generated_sequence_name is: grilled mushroom bruschetta without tomatoes
+Time: Sun Sep  8 11:23:02 2024
+Total listened:yes 
+Time: Sun Sep  8 11:23:34 2024
+Assistant: Great then I will now proceed to make the: grilled mushroom bruschetta without tomatoes
+Time: Sun Sep  8 11:23:35 2024
+Run ended at: 3
+Sun Sep  8 11:23:35 2024
+This run took 4 turns
+Total number of LLM calls: 8
+
+Run: 4
+Sun Sep  8 11:23:51 2024
+Assistant: Let's go again... Hello. How can I help you today?
+User: we play basketball with me 
+Is it ambiguous? True
+Time: Sun Sep  8 11:23:51 2024
+Assistant: I apologize, but playing basketball is outside the scope of my capabilities. However, I can assist you with cooking or cleaning. If you're hungry after playing, I can suggest some meals like a 'bacon and egg sandwich' or 'vegetable stir fry with rice'. Please let me know how I can assist you!
+Time: Sun Sep  8 11:23:53 2024
+User: you could make a pancakes with make maple syrup 
+Time: Sun Sep  8 11:24:18 2024
+Is it ambiguous? True
+Time: Sun Sep  8 11:24:18 2024
+Assistant: There are multiple options in the menu that might fit your order. I understand you'd like 'pancakes with maple syrup'. Would you like me to prepare that for you? If you have any specific quantity in mind, please let me know!
+Time: Sun Sep  8 11:24:20 2024
+User: no that's the normal 1 
+Time: Sun Sep  8 11:24:38 2024
+Is it ambiguous? True
+Time: Sun Sep  8 11:24:38 2024
+Assistant: Great! I will proceed with preparing one serving of 'pancakes with maple syrup and berries'. Just a moment while I get that ready for you!
+Time: Sun Sep  8 11:24:39 2024
+User: esc
+Time: Sun Sep  8 11:24:52 2024
+Run ended at: 4
+Sun Sep  8 11:24:52 2024
+This run took 8 turns
+Total number of LLM calls: 6
+
