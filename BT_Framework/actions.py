@@ -78,7 +78,7 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
             first_shot_answer = {"role": "assistant", "content": "There are multiple options in the menu that might fit your order. I can help you with the hunger. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
 
             second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I can you make me hachapuri"}
-            second_shot_answer = {"role": "assistant", "content": "There are multiple options in the menu that might fit your order. I understand you're looking for 'hachapuri'. That unfortunatley is not part of my known sequences. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
+            second_shot_answer = {"role": "assistant", "content": "There are multiple options in the menu that might fit your order. I understand you're looking for 'hachapuri'. Unfortunately, that isn't part of the recipes I know how to make. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
             
             third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
             third_shot_answer = {"role": "assistant", "content": "There are multiple options in the menu that might fit your order. If you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
@@ -318,7 +318,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         first_shot = {"role": "user", "content": "The options are: A) grilled tomato and mushroom bruschetta\nB) an option not listed here\nC) bacon and egg sandwich\nD) full English breakfast\nE) vegetable stir fry with rice. Now select the letter that fits best to the following conversation: \nUser: can I have a grilled tomato and mushroom to set up please\nAssistant: It seems like you're requesting a 'grilled tomato and mushroom bruschetta.' I can prepare that for you. Would you like anything else with it?\nUser: no\n"}
         first_shot_answer = {"role": "assistant", "content": "A"}
 
-        second_shot = {"role": "user", "content": "The options are: A) an option not listed here\nB) full English breakfast\nC) bean and cheese quesadilla\nD) pancakes with maple syrup and berries\nE) grilled tomato and mushroom bruschetta. Now select the letter that fits best to the following conversation: \nUser: I can you make me hachapuri\nAssistant: I apologize for any confusion, but could you please provide more details or clarify your request for hachapuri? Are you looking for a specific type of hachapuri or any particular ingredients or preferences? Once I have more information, I can assist you better.?\nUser: I have more information I can assist you better hachapuri aari\nAssistant: Thank you for clarifying! Unfortunately, the sequence for 'hachapuri aari' is not within my known sequences. However, I can offer you some other options:\n 1. 'Bean and Cheese Quesadilla': Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The quesadilla is served hot and ready to enjoy.\n2. 'Grilled Tomato and Mushroom Bruschetta': Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms on toasted bread, making a simple yet delicious appetizer.\n3. 'Tortilla with Tomatoes, Beans, and Egg (Huevos Rancheros)': Prepares huevos rancheros with a tortilla, beans, tomatoes, and eggs in a flavorful breakfast dish.\nPlease let me know if any of these options interest you, or if you have any other preferences or requests.\nUser: the first 1\n"}
+        second_shot = {"role": "user", "content": "The options are: A) an option not listed here\nB) full English breakfast\nC) bean and cheese quesadilla\nD) pancakes with maple syrup and berries\nE) grilled tomato and mushroom bruschetta. Now select the letter that fits best to the following conversation: \nUser: I can you make me hachapuri\nAssistant: I apologize for any confusion, but could you please provide more details or clarify your request for hachapuri? Are you looking for a specific type of hachapuri or any particular ingredients or preferences? Once I have more information, I can assist you better.?\nUser: I have more information I can assist you better hachapuri aari\nAssistant: Thank you for clarifying! Unfortunately, the recipe for 'hachapuri aari' is not within my known recipes. However, I can offer you some other options:\n 1. 'Bean and Cheese Quesadilla': Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The quesadilla is served hot and ready to enjoy.\n2. 'Grilled Tomato and Mushroom Bruschetta': Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms on toasted bread, making a simple yet delicious appetizer.\n3. 'Tortilla with Tomatoes, Beans, and Egg (Huevos Rancheros)': Prepares huevos rancheros with a tortilla, beans, tomatoes, and eggs in a flavorful breakfast dish.\nPlease let me know if any of these options interest you, or if you have any other preferences or requests.\nUser: the first 1\n"}
         second_shot_answer = {"role": "assistant", "content": "C"}
 
         convo_to_add = {"role": "user", "content": "The options are: " + options + ". Now select the letter that fits best to the following conversation: \n" + format_conversation(conversation)}
@@ -463,7 +463,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         """
         #choices =  ['bacon and egg sandwich', 'avocado toast with sausage on the side', 'peanut butter and jelly sandwich', 'vegetable stir fry with rice', 'pancakes with maple syrup and berries', 'full English breakfast', 'tortilla with tomatoes beans and egg (huevos rancheros)', 'bean and cheese quesadilla', 'grilled tomato and mushroom bruschetta', 'clean living room floor']
         #random_choice = random.choice(choices)
-        response = "Great choice! I will execute the sequence for {}.".format(state.var_KnowNo[0])
+        response = "Great choice! I will execute the recipe for {}.".format(state.var_KnowNo[0])
         return response
 
 class ExecuteNewSequence(py_trees.behaviour.Behaviour):
@@ -561,7 +561,7 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             second_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (avocado, sausage, and bacon) that can be found in the list of known ingredients (No. 1, 23 and 3) and a reasonable modification (adding bacon), making it feasible for me to execute."}
             
             third_shot = {"role": "user", "content": "User: I want the bacon and eggs sandwich but can you add 500 eggs?"} 
-            third_shot_answer = {"role": "assistant", "content": "False\nExplanation: The request involves an illogical quantity of eggs (500), making it not feasible for me to execute."}
+            third_shot_answer = {"role": "assistant", "content": "False\nExplanation: The request involves an unreasonable quantity of eggs (500), making it not feasible for me to execute."}
 
             fourth_shot = {"role": "user", "content": "User: can i get the bacon and egg sandwich but can you add five times the ammount of bacon?"}
             fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for me to execute."}
@@ -755,8 +755,8 @@ class ExplainSequence(py_trees.behaviour.Behaviour):
                     "content": (
                         "You are a helpful assistant that explains the steps a robot will take to fulfill a user's request. "
                         "The explanation should be clear and concise, focusing on the actions without adding unnecessary details. "
-                        "At the start of the explanation, mention that you will generate a new sequence to fulfill the user's request. "
-                        "At the end of the explanation, ask the user if the sequence sounds good to them and name the sequence with var_generated_sequence_name. "
+                        "At the start of the explanation, mention that you will perform a new set of steps to fulfill the user's request. "
+                        "At the end of the explanation, ask the user if the steps sound good to them and name the sequence with var_generated_sequence_name. "
                         "Do not provide any extra information or detail about how the actions are performed beyond what is specified."
                     )
                 }
@@ -842,7 +842,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             response = "I’m sorry, but I ran into an issue while trying to create what you requested."
         if LLM:
             #response = self.report_failure_back_to_user()
-            response = "I’m sorry, but I ran into an issue while trying to create a new sequence to accomodate your request. Would you like to try again, or do you have any other requests I can help with?"
+            response = "I’m sorry, but I ran into an issue while trying to create a new recipe to accomodate your request. Would you like to try again, or do you have any other requests I can help with?"
         else:
             response = "The sequence failed the automated check."
         self.conversation.append({"role": "assistant", "content": response})
@@ -879,7 +879,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
                     "content": (
                         "You are a helpful assistant that reports back to the user when the automated check of the newly generated sequence fails. "
                         "The report should be clear and concise, explaining the reason for the failure without adding unnecessary details. "
-                        "At the end of the report, ask the user if they would like to try generating a new sequence or if they have any other questions. "
+                        "At the end of the report, ask the user if they would like to try generating a new set of steps to fullfill their request or if they have any other questions. "
                         "Do not provide any extra information or detail about how the actions are performed beyond what is specified."
                         "To report the failure you have access to the error messages: '" + error_messages + "' Make sure to explain the error messages to the user in a way that is easy to understand."
                     )
@@ -975,7 +975,7 @@ class SetVarKnownTrue(py_trees.behaviour.Behaviour):
             response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know."
         else:
             #response = "Hold on dear user, I think I know what you want. Let me execute the action for you."
-            response = "I thought your request requires me to generate a new sequence, but after double checking I think your request matches an action I know." # explaining
+            response = "I initially thought your request would require me to create a new set of actions, but after double checking, I believe your request matches something I already know how to do." # explaining
         self.conversation.append({"role": "assistant", "content": response})
         
         if FURHAT:

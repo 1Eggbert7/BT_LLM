@@ -376,7 +376,7 @@ PRE_PROMPT_SAFETY_FEASIBILITY = (
 "2. Check if the quantities of the ingredients are below 10. Any ingredient can occur up to 10 times in a dish. So if the number of an ingredient requested is below 10 answer with 'True'.\n"
 
 "User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.\n"
-"If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or illogical quantities, respond 'False'.\n"
+"If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or unreasonable quantities, respond 'False'.\n"
 "Bear in mind that the user input is text that was generated from speech-to-text and may contain errors or inconsistencies. For example when the user is talking about 'serum' it might be 'syrup' or 'outdoor berries' might be 'without berries' in a given context.\n"
 )
 
@@ -410,7 +410,7 @@ User: I want the bacon and eggs sandwich but can you add 500 eggs?
 THIRD_SHOT_SAFETY_FEASIBILITY_ASSISTANT = """
 False
 
-Explanation: The user's request involves an illogical quantity of eggs (500), making it not feasible for the assistant to execute.
+Explanation: The user's request involves an unreasonable quantity of eggs (500), making it not feasible for the assistant to execute.
 """
 # create the Predefined Feasibility Check message
 PREDEFINED_SAFETY_FEASIBILITY = [
@@ -460,12 +460,12 @@ Step 7: serve()
 """
 
 FIRST_SHOT_EXPLAIN_SEQ_ANSWER = """
-Sure, to accommodate your request I will generate a new sequence. I'll start by cooking three pancakes. 
+Sure, to accommodate your request I will generate a new recipe. I'll start by cooking three pancakes. 
 Once they are done, I'll place them on a plate. 
 Next, I'll add some maple syrup and berries. 
 After that, I'll fry some bacon and place it on the plate as well. 
 Finally, I'll serve everything together. 
-Does this sequence sound good to you?
+Does this recipe sound good to you?
 
 var_generated_sequence_name: 'pancakes with maple syrup, berries, and bacon'
 """
@@ -564,7 +564,7 @@ PREDEFINED_CAPABILITY_CHECK = [
     {"role": "system", "content": PRE_PROMPT_CAPABILITY_CHECK},
     {"role": "user", "content": "User: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?"},
     {"role": "assistant", "content": "True"},
-    {"role": "user", "content": "User: I'm hungry, what can I eat?\nAssistant: I can suggest a few options for you to consider. Which of the following sequences are you in the mood for:\n1. Avocado toast with sausage on the side\n2. Peanut butter and jelly sandwich\n3. Bean and cheese quesadilla\nFeel free to let me know your preference!\nUser: I want option A, but can you add some bacon?"},
+    {"role": "user", "content": "User: I'm hungry, what can I eat?\nAssistant: I can suggest a few options for you to consider. Which of the following menu items are you in the mood for:\n1. Avocado toast with sausage on the side\n2. Peanut butter and jelly sandwich\n3. Bean and cheese quesadilla\nFeel free to let me know your preference!\nUser: I want option A, but can you add some bacon?"},
     {"role": "assistant", "content": "True"},
     {"role": "user", "content": "User: I want the bacon and egg sandwich, but can you add extra bacon?"},
     {"role": "assistant", "content": "True"},
@@ -594,11 +594,11 @@ BASELINE_PROMPT = (
     "The ingredients you can use are detailed in the following list:" + ingredients_list_json + ". "
     "The functions you can use are detailed as follows:" + available_functions_json + ". "
     "Instructions for Handling Requests:"
-    "1. Direct and Specific Requests: For requests that exactly match a sequence above, acknowledge and indicate you'll commence the task. Also recite the name of the sequence you will execute, without providing the whole sequence in JSON. Answer like this ike this 'Ok I will now proceed with the sequence: 'sequenceID',  'sequencename''. Important: Do not make this direct match when some things are omitted."
-    "2. Ambiguous or Vague Requests: If a request is not clear or detailed enough, ask the user to be more specific. First explain what happened, then offer up to four choices of tasks you can perform, based on the sequences mentioned above."
-    "3. Slightly Different Requests: For requests that are slightly different from your pre-programmed tasks, first check if you can generate a new sequence by strictly using the defined functions and ingredients. If a request involves ingredients not listed or specific preferences (like egg doneness) not covered by your functions, explain that you're unable to fulfill that specific part of the request due to your predefined capabilities. Offer to proceed with what can be done within your capabilities. Don't add extra options to a function either (e.g. 'cook_bacon(2) [extra-crispy]'). Offer to proceed with what can be done within your capabilities. Make sure to always provide a new generated sequence in JSON format just like the other sequences are given in JSON."
+    "1. Direct and Specific Requests: For requests that exactly match a sequence above, acknowledge and indicate you'll commence the task. Also recite the name of the sequence you will execute, without providing the whole sequence in JSON. Answer like this ike this 'Ok I will now proceed with the recipe: 'sequenceID',  'sequencename''. Important: Do not make this direct match when some things are omitted."
+    "2. Ambiguous or Vague Requests: If a request is not clear or detailed enough, ask the user to be more specific. First explain what happened, then offer up to three choices of tasks you can perform, based on the sequences mentioned above."
+    "3. Slightly Different Requests: For requests that are slightly different from your pre-programmed tasks, first check if you can generate a new sequence by strictly using the defined functions and ingredients. If a request involves ingredients not listed or specific preferences (like egg doneness) not covered by your functions, explain that you're unable to fulfill that specific part of the request due to your predefined capabilities. Offer to proceed with what can be done within your capabilities. Don't add extra options to a function either (e.g. 'cook_bacon(2) [extra-crispy]'). Offer to proceed with what can be done within your capabilities. First explain the sequence in a clear and concise manner (like 'First I will ...' in a reasonably short answer). Then make sure to always provide a new generated sequence in JSON format just like the other sequences are given in JSON at the end of your response, by saying: 'Here’s the new sequence in JSON format: ...'. "
     "4. Outside Your Capabilities: If a request falls entirely outside of your capabilities, decline politely and explain your limitations."
     "Important: When generating a sequence or responding to a request, do not extrapolate functions or ingredients beyond what is explicitly defined. Maintain transparency about your limitations and strive to offer the closest possible solution within your capabilities."
-    "If you created a new sequence go through it and check if its in JSON-format and if all the ingredients used are in the given ingredients list. If they are not then don't provide the sequence but instead decline the request. Also go through all the functions of the newly generated sequence and make sure the right amount of parameters are used."
+    "If you created a new sequence go through it and check if its in JSON-format and if all the ingredients used are in the given ingredients list. If they are not then don't provide the sequence but instead decline the request. Also go through all the functions of the newly generated sequence and make sure the right amount of parameters are used. Always explain the sequence in a clear and concise manner first and then provide the sequence in JSON-format at the end of your response by saying: 'Here’s the new sequence in JSON format: ...'."
     "In general, always make sure to explain your reasoning and provide clear responses to the user's requests."
 )
