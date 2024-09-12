@@ -1,6 +1,6 @@
 # main.py
 # Alexander Leszczynski
-# 03-09-2024 
+# 12-09-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
@@ -346,6 +346,9 @@ if FURHAT:
     time.sleep(5)
     state.var_furhat.set_led(red = 50 , green = 0 , blue = 0) # to indicate that the conversation is over
     state.var_furhat.say(text = "That's all for now. Thank you for the talk!")
+    #save it to the transcript
+    print("Assistant: That's all for now. Thank you for the talk!")
+    state.var_transcript += "Furhat: That's all for now. Thank you for the talk!" + "\n" + "Time: " + time.strftime("%c") + "\n"
     time.sleep(5)
     state.var_furhat.set_led(red = 0, green = 0, blue = 0) # Turn off the LED to avoid overheating
     state.var_furhat.attend(user="NONE") # Stop attending the user

@@ -7,6 +7,7 @@ import keyboard
 import time
 import os
 from config import BASELINE
+import state
 
 
 def format_conversation(conversation):
@@ -60,7 +61,13 @@ def record_speech(furhat):
             
             elif keyboard.is_pressed('a'): # for again
                 furhat.set_led(red=66, green=66, blue=66)  # Set the LED to gray to indicate standby mode
-                furhat.say(text = "I am sorry, I did not get that. Can you please repeat?")
+                furhat.say(text = "I am sorry. I did not get that. Can you please repeat?")
+                #save it to the transcript
+                print("Assistant: " + "I am sorry. I did not get that. Can you please repeat?")
+                state.var_transcript += "Assistant: " + "I am sorry. I did not get that. Can you please repeat?" + "\n"
+                time.sleep(2)
+                # delete listened
+                total_listened = ""
 
             elif keyboard.is_pressed('enter'):
                 print('You Pressed Enter!')
