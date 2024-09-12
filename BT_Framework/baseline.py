@@ -48,8 +48,8 @@ def run_baseline():
         state.var_turns += 1 # increment the number of turns because the user has responded
 
         if user_input == "esc": #  not sure if this will work because its just a small window where the user can type 
-            if FURHAT:
-                speak(state.var_furhat, "Let's stop here for now.")
+            #if FURHAT:
+                #speak(state.var_furhat, "Let's stop here for now.")
             break
 
         completion = client.chat.completions.create(
@@ -63,16 +63,19 @@ def run_baseline():
         if response_contains_json:
             print("response contains json detected!!!")
             model_response_without_json = model_response.split("Here’s the new sequence in JSON format")[0]
+            if check_json(model_response_without_json):
+                print("response still contains json!!!")
+                model_response_without_json = model_response_without_json.split("{")[0]
+                model_response_without_json += "\nI will skip this part where I read the sequence in JSON format out to you."
             # add "I will now make the new recipe for you" to the transcript
-            model_response_without_json += "\nI will now make the new recipe for you."
+            model_response_without_json += "\nI will now make the follow the steps to fulfill this task."
             print("Assistant: ", model_response_without_json)
             #print("Assistant: ", "The sequence is: " + model_response)
             if FURHAT:
                 #speak(state.var_furhat, "Alright I will create that sequence for you.")
                 speak(state.var_furhat, model_response_without_json)
-                #speak(state.var_furhat, "I will actually skip this part where I read the sequence in json format out to you and we can move on to the next task.")    
-                state.var_transcript += "Assistant: " + "Alright I will create that sequence for you." + "\n"
-                state.var_transcript += "Assistant: " + "The sequence is: " + model_response + "\n"
+                #speak(state.var_furhat, "I will actually skip this part where I read the sequence in json format out to you and we can move on to the next task.")   
+                state.var_transcript += "Assistant: " + model_response + "\n"
                 state.var_transcript += "Time: " + time.strftime("%c") + "\n"           
             break
         response_reached_end = check_end(model_response)
@@ -96,4 +99,5 @@ def check_json(response):
 
 def check_end(response):
     # check if the response contains "Ok, I will now proceed with the sequence" in lowercase
-    return "ok, i will now proceed with the sequence" in response.lower() or "ok i will now proceed with the sequence" in response.lower()
+    #print("is it end?: ", "i will start the task for" in response.lower())
+    return "i will start the task for" in response.lower() 

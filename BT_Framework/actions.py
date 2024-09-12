@@ -138,9 +138,9 @@ class WaitForUserInput(py_trees.behaviour.Behaviour):
 
         if new_user_input != "esc":
             self.process_user_input_func(new_user_input)  # Re-trigger the behavior tree with the new input, don't retrigger when esc is pressed
-        else:
-            if FURHAT:
-                speak(state.var_furhat, "Alright, that's it for this task.")
+        #else:
+            #if FURHAT:
+            #    speak(state.var_furhat, "Alright, that's it for this task.")
         return py_trees.common.Status.SUCCESS
 
 class PrintExit1(py_trees.behaviour.Behaviour):
@@ -463,7 +463,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         """
         #choices =  ['bacon and egg sandwich', 'avocado toast with sausage on the side', 'peanut butter and jelly sandwich', 'vegetable stir fry with rice', 'pancakes with maple syrup and berries', 'full English breakfast', 'tortilla with tomatoes beans and egg (huevos rancheros)', 'bean and cheese quesadilla', 'grilled tomato and mushroom bruschetta', 'clean living room floor']
         #random_choice = random.choice(choices)
-        response = "Great choice! I will execute the recipe for {}.".format(state.var_KnowNo[0])
+        response = "Great choice! I will start the task for {}.".format(state.var_KnowNo[0])
         return response
 
 class ExecuteNewSequence(py_trees.behaviour.Behaviour):
@@ -842,7 +842,7 @@ class ReportFailureBackToUser(py_trees.behaviour.Behaviour):
             response = "I’m sorry, but I ran into an issue while trying to create what you requested."
         if LLM:
             #response = self.report_failure_back_to_user()
-            response = "I’m sorry, but I ran into an issue while trying to create a new recipe to accomodate your request. Would you like to try again, or do you have any other requests I can help with?"
+            response = "I’m sorry, but I ran into an issue while trying to create the steps to accomodate your request. Would you like to try again, or do you have any other requests I can help with?"
         else:
             response = "The sequence failed the automated check."
         self.conversation.append({"role": "assistant", "content": response})
@@ -940,13 +940,20 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         self.conversation = conversation
 
     def update(self):
+        sth_else_in = False
         if EXPLAIN:
             response = "I matched your request to multiple possible actions. I need you to make a clearer request."
         else:
             response = "I'm sorry, I found more than one option to fit your request, can you say which of the following options is correct? "
             for i, option in enumerate(state.var_KnowNo):
                 response += f"\nOption {i + 1}: {option}"
-            response += "\nOr do you want me to do something else?"
+                if option == "something else":
+                    sth_else_in = True
+                    
+            if sth_else_in:
+                response += "\nLet me know which option suits you best."
+            else:
+                response += "\nOr do you want me to do something else?"
         self.conversation.append({"role": "assistant", "content": response})
 
         if FURHAT:
