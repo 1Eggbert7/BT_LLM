@@ -1,6 +1,6 @@
 # main.py
 # Alexander Leszczynski
-# 12-09-2024 
+# 13-09-2024 
 
 import py_trees
 from actions import WaitForUserInput, PrintAmbiguousAnswer, KnowNoMapping, ExecuteAction, RunSafetyCheck, DeclineRequest, GenerateNewSequence, ExplainSequence, ReportFailureBackToUser, ExecuteNewSequence, AskUserForNewRequest, AskUserToSpecifyWithKnowNo, SetVarKnownTrue, FallbackAnswer
@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 # Assistent : Hello my name is Gregory. How can I help you today?
-user_input =  "Hey can you clean the living room floor?" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Hey can you get me the bean and cheese quesadilla but instead of beans make it with rice" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 global conversation  # Ensure conversation is treated as global
 conversation = []  # Contains the conversation history between the user and the system
 

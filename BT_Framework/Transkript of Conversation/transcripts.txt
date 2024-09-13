@@ -2566,6 +2566,11 @@ Run number: 4 ended at: Tue Sep 10 14:02:54 2024
 This run took 4 turns
 Total number of LLM calls: 3
 End of Participant 2
+
+
+
+
+TESTING
 Version: 1.3
 Thu Sep 12 16:12:47 2024
 Furhat is being used with Baseline
@@ -2590,7 +2595,7 @@ User: PB and J
 Time: Thu Sep 12 16:15:37 2024
 Assistant: Great choice! I will start the task for: 'sequenceID: 3', 'peanut butter and jelly sandwich'. 
 
-Here’s the sequence I’ll follow to prepare your peanut butter and jelly sandwich:
+Hereï¿½s the sequence Iï¿½ll follow to prepare your peanut butter and jelly sandwich:
 
 1. Toast two slices of bread.
 2. Spread peanut butter on one slice of toast.
@@ -2858,9 +2863,9 @@ Time: Thu Sep 12 16:36:37 2024
 Does it map to the action in var_KnowNo? False
 Time: Thu Sep 12 16:36:37 2024
 Did it pass the safety check?: False
-Explanation: The user didn’t specify a known cleaning task from the sequences provided. While they referenced cleaning tasks, they were ambiguous in their requests and didn't indicate a specific known action to perform, making it not feasible for me to execute the request clearly.
+Explanation: The user didnï¿½t specify a known cleaning task from the sequences provided. While they referenced cleaning tasks, they were ambiguous in their requests and didn't indicate a specific known action to perform, making it not feasible for me to execute the request clearly.
 Time: Thu Sep 12 16:36:38 2024
-Assistant: I'm sorry, but i can't fulfill your request it is unsafe or unfeasible to me. The reason is: The user didn’t specify a known cleaning task from the sequences provided. While they referenced cleaning tasks, they were ambiguous in their requests and didn't indicate a specific known action to perform, making it not feasible for me to execute the request clearly.
+Assistant: I'm sorry, but i can't fulfill your request it is unsafe or unfeasible to me. The reason is: The user didnï¿½t specify a known cleaning task from the sequences provided. While they referenced cleaning tasks, they were ambiguous in their requests and didn't indicate a specific known action to perform, making it not feasible for me to execute the request clearly.
 Time: Thu Sep 12 16:36:38 2024
 User: esc
 Time: Thu Sep 12 16:39:58 2024
