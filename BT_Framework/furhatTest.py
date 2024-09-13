@@ -52,7 +52,12 @@ furhat.gesture(body={
     "class": "furhatos.gestures.Gesture"
     })
 
-time.sleep(22)
+# get all voices
+voices = furhat.get_voices()
+#for voice in voices:
+#    print(voice)
+
+time.sleep(10)
 # Perform a custom gesture look right
 furhat.gesture(body={
     "frames": [
@@ -82,7 +87,7 @@ furhat.gesture(body={
                 1.0
             ],
             "params": {
-                "LOOK_RIGHT": 1.0
+                "reset": True
             }
         }
     ],
@@ -92,6 +97,20 @@ furhat.gesture(body={
 
 time.sleep(2)
 # turn off the LED
+furhat.gesture(body={
+    "frames": [
+        {
+            "time": [
+                1.0
+            ],
+            "params": {
+                "LOOK_RIGHT": 1.0
+            }
+        }
+    ],
+    "class": "furhatos.gestures.Gesture"
+    })
+furhat.say( text = "Now I should be looking right.")
 furhat.set_led(red=0, green=0, blue=0)  # Turn off the LED
 
 

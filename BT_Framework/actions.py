@@ -1046,7 +1046,7 @@ class FallbackAnswer(py_trees.behaviour.Behaviour):
                     ]
             else:
                 predefined_messages_fallback = [
-                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. You are not able to execute the task the user requested as it is outside of your capabilities. Your job is to decline the request and ask the user for a new different request. Firstly state that the task is outside of your capabilities with 'Your request seems to be outside of my capabilities.' and ask the user for a new different request."}
+                        {"role": "system", "content": "You are a helpful robot assistant that can execute cooking tasks as well as one cleaning task. You are not able to execute the task the user requested as it is outside of your capabilities. Your job is to decline the request and ask the user for a new different request. Firstly state that the task is outside of your capabilities with 'Your request seems to be outside of my capabilities.' and ask the user for a new different request. Do not suggest to the user that you can assist them with their request or provide any other information."}
                     ]
                 
                 first_shot = {"role": "user", "content": "User: I want the pancakes but can you do it with bananas and chocolate chips instead of the berries and the syrup?"}

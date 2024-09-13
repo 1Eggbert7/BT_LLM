@@ -62,13 +62,13 @@ def run_baseline():
         state.var_turns += 1 # increment the number of turns because the assistant has responded
         if response_contains_json:
             print("response contains json detected!!!")
-            model_response_without_json = model_response.split("Here’s the new sequence in JSON format")[0]
+            model_response_without_json = model_response.split("Here's the new sequence in JSON format")[0]
             if check_json(model_response_without_json):
                 print("response still contains json!!!")
                 model_response_without_json = model_response_without_json.split("{")[0]
                 model_response_without_json += "\nI will skip this part where I read the sequence in JSON format out to you."
             # add "I will now make the new recipe for you" to the transcript
-            model_response_without_json += "\nI will now make the follow the steps to fulfill this task."
+            model_response_without_json += "\nI will now follow the steps to fulfill this task."
             print("Assistant: ", model_response_without_json)
             #print("Assistant: ", "The sequence is: " + model_response)
             if FURHAT:

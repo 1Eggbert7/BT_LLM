@@ -236,20 +236,20 @@ def process_user_input(user_input):
     if FURHAT and not FURHAT_INIT:
         FURHAT_INIT = True
         #state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
-        state.var_furhat.say(text = "Hello! I am Gregory. How can I help you today?")
-        conversation = [{"role": "assistant", "content": "Hello! I am Gregory. How can I help you today?"}]
+        state.var_furhat.say(text = "Hello! I am Gregory your home assistant. How can I help you today?")
+        conversation = [{"role": "assistant", "content": "Hello! I am Gregory your home assistant. How can I help you today?"}]
         recorded_speech = record_speech(state.var_furhat)
         conversation.append({"role": "user", "content": recorded_speech})
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         print("Tree is initialized and furhat is used")
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory your home assistant. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
         
     elif state.var_furhat is None:
         state.var_furhat = "furhat not used in this run"
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
-        conversation.append({"role": "assistant", "content": "Hello! I am Gregory. How can I help you today?"})
+        conversation.append({"role": "assistant", "content": "Hello! I am Gregory your home assistant. How can I help you today?"})
         conversation.append({"role": "user", "content": user_input})
         print("Assistant: Hello! I am Gregory. How can I help you today?")
         print("user input: ", user_input)
@@ -275,6 +275,23 @@ def run_bt(user_input):
         if user_input != "esc":
             behaviour_tree.tick()
 
+def reset_variables():
+    state.var_known = False
+    state.var_one = False
+    state.var_inf = False
+    state.var_seq_ok = False
+    state.var_KnowNo = [] # List of actions that could map to the user input
+    state.var_inf = False
+    state.var_decline_explanation = "The request was ok"
+    state.var_generated_sequence = None
+    state.var_found_errors_in_sequence = []
+    state.var_generated_sequence_ok = False
+    state.var_generated_sequence_name = ""
+    state.var_func_run = 0
+    state.var_transcript = ""
+    state.var_capable = False
+    state.var_turns = 0
+    state.var_abort = False
 
 # Full BT is called with the user input
 if FURHAT and state.var_furhat is None:
@@ -282,7 +299,11 @@ if FURHAT and state.var_furhat is None:
 
 if not DEBUG:
     while state.var_run < RUNS:
+        if state.var_abort:
+            print("The conversation has been aborted")
+            break
         state.var_run += 1
+        reset_variables()
         state.var_turns = 0 # Reset the number of turns
         state.var_total_llm_calls = 0 # Reset the total number of LLM calls
         print("Run: ", state.var_run)
@@ -294,9 +315,14 @@ if not DEBUG:
                             if keyboard.is_pressed('r'):
                                 print('You Pressed r the next round is about to start!')                          
                                 break
+                            if keyboard.is_pressed('esc'):
+                                print('You Pressed esc the conversation is about to end!')
+                                state.var_abort = True
+                                break
                         except:
                             break  # if user pressed a key other than the given key the loop will break
-            run_baseline()
+            if not state.var_abort:
+                run_baseline()
         else:
             if state.var_run > 1:
                 conversation = [{"role": "assistant", "content": "That's it for this task. Let's go onto the next one... Hello. How can I help you today?"}]
@@ -308,19 +334,25 @@ if not DEBUG:
                             if keyboard.is_pressed('r'):
                                 print('You Pressed r the next round is about to start!')
                                 break
+                            if keyboard.is_pressed('esc'):
+                                print('You Pressed esc the conversation is about to end!')
+                                state.var_abort = True
+                                break
                         except:
                             break  # if user pressed a key other than the given key the loop will break
-                    speak(state.var_furhat, "That's it for this task. Let's go onto the next one... Hello. How can I help you today?")
-                    user_input = record_speech(state.var_furhat)
-                    state.var_transcript = "Time: " + time.strftime("%c") + "\n"
-                    print("User: " + user_input)
+                    if not state.var_abort:
+                        speak(state.var_furhat, "That's it for this task. Let's go onto the next one... Hello. How can I help you today?")
+                        user_input = record_speech(state.var_furhat)
+                        state.var_transcript = "Time: " + time.strftime("%c") + "\n"
+                        print("User: " + user_input)
                 else:
                     user_input = input("User: ")
                 conversation.append({"role": "user", "content": user_input})
                 state.var_transcript = "Run: " + str(state.var_run) + "\n" + time.strftime("%c") + "\n"
                 state.var_transcript += "Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?" + "\n"
                 state.var_transcript += "User: " + user_input + "\n"
-            run_bt(user_input)
+            if not state.var_abort:
+                run_bt(user_input)
         if FURHAT:
             # log the time of the run
             state.var_transcript += "Run number: " + str(state.var_run) + " ended at: " + time.strftime("%c") + "\n"

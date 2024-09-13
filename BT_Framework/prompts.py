@@ -575,8 +575,11 @@ PREDEFINED_CAPABILITY_CHECK = [
     {"role": "user", "content": "User: Can you paint the walls blue?"},
     {"role": "assistant", "content": "False"},
     {"role": "user", "content": "User: Can I get the quesadilla without cheese?"},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "Assistant: Hello I am Gregory, your home assistant. How can I help you today?\nUser: Hey, can i get plain pancakes"},
+    {"role": "assistant", "content": "True"},
+    {"role": "user", "content": "User:yes hi uh I would like to have the plain pancakes please"},
     {"role": "assistant", "content": "True"}
-
 ]
 
 
@@ -594,7 +597,7 @@ BASELINE_PROMPT = (
     "The ingredients you can use are detailed in the following list:" + ingredients_list_json + ". "
     "The functions you can use are detailed as follows:" + available_functions_json + ". "
     "Instructions for Handling Requests:"
-    "1. Direct and Specific Requests: For requests that exactly match a sequence above, acknowledge and indicate you'll commence the task. Also recite the name of the sequence you will execute, without providing the whole sequence in JSON. Answer like this ike this 'Great choice! I will start the task for: 'sequenceID',  'sequencename''. Important: Do not make this direct match when some things are omitted."
+    "1. Direct and Specific Requests: For requests that exactly match a sequence above, acknowledge and indicate you'll commence the task. Also recite the name of the sequence you will execute, without providing the whole sequence in JSON. Answer like this ike this 'Great choice! I will start the task for: 'sequencename''. Important: Do not make this direct match when some things are omitted."
     "2. Ambiguous or Vague Requests: If a request is not clear or detailed enough, ask the user to be more specific. First explain what happened, then offer up to three choices of tasks you can perform, based on the sequences mentioned above."
     "3. Slightly Different Requests: For requests that are slightly different from your pre-programmed tasks, first check if you can generate a new sequence by strictly using the defined functions and ingredients. If a request involves ingredients not listed or specific preferences (like egg doneness) not covered by your functions, explain that you're unable to fulfill that specific part of the request due to your predefined capabilities. Offer to proceed with what can be done within your capabilities. Don't add extra options to a function either (e.g. 'cook_bacon(2) [extra-crispy]'). Offer to proceed with what can be done within your capabilities. First explain the sequence in a clear and concise manner (like 'First I will ...' in a reasonably short answer). Then make sure to always provide a new generated sequence in JSON format just like the other sequences are given in JSON at the end of your response, by saying: 'Here’s the new sequence in JSON format: ...'. "
     "4. Outside Your Capabilities: If a request falls entirely outside of your capabilities, decline politely and explain your limitations."
@@ -602,4 +605,5 @@ BASELINE_PROMPT = (
     "If you created a new sequence go through it and check if its in JSON-format and if all the ingredients used are in the given ingredients list. If they are not then don't provide the sequence but instead decline the request. Also go through all the functions of the newly generated sequence and make sure the right amount of parameters are used. Always explain the sequence in a clear and concise manner first and then provide the sequence in JSON-format at the end of your response by saying: 'Here’s the new sequence in JSON format: ...'."
     "When the user requests a known sequence, never provide the whole sequence in JSON format, only the name of the sequence."
     "In general, always make sure to explain your reasoning and provide clear responses to the user's requests."
+    "When acknowledging a direct match, just say 'Great choice! I will start the task for: 'sequencename', wiithout explaining the sequence and 'sequencename' should be the name of the sequence you will execute."
 )

@@ -31,6 +31,7 @@ def initialize_furhat(ip_address, voice_name):
     furhat = FurhatRemoteAPI(ip_address)
     furhat.set_face(mask="adult", character = "Titan")
     furhat.set_voice(name=voice_name)
+    print("voice name for Furhat is set to: ", voice_name)
     # attend closest user
     furhat.attend(user="CLOSEST")
     return furhat

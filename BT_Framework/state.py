@@ -1,6 +1,6 @@
 # state.py
 # Alexander Leszczynski
-# 12-06-2024
+# 13-09-2024
 
 var_known = False
 var_one = False
@@ -20,6 +20,7 @@ var_transcript = ""
 var_run = 0
 var_capable = False
 var_turns = 0
+var_abort = False
 
 # example sequence
 var_generated_sequence_test = {"sequence": [
