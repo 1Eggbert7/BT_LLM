@@ -256,6 +256,13 @@ def process_user_input(user_input):
         print("Tree is initialized but furhat is not")        
         state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory, your home assistant. How can I help you today?" + "\nUser: " + user_input + "\n" 
 
+    # Check for 'skip' to end the conversation or task
+    if user_input.lower() == "skip":
+        print("Conversation ended by the user.")
+        if FURHAT:
+            state.var_furhat.say(text="Let's stop here for now.")
+        return  # End the function early if 'skip' is detected
+    
     if user_input != "esc":
         behaviour_tree.tick()
 
@@ -303,7 +310,7 @@ if not DEBUG:
             print("The conversation has been aborted")
             break
         state.var_run += 1
-        reset_variables()        
+        reset_variables()   
 
         state.var_total_llm_calls = 0 # Reset the total number of LLM calls
         print("Run: ", state.var_run)

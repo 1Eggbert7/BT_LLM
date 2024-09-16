@@ -74,6 +74,11 @@ def record_speech(furhat):
                 print('You Pressed Enter!')
                 furhat.set_led(red=0, green=0, blue=0)  # Turn off the LED
                 break
+            elif keyboard.is_pressed('s'): # for skip
+                print('You Pressed Skip!')
+                furhat.set_led(red=0, green=0, blue=0)
+                total_listened = "skip"
+                break
             elif keyboard.is_pressed('esc'):
                 print('You Pressed Esc!')
                 total_listened = "esc"

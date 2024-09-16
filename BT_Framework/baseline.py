@@ -46,11 +46,13 @@ def run_baseline():
             state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         
         state.var_turns += 1 # increment the number of turns because the user has responded
-        print("did increment turns, we are at: ", state.var_turns)
+        #print("did increment turns, we are at: ", state.var_turns)
 
-        if user_input == "esc": #  not sure if this will work because its just a small window where the user can type 
-            #if FURHAT:
-                #speak(state.var_furhat, "Let's stop here for now.")
+        # Check for 'skip' keyword or 'esc' to end the run
+        if user_input.lower() == "skip" or user_input == "esc":
+            print("Conversation ended by the user.")
+            if user_input.lower() == "skip" and FURHAT:
+                speak(state.var_furhat, "Let's stop here for now.")
             break
 
         completion = client.chat.completions.create(
