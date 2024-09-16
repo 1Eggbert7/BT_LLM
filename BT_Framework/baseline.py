@@ -51,8 +51,8 @@ def run_baseline():
         # Check for 'skip' keyword or 'esc' to end the run
         if user_input.lower() == "skip" or user_input == "esc":
             print("Conversation ended by the user.")
-            if user_input.lower() == "skip" and FURHAT:
-                speak(state.var_furhat, "Let's stop here for now.")
+            #if user_input.lower() == "skip" and FURHAT:
+                #speak(state.var_furhat, "Let's stop here for now.")
             break
 
         completion = client.chat.completions.create(

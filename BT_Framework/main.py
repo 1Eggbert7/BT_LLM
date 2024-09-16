@@ -259,8 +259,8 @@ def process_user_input(user_input):
     # Check for 'skip' to end the conversation or task
     if user_input.lower() == "skip":
         print("Conversation ended by the user.")
-        if FURHAT:
-            state.var_furhat.say(text="Let's stop here for now.")
+        #if FURHAT:
+            #state.var_furhat.say(text="Let's stop here for now.")
         return  # End the function early if 'skip' is detected
     
     if user_input != "esc":
