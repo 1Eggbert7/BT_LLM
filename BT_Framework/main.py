@@ -17,7 +17,7 @@ from openai import OpenAI
 
 #py_trees.logging.level = py_trees.logging.Level.DEBUG
 # Assistent : Hello my name is Gregory. How can I help you today?
-user_input =  "Hey can you get me the bean and cheese quesadilla but instead of beans make it with rice" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
+user_input =  "Can I get plain rice" #format_conversation(DUMMY_CONVERSATION)# Contains the user input
 global conversation  # Ensure conversation is treated as global
 conversation = []  # Contains the conversation history between the user and the system
 
@@ -200,12 +200,12 @@ def build_tree(conversation, process_user_input):
 
 def build_test_tree():
     # just for testing conditions and actions directly
-    root = py_trees.composites.Selector(name="Test Tree\n?", memory=False)
+    root = py_trees.composites.Sequence(name="Test Tree\n?", memory=False)
 
-    run_safety_check = RunSafetyCheck(name="Run Safety Check", conversation=conversation) 
+    check_capability = CheckCapability(name="Check Capability", conversation=conversation)
 
 
-    root.add_children([run_safety_check])                                         # Level 0
+    root.add_children([check_capability])                                         
 
     return root
 
@@ -236,25 +236,25 @@ def process_user_input(user_input):
     if FURHAT and not FURHAT_INIT:
         FURHAT_INIT = True
         #state.var_furhat = initialize_furhat(FURHAT_IP_ADDRESS, FURHAT_VOICE_NAME)
-        state.var_furhat.say(text = "Hello! I am Gregory your home assistant. How can I help you today?")
-        conversation = [{"role": "assistant", "content": "Hello! I am Gregory your home assistant. How can I help you today?"}]
+        state.var_furhat.say(text = "Hello! I am Gregory, your home assistant. How can I help you today?")
+        conversation = [{"role": "assistant", "content": "Hello! I am Gregory, your home assistant. How can I help you today?"}]
         recorded_speech = record_speech(state.var_furhat)
         conversation.append({"role": "user", "content": recorded_speech})
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
         print("Tree is initialized and furhat is used")
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory your home assistant. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized and furhat is used" + "\n" + "\nAssistant: Hello! I am Gregory, your home assistant. How can I help you today?" + "\nUser: " + recorded_speech + "\n" 
         
     elif state.var_furhat is None:
         state.var_furhat = "furhat not used in this run"
         tree = build_tree(conversation, process_user_input)
         behaviour_tree = py_trees.trees.BehaviourTree(root=tree)
-        conversation.append({"role": "assistant", "content": "Hello! I am Gregory your home assistant. How can I help you today?"})
+        conversation.append({"role": "assistant", "content": "Hello! I am Gregory, your home assistant. How can I help you today?"})
         conversation.append({"role": "user", "content": user_input})
-        print("Assistant: Hello! I am Gregory. How can I help you today?")
+        print("Assistant: Hello! I am Gregory, your home assistant. How can I help you today?")
         print("user input: ", user_input)
         print("Tree is initialized but furhat is not")        
-        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory. How can I help you today?" + "\nUser: " + user_input + "\n" 
+        state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") +  "\n" + "Tree is initialized but furhat is not" + "\n" + "\nAssistant: Hello! I am Gregory, your home assistant. How can I help you today?" + "\nUser: " + user_input + "\n" 
 
     if user_input != "esc":
         behaviour_tree.tick()
@@ -288,9 +288,9 @@ def reset_variables():
     state.var_generated_sequence_ok = False
     state.var_generated_sequence_name = ""
     state.var_func_run = 0
+    state.var_turns = 0 # Reset the number of turns
     state.var_transcript = ""
     state.var_capable = False
-    state.var_turns = 0
     state.var_abort = False
 
 # Full BT is called with the user input
@@ -303,8 +303,8 @@ if not DEBUG:
             print("The conversation has been aborted")
             break
         state.var_run += 1
-        reset_variables()
-        state.var_turns = 0 # Reset the number of turns
+        reset_variables()        
+
         state.var_total_llm_calls = 0 # Reset the total number of LLM calls
         print("Run: ", state.var_run)
         if BASELINE:

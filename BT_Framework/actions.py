@@ -12,6 +12,7 @@ import json
 import random
 import numpy as np
 import time
+import re
 
 client = OpenAI()
 
@@ -74,16 +75,16 @@ class PrintAmbiguousAnswer(py_trees.behaviour.Behaviour):
                 ]
             
             # this is where shots are added
-            first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Hello there, I'm hungry. What can I eat?"}
+            first_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Hello there, I'm hungry. What can I eat?"}
             first_shot_answer = {"role": "assistant", "content": "There are multiple options in my list that might fit your order. I can help you with the hunger. Here are some suggestions to fight your hunger: \n1. A 'peanut butter and jelly sandwich' is a classic \n2. A 'bacon and egg sandwich' or \n 3. Some 'pancakes with maple syrup and berries'. \nWhich one would you like to have?"}
 
-            second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I can you make me hachapuri"}
+            second_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: I can you make me hachapuri"}
             second_shot_answer = {"role": "assistant", "content": "There are multiple options in my list that might fit your order. I understand you're looking for 'hachapuri'. Unfortunately, that isn't part of the recipes I know how to make. However, I can offer you some of my known actions like \n a 'bean and cheese quesadilla' or \n a 'grilled tomato and mushroom bruschetta' or \n a 'tortilla with tomatoes, beans, and egg (huevos rancheros)'. \nPlease let me know if any of these options interest you, or if you have any other preferences or requests."}
             
-            third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
+            third_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: um I'm not sure what to eat\nAssistant: Hello! If you're not sure what to eat, here are a few options you can consider:\n1. Pancakes with maple syrup and berries\n2. Full English breakfast\n3. Vegetable stir fry with rice\nLet me know if any of these options sound good to you, or if you need more suggestions!\nUser: what do you recommend"} 
             third_shot_answer = {"role": "assistant", "content": "There are multiple options in my list that might fit your order. If you want a hearty breakfast, I recommend the 'full English breakfast'. It's a classic English breakfast with eggs, bacon, sausage, beans, mushrooms and toast. Would you like that?"}
 
-            fourth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help\nUser: um can i get the bacon and accent please"}
+            fourth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: um can i get the bacon and accent please"}
             fourth_shot_answer = {"role": "assistant", "content": "There are multiple options in my list that might fit your order. Did i understand it right that you're looking for a 'bacon and egg sandwich'. I can prepare that for you. Or would you like something else?"}
 
             formatted_conversation = format_conversation(conversation)
@@ -204,7 +205,56 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             state.var_transcript += "The LLM variable is set to False. Therefore, I cannot help you at the moment. The Large Language Model is not available.\n"
             state.var_transcript += "Time: " + time.strftime("%c") + "\n"
 
+        KnowNo_bool = self.KnowNo_legit(state.var_KnowNo)
+        if not KnowNo_bool:
+            self.correct_knowno()
+
+        #print("The var_KnowNo list after the correction: ", state.var_KnowNo)
         return py_trees.common.Status.SUCCESS
+    
+    def correct_knowno(self):
+        """
+        This function corrects the var_KnowNo list if it contains actions that are not part of the known sequences. Unknown actions are deleted from the list.
+        """
+        with open('sequences.json', 'r') as f:
+            known_sequences = json.load(f)
+        known_sequences_json = json.dumps(known_sequences)
+
+        print("The var_KnowNo list before the correction: ", state.var_KnowNo)
+        print("it contains a number of : ", len(state.var_KnowNo), " actions.")
+
+        # Create a filtered list that keeps only known actions or 'something else'
+        state.var_KnowNo = [action for action in state.var_KnowNo if action in known_sequences_json or action == "something else"]
+
+        # make sure something else is not 2 times in the list 
+        # first see if it contains something else
+        if state.var_KnowNo.count("something else") > 1:
+            state.var_KnowNo = [action for action in state.var_KnowNo if action != "something else"]
+            state.var_KnowNo.append("something else")
+
+        # make sure its not empty and at least add 'something else' if it is
+        if len(state.var_KnowNo) == 0:
+            state.var_KnowNo.append("something else")
+
+        
+    
+    def KnowNo_legit(self, var_KnowNo):
+        """
+        Checks if the KnowNo list is legitimate, by checking if each element is part of the known sequence list or says "something else".
+        """
+        with open('sequences.json', 'r') as f:
+            known_sequences = json.load(f)
+        known_sequences_json = json.dumps(known_sequences)
+
+        for action in var_KnowNo:
+            if action not in known_sequences_json:
+                if action != "something else":
+                    print("The action: ", action, " is not part of the known sequences.")
+                    return False
+       
+
+        return True
+    
     
     def fill_var_KnowNo(self, logprobs, the_options_list):
         """
@@ -254,7 +304,7 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         #print('Scaled logits:', smx)
         return smx
 
-    def create_mc_KnowNo(self, conversation):   
+    def create_mc_KnowNo(self, conversation):
         """
         This function creates the multi-choice messages for the KnowNo-framework.
         """
@@ -263,41 +313,63 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             print("Exceeded the maximum number of LLM calls.")
             state.var_transcript += "Exceeded the maximum number of LLM calls.\n"
             state.var_transcript += "Time: " + time.strftime("%c") + "\n"
-            return "I'm sorry, I cannot help you at the moment.The maximum number of LLM calls has been exceeded."
+            return "I'm sorry, I cannot help you at the moment. The maximum number of LLM calls has been exceeded."
+        
         state.var_total_llm_calls += 1
-        #print("number of total llm calls was raised to: ", state.var_total_llm_calls)
-
 
         predefined_messages_KnowNo = [
-                    {"role": "system", "content": PRE_PROMPT_KNOWNO.format(FORMAT_SCHEME)},
-                    {"role": "user", "content": "I want the bacon and egg sandwich."},
-                    {"role": "assistant", "content": FIRST_SHOT},
-                    {"role": "user", "content": "Hey, I'm hungry, what can I eat?"},
-                    {"role": "assistant", "content": SECOND_SHOT_ASSISTANT_ANSWER},
-                    {"role": "user", "content": "I'll have option 2."},
-                    {"role": "assistant", "content": SECOND_SHOT}
-                ]
-        messages = predefined_messages_KnowNo + conversation # Start with the predefined context.
-        # to see the messages
-        #for message in messages:
-        #    print(message["content"])
+            {"role": "system", "content": PRE_PROMPT_KNOWNO.format(FORMAT_SCHEME)},
+            {"role": "user", "content": "I want the bacon and egg sandwich."},
+            {"role": "assistant", "content": FIRST_SHOT},
+            {"role": "user", "content": "Hey, I'm hungry, what can I eat?"},
+            {"role": "assistant", "content": SECOND_SHOT_ASSISTANT_ANSWER},
+            {"role": "user", "content": "I'll have option 2."},
+            {"role": "assistant", "content": SECOND_SHOT}
+        ]
+
+        messages = predefined_messages_KnowNo + conversation  # Start with the predefined context.
 
         try:
             # Make the API call
             completion = client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    # response_format={ "type": "json_object" },
-                    messages=messages
-                    )
+                model="gpt-4o-mini",
+                messages=messages
+            )
             
-            # Extract and return the response content
-            #print("The choices are: ", completion.choices[0].message.content)
-            return completion.choices[0].message.content
+            # Extract the result
+            result = completion.choices[0].message.content.strip()
+
+            # Try to detect and extract the JSON part using regex
+            json_match = re.search(r'\{.*\}', result, re.DOTALL)
+            
+            if json_match:
+                # Extract the JSON part
+                json_str = json_match.group(0)
+                try:
+                    # Parse the JSON part
+                    json_result = json.loads(json_str)
+                    return json_result
+                except json.JSONDecodeError:
+                    # Handle failed JSON parsing even after extraction
+                    print("Failed to parse extracted JSON. Received result:", json_str)
+                    state.var_transcript += "Error: Failed to parse extracted JSON.\n"
+                    state.var_transcript += "Time: " + time.strftime("%c") + "\n"
+                    return {"choices": [{"action": "something else"}]}  # Fallback content
+
+            else:
+                # If no JSON found in the response
+                print("No JSON found in the response. Received result:", result)
+                state.var_transcript += "Error: No JSON found in the response.\n"
+                state.var_transcript += "Time: " + time.strftime("%c") + "\n"
+                return {"choices": [{"action": "something else"}]}  # Fallback content
+        
+            
         except Exception as e:
             print(f"Error in LLM call: {e}")
             state.var_transcript += "Error in LLM call: " + str(e) + "\n"
             state.var_transcript += "Time: " + time.strftime("%c") + "\n"
             return "Failed LLM call"
+
     
     def get_logprobs(self, options, conversation):
         """
@@ -388,31 +460,34 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
         This function processes the raw output from the LLM for the multi-choice options.
         """
         mc_processed_all = []
-        
-        # Assuming mc_raw is a JSON string
-        #print("mc_raw: ", mc_raw)
-        try:
-            mc_gen_raw_json = json.loads(mc_raw)
-        except json.JSONDecodeError as e:
-            print("Error decoding JSON:", e)
-            raise Exception('Invalid JSON format in mc_raw.')
+
+        # mc_raw is now expected to be a dictionary (already parsed JSON), so we don't need to parse it again.
+        mc_gen_raw_json = mc_raw
 
         # Now mc_gen_raw_json is a dictionary, we access its 'choices' key
+        if "choices" not in mc_gen_raw_json:
+            raise Exception("Missing 'choices' key in mc_raw.")
+
         for choice in mc_gen_raw_json["choices"]:
             # Combine the option and action into a single string
             option_action = f"{choice['action']}"
             # Append the combined string to the list
             mc_processed_all.append(option_action)
-        
-        # Check if any repeated option - use do nothing as substitue
+
+        # Remove duplicates
         mc_processed_all = list(set(mc_processed_all))
+
+        # Ensure there are at least 4 options, fill with 'do nothing' if needed
         while len(mc_processed_all) < 4:
             mc_processed_all.append('do nothing')
 
+        # Prepare prefixes
         prefix_all = ['A) ', 'B) ', 'C) ', 'D) ']
         if add_mc is not None:
             mc_processed_all.append(add_mc)
             prefix_all.append('E) ')
+        
+        # Shuffle the options randomly
         random.shuffle(mc_processed_all)
 
         # Ensure 'something else' is the last option
@@ -420,15 +495,19 @@ class KnowNoMapping(py_trees.behaviour.Behaviour):
             mc_processed_all.remove(add_mc)
         mc_processed_all.append(add_mc)
 
-        # get full string
+        # Create the final prompt
         mc_prompt = ''
         for mc_ind, (prefix, mc) in enumerate(zip(prefix_all, mc_processed_all)):
             mc_prompt += prefix + mc
             if mc_ind < len(mc_processed_all) - 1:
                 mc_prompt += '\n'
+
+        # Add prefix for 'something else'
         add_mc_prefix = prefix_all[mc_processed_all.index(add_mc)][0]
 
         return mc_prompt, mc_processed_all, add_mc_prefix
+
+
 
 class ExecuteAction(py_trees.behaviour.Behaviour):
     """
@@ -463,7 +542,7 @@ class ExecuteAction(py_trees.behaviour.Behaviour):
         """
         #choices =  ['bacon and egg sandwich', 'avocado toast with sausage on the side', 'peanut butter and jelly sandwich', 'vegetable stir fry with rice', 'pancakes with maple syrup and berries', 'full English breakfast', 'tortilla with tomatoes beans and egg (huevos rancheros)', 'bean and cheese quesadilla', 'grilled tomato and mushroom bruschetta', 'clean living room floor']
         #random_choice = random.choice(choices)
-        response = "Great choice! I will start the task for {}.".format(state.var_KnowNo[0])
+        response = "Great choice! I will get the task for {} started.".format(state.var_KnowNo[0])
         return response
 
 class ExecuteNewSequence(py_trees.behaviour.Behaviour):
@@ -566,8 +645,11 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             fourth_shot = {"role": "user", "content": "User: can i get the bacon and egg sandwich but can you add five times the ammount of bacon?"}
             fourth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (bacon, eggs and bread) that can be found in the list of known ingredients (No. 3, 10 and 6) and a reasonable modification (adding five times the ammount of bacon), making it feasible for me to execute."}
             
-            fifth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't on the list. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
+            fifth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't on the list. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
             fifth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (avocado) that can be found in the list of known ingredients (No. 1), making it feasible for me to execute."}
+
+            sixth_shot = {"role": "user", "content": "ssistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Can I get plain rice?"}
+            sixth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (rice) that can be found in the list of known ingredients (No. 2), making it feasible for me to execute."}
 
             formatted_conversation = format_conversation(conversation)
 
@@ -954,6 +1036,9 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
                 response += "\nLet me know which option suits you best."
             else:
                 response += "\nOr do you want me to do something else?"
+        # if only sth else is in the list then the response should be different
+        if len(state.var_KnowNo) == 1 and state.var_KnowNo[0] == "something else":
+            response = "I'm sorry, but I couldn't fully understand your request. Can you provide more information or specify your request in a different way?"
         self.conversation.append({"role": "assistant", "content": response})
 
         if FURHAT:
@@ -965,6 +1050,11 @@ class AskUserToSpecifyWithKnowNo(py_trees.behaviour.Behaviour):
         formatted_conversation = format_conversation(self.conversation)
         #print("The conversation log after asking the user to specify their request with KnowNo: ", formatted_conversation)
 
+        state.var_known = False
+        state.var_one = False
+        state.var_inf = False
+        state.var_seq_ok = False
+        state.var_KnowNo = []  # List of actions that could map to the user input
         return py_trees.common.Status.SUCCESS
 
 class SetVarKnownTrue(py_trees.behaviour.Behaviour):

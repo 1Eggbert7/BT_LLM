@@ -83,7 +83,10 @@ class CheckForAmbiguity(py_trees.behaviour.Behaviour):
                 seventh_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: What can you do?"}
                 seventh_shot_answer = {"role": "system", "content": "True"}
 
-                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, sixth_shot, sixth_shot_answer, seventh_shot, seventh_shot_answer]
+                eighth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: You will help me out greatly if you would create me some pancakes without zero and without berries but instead put rice on it."}
+                eighth_shot_answer = {"role": "system", "content": "False"}
+
+                predefined_messages_ambiguous = predefined_messages_ambiguous + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, sixth_shot, sixth_shot_answer, seventh_shot, seventh_shot_answer, eighth_shot, eighth_shot_answer]
 
             else:
 
@@ -291,23 +294,26 @@ class CheckForNewSeq2(py_trees.behaviour.Behaviour):
                     {"role": "system", "content": PRE_PROMPT_NEW_SEQ_DOUBLE_CHECK}
                 ]
            
-            first_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?"}
+            first_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Can you make me a dish with bacon, a fried egg, toast, beans, tomatoes, sausages, bacon and mushrooms?"}
             first_shot_answer = {"role": "system", "content": "False"}
 
-            second_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: I'm hungry, what can I eat?\nAssistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Let me know if any of these options sound good to you, or feel free to provide more details for a tailored recommendation!\nUser: I want the bacon and egg sandwich, but can you add extra bacon?"}
+            second_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: I'm hungry, what can I eat?\nAssistant: You can have a bacon and egg sandwich, avocado toast with sausage on the side, or a peanut butter and jelly sandwich. Let me know if any of these options sound good to you, or feel free to provide more details for a tailored recommendation!\nUser: I want the bacon and egg sandwich, but can you add extra bacon?"}
             second_shot_answer = {"role": "system", "content": "True"}
 
-            third_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today?\nUser: Hello how are you?\nAssistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?\nUser: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving of syrup please."}
+            third_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Hello how are you?\nAssistant: I'm doing well, thank you! How can I assist you today? Would you like some pancakes with maple syrup and berries, a full English breakfast, or a bean and cheese quesadilla? Or do you have something else in mind?\nUser: I'm in the mood for some pancakes with maple syrup and berries, make it a double serving of syrup please."}
             third_shot_answer = {"role": "system", "content": "True"}
 
-            fourth_shot = {"role": "user", "content": "Assistant: Hello I'm Gregory! How can I help you today\nUser: yes um I want the pancakes but with the outdoor berries and double the amount of syrup please\nAssistant: I'm sorry, your request was classified to be unsafe and or unfeasible. The reason is: The user's request involves an unknown ingredient (outdoor berries) that is not included in the list of known ingredients. Additionally, while maple syrup is a known ingredient, the request to double the amount implies a large quantity, which could exceed feasible limits. Therefore, the request is not feasible for the assistant to execute.\nUser: can you make me the pancakes without berries and just syrup"}
+            fourth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: yes um I want the pancakes but with the outdoor berries and double the amount of syrup please\nAssistant: I'm sorry, your request was classified to be unsafe and or unfeasible. The reason is: The user's request involves an unknown ingredient (outdoor berries) that is not included in the list of known ingredients. Additionally, while maple syrup is a known ingredient, the request to double the amount implies a large quantity, which could exceed feasible limits. Therefore, the request is not feasible for the assistant to execute.\nUser: can you make me the pancakes without berries and just syrup"}
             fourth_shot_answer = {"role": "system", "content": "True"}
+
+            fifth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Can I get plain rice?"}
+            fifth_shot_answer = {"role": "system", "content": "True"}
 
             formatted_conversation = format_conversation(conversation)
             #print("Formatted conversation: ", formatted_conversation)
             convo_to_add = {"role": "user", "content": formatted_conversation}
             
-            messages = predefined_messages_new_sequence + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, convo_to_add] 
+            messages = predefined_messages_new_sequence + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, convo_to_add]
             #print("Messages for New Sequence: ", messages)
 
             # Make the API call
@@ -499,7 +505,7 @@ class CheckForKnown(py_trees.behaviour.Behaviour):
         
 class CheckVarKnowNo(py_trees.behaviour.Behaviour):
     """
-    This condition checks if var_KnowNo only contains one action. If this is false then it contains more than one action. 0 is not possible.
+    This condition checks if var_KnowNo only contains one action. If this is false then it contains more than one action or just 'something else'. 0 is not possible.
     """
 
     def __init__(self, name):
@@ -508,6 +514,8 @@ class CheckVarKnowNo(py_trees.behaviour.Behaviour):
     def update(self):
         if len(state.var_KnowNo) == 1:
             #print("var_KnowNo has only one action", state.var_KnowNo)
+            if state.var_KnowNo[0] == 'something else':
+                return py_trees.common.Status.FAILURE
             return py_trees.common.Status.SUCCESS
         #print("var_KnowNo has more than one action", state.var_KnowNo)
         return py_trees.common.Status.FAILURE

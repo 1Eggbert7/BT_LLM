@@ -19,8 +19,8 @@ def run_baseline():
     if FURHAT:
         state.var_transcript = "Version: " + VERSION + "\n" + time.strftime("%c") + "\n" + "Furhat is being used with Baseline" + "\n"
         if state.var_run == 1:
-            speak(state.var_furhat, "Hello I am Gregory. How can I help you today?")
-            state.var_transcript += "Assistant: " + "Hello I am Gregory. How can I help you today?" + "\n"
+            speak(state.var_furhat, "Hello! I am Gregory, your home assistant. How can I help you today?")
+            state.var_transcript += "Assistant: " + "Hello! I am Gregory, your home assistant. How can I help you today?" + "\n"
             state.var_turns += 1 # increment the number of turns
         else:
             time.sleep(2)
@@ -46,6 +46,7 @@ def run_baseline():
             state.var_transcript += "Time: " + time.strftime("%c") + "\n"
         
         state.var_turns += 1 # increment the number of turns because the user has responded
+        print("did increment turns, we are at: ", state.var_turns)
 
         if user_input == "esc": #  not sure if this will work because its just a small window where the user can type 
             #if FURHAT:
@@ -63,10 +64,11 @@ def run_baseline():
         if response_contains_json:
             print("response contains json detected!!!")
             model_response_without_json = model_response.split("Here's the new sequence in JSON format")[0]
+            model_response_without_json = model_response_without_json.split("Here’s the new sequence in JSON format")[0] # for the case where the apostrophe is used
             if check_json(model_response_without_json):
                 print("response still contains json!!!")
                 model_response_without_json = model_response_without_json.split("{")[0]
-                model_response_without_json += "\nI will skip this part where I read the sequence in JSON format out to you."
+                model_response_without_json += "\nI will skip this part where I read the sequence in JSON format out to you." 
             # add "I will now make the new recipe for you" to the transcript
             model_response_without_json += "\nI will now follow the steps to fulfill this task."
             print("Assistant: ", model_response_without_json)
