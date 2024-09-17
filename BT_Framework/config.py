@@ -4,7 +4,7 @@
 
 DEBUG = False           # True when debugging is enabled
 RUNS = 5               # Number of runs for the system
-BASELINE = False        # True when the baseline system is being used
+BASELINE = True        # True when the baseline system is being used
 MAX_LLM_CALL = 40       # Maximum number of calls to the LLM
 LLM = True              # True when LLMs are being used
 FURHAT = True           # True when Furhat is being used

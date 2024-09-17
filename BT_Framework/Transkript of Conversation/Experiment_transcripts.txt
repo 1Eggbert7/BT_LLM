@@ -808,10 +808,14 @@ Total number of LLM calls: 10
 
 
 Notes:
-  Time:
-  BT Framework
+  Time: 14:15-14:50
+  Overall STT racted badly and I accidently stopped after Task 4. Participant was asking for multiple dishes at task 3 instead of modifying one
+  BT Framework:
+    - laundry got misunderstood (not recorded at all) 4 times
+
    
   Baseline:
+    - Task 3 when asking for suggestions it listed 9 things (all food items) and overall long responses
 
 
 End of Participant 03 experiment
@@ -1084,10 +1088,17 @@ Total number of LLM calls: 2
 
 
 Notes:
-  Time: 
-  BT Framework
+  Time: 15:30-16:05
+  Overall STT was bad on this one, need participants to put more focus on clear and loud speech
+  BT Framework:
+    - Ambiguous answer was bad when asking for sth
+    - STT was reacting badly
+    - Program (VS CODE) hung up and stopped completly, had to restart...
+    - safety check didn't let the brushetta without mushrooms go trough...
     
   Baseline:
+    - STT reacted better
+    - less problems therefore maybe rated better...
     
 End of Participant 04 experiment
 
@@ -1324,10 +1335,13 @@ Total number of LLM calls: 7
 
 Notes:
   Time: 13:05-13:40
+  One of the best participants when it comes to speaking clearly and waiting for robot responses and asking the right questions by knowing the tasks
 
   BT:
+    - long seq gen made it a little bit awkward
 
   Base:
+    - Task 4 & 5 were done in one so run 5 for task 5 was skipped
 
 End of Participant 05 experiment
 
@@ -1621,7 +1635,11 @@ This run took 5 turns
 Total number of LLM calls: 2
 
 Notes: 14:18-14:48
-
+  Overall this participant was not patient with the robot and started speaking quickly after robot finished and was annoyed by the furhat taking time to answer. Probably judged BT worse than base because of longer response time.
+  BT: 
+    long pauses made it awkward
+  Base:
+    STT was bad at times but quicker response time was appreciated
 
 End of Paricipant 06 experiment
 
@@ -1916,6 +1934,10 @@ This run took 11 turns
 Total number of LLM calls: 15
 
 Notes: 15:20-15:50
+  Mostly fine. General suggestion/complaint at the end was that its hard to rate competence when no actual cooking was done...
+  BT:
+    - when explaining full english breakfast without egg modification in task 3, it listed all steps with numbers (14 steps...) which was long and annoying and probably made the user like the baseline more. Usually the BT here is supposed to keep the answer moderate in explaining the new sequence and not list 14 steps...
+
 
 
 End of Paricipant 07 experiment
@@ -2289,6 +2311,9 @@ This run took 5 turns
 Total number of LLM calls: 1
 
 Notes: 16:07-16:38
+  Mixed the task together, for example asked for suggestions in task one and modified it right after. Did it for all 5 tasks with both versions though, so its not necessarily an outlier since both system were tested to their extent.
+
+  Suggested that answers contain too much text and response time too long to make it feel more natural (not the point of my study tho)
 
 
 End of Paricipant 08 experiment
@@ -2559,6 +2584,281 @@ This run took 5 turns
 Total number of LLM calls: 7
 
 Notes: 16:57-17:29
+  Worst one so far because furhat stopped talking, maybe cause i used the web interface to say something. It didn't speak after the first "Hello how can I help you" even tho text was generated. Upon restart Furhats voice couldn't be set to Gregory neural so it was entirely conducted in the default voice.
+  The participant had a rather quiet voice so the Speech-to-Text recognition was bad a couple times.
+  Could be a potential elimination of the study...
+  Overall rather disasterous run
 
 
 End of Paricipant 09 experiment
+
+
+
+
+
+
+
+Participant 10
+RunID B
+Version: 1.3
+Tue Sep 17 18:19:29 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: hello Gregory in the room floor 
+Is it ambiguous? True
+Time: Tue Sep 17 18:19:29 2024
+Assistant: It seems like you are requesting to clean the living room floor. I can certainly assist with that! I will clean the living room floor by removing any clutter, sweeping to remove dust and debris, and then mopping it thoroughly. Is that what you would like me to do?
+Time: Tue Sep 17 18:19:30 2024
+User: me to do yes that's perfect 
+Time: Tue Sep 17 18:19:49 2024
+Is it ambiguous? False
+Time: Tue Sep 17 18:19:50 2024
+Is it known? True
+Time: Tue Sep 17 18:19:51 2024
+var_KnowNo: ['clean living room floor']
+Time: Tue Sep 17 18:19:52 2024
+Does it map to the action in var_KnowNo? True
+Time: Tue Sep 17 18:19:53 2024
+Assistant: Great choice! I will get the task for clean living room floor started.
+Time: Tue Sep 17 18:19:53 2024
+Run number: 1 ended at: Tue Sep 17 18:19:53 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Run: 2
+Tue Sep 17 18:20:13 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello hello there I would like to have something from the menu that is uh healthy 
+Is it ambiguous? True
+Time: Tue Sep 17 18:20:14 2024
+Assistant: There are multiple options in my list that might fit your order. For a healthy choice, I would suggest:
+1. 'Avocado toast with sausage on the side' - it's nutritious and delicious.
+2. 'Vegetable stir fry with rice' - packed with vegetables.
+3. 'Grilled tomato and mushroom bruschetta' - light and flavorful.
+
+Let me know which option sounds good to you, or if you have something specific in mind!
+Time: Tue Sep 17 18:20:15 2024
+User: I would like uh to have the grilled tomato and mushroom bruschetta 
+Time: Tue Sep 17 18:20:48 2024
+Is it ambiguous? False
+Time: Tue Sep 17 18:20:49 2024
+Is it known? True
+Time: Tue Sep 17 18:20:49 2024
+var_KnowNo: ['grilled tomato and mushroom bruschetta']
+Time: Tue Sep 17 18:20:51 2024
+Does it map to the action in var_KnowNo? True
+Time: Tue Sep 17 18:20:51 2024
+Assistant: Great choice! I will get the task for grilled tomato and mushroom bruschetta started.
+Time: Tue Sep 17 18:20:51 2024
+Run number: 2 ended at: Tue Sep 17 18:20:51 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Run: 3
+Tue Sep 17 18:21:15 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: no I would like to have uh the bacon and egg sandwich some cheese on it 
+Is it ambiguous? False
+Time: Tue Sep 17 18:21:16 2024
+Is it known? False
+Time: Tue Sep 17 18:21:16 2024
+Is it within the capabilities of the robot? True
+Time: Tue Sep 17 18:21:17 2024
+Is a new sequence requested?: True
+Time: Tue Sep 17 18:21:17 2024
+Is a new sequence actually requested? True
+Time: Tue Sep 17 18:21:18 2024
+Did it pass the safety check?: True
+Explanation: The request involves known ingredients (bacon, eggs, bread, and cheese) that can be found in the list of known ingredients (No. 3, 10, 6, and 9), and a reasonable modification (adding cheese), making it feasible for me to execute.
+Time: Tue Sep 17 18:21:20 2024
+The generated sequence is: {"sequence": [{"step": "1", "action": "toast_bread(2)"}, {"step": "2", "action": "fry_eggs(1)"}, {"step": "3", "action": "initiate_sandwich(toasted_bread)"}, {"step": "4", "action": "place_on_sandwich(fried_egg, 1)"}, {"step": "5", "action": "cook_bacon(2)"}, {"step": "6", "action": "place_on_sandwich(fried_bacon, 2)"}, {"step": "7", "action": "place_on_sandwich(cheese, 1)"}, {"step": "8", "action": "place_on_sandwich(toasted_bread, 1)"}, {"step": "9", "action": "serve()"}]}
+Time: Tue Sep 17 18:21:22 2024
+Assistant: To fulfill your request for a bacon and egg sandwich with cheese, I will perform the following steps:
+
+First, I'll toast two slices of bread. 
+Next, I'll fry one egg. 
+Then, I'll initiate the sandwich using the toasted bread. 
+After that, I'll place the fried egg on the sandwich. 
+Following that, I'll cook two pieces of bacon and place them on the sandwich as well. 
+I'll add one slice of cheese to the sandwich. 
+Then, I'll top it off with the second slice of toasted bread. 
+Finally, I'll serve the sandwich. 
+
+Does this sequence sound good to you?
+Time: Tue Sep 17 18:21:24 2024
+var_generated_sequence_name is: bacon and egg cheese sandwich
+Time: Tue Sep 17 18:21:24 2024
+Total listened:sounds perfect to me 
+Time: Tue Sep 17 18:22:02 2024
+Assistant: Great then I will now proceed to make the: bacon and egg cheese sandwich
+Time: Tue Sep 17 18:22:04 2024
+Run number: 3 ended at: Tue Sep 17 18:22:04 2024
+This run took 4 turns
+Total number of LLM calls: 8
+
+Run: 4
+Tue Sep 17 18:22:25 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello I would like you to the the ceiling 
+Is it ambiguous? True
+Time: Tue Sep 17 18:22:25 2024
+Assistant: It seems that your request is a bit unclear. Are you asking for help with cleaning the ceiling? Unfortunately, I don't have the capability to clean ceilings. However, I can assist with cleaning the living room floor if that would help. Please let me know how you would like to proceed!
+Time: Tue Sep 17 18:22:26 2024
+User: I would like you to to paint the the table 
+Time: Tue Sep 17 18:22:50 2024
+Is it ambiguous? True
+Time: Tue Sep 17 18:22:51 2024
+Assistant: I apologize, but painting is outside the scope of my capabilities. However, I can help with cleaning tasks or preparing a meal. For example, I can clean the living room floor or cook something delicious for you. Let me know how you would like to proceed!
+Time: Tue Sep 17 18:22:52 2024
+User: Haven you can clean the living room 
+Time: Tue Sep 17 18:23:14 2024
+Is it ambiguous? True
+Time: Tue Sep 17 18:23:14 2024
+Assistant: There are multiple options in my list that might fit your order. I can certainly help with cleaning, specifically the living room floor. I will clean the living room floor by removing any clutter, sweeping, and mopping to ensure it's thoroughly clean. Would you like me to go ahead with that?
+Time: Tue Sep 17 18:23:16 2024
+User: yes that's just fine 
+Time: Tue Sep 17 18:23:35 2024
+Is it ambiguous? False
+Time: Tue Sep 17 18:23:36 2024
+Is it known? True
+Time: Tue Sep 17 18:23:36 2024
+var_KnowNo: ['clean living room floor']
+Time: Tue Sep 17 18:23:40 2024
+Does it map to the action in var_KnowNo? True
+Time: Tue Sep 17 18:23:40 2024
+Assistant: Great choice! I will get the task for clean living room floor started.
+Time: Tue Sep 17 18:23:40 2024
+Run number: 4 ended at: Tue Sep 17 18:23:40 2024
+This run took 9 turns
+Total number of LLM calls: 11
+
+Run: 5
+Tue Sep 17 18:24:07 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello how can I help you today I would like to order the I don't remember yeah can you make me a toast 
+Is it ambiguous? True
+Time: Tue Sep 17 18:24:08 2024
+Assistant: There are multiple options in my list that might fit your order. It seems you're asking for toast, but I'm not sure if you meant something specific. I can prepare 'avocado toast with sausage on the side' or 'peanut butter and jelly sandwich', both of which involve toast. Could you please clarify your preference?
+Time: Tue Sep 17 18:24:09 2024
+User: I think I would choose the 1 with peanut butter 
+Time: Tue Sep 17 18:24:33 2024
+Is it ambiguous? False
+Time: Tue Sep 17 18:24:33 2024
+Is it known? True
+Time: Tue Sep 17 18:24:34 2024
+var_KnowNo: ['peanut butter and jelly sandwich']
+Time: Tue Sep 17 18:24:35 2024
+Does it map to the action in var_KnowNo? True
+Time: Tue Sep 17 18:24:36 2024
+Assistant: Great choice! I will get the task for peanut butter and jelly sandwich started.
+Time: Tue Sep 17 18:24:36 2024
+Run number: 5 ended at: Tue Sep 17 18:24:36 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Version: 1.3
+Tue Sep 17 18:28:32 2024
+Furhat is being used with Baseline
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: hello Gregory uh I am hungry so I would like to order agreed tomato and mushroom bruschetta 
+Time: Tue Sep 17 18:28:49 2024
+Assistant: Great choice! I will start the task for: grilled tomato and mushroom bruschetta.
+Time: Tue Sep 17 18:28:50 2024
+Run number: 1 ended at: Tue Sep 17 18:28:50 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Tue Sep 17 18:28:55 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: can you recommend sth sweet
+Time: Tue Sep 17 18:29:23 2024
+Assistant: It seems like you're looking for a sweet dish. Here are a few options I can help you prepare:
+
+1. **Pancakes with maple syrup and berries**
+2. **Peanut butter and jelly sandwich**
+3. **Avocado toast with sausage on the side** (if you want a sweet twist by adding jelly or toppings)
+
+Please let me know which specific option you prefer, and I can start the task for you!
+Time: Tue Sep 17 18:29:25 2024
+User: I choose or I would like to have the pancakes with maple syrup and berries that that sounds great 
+Time: Tue Sep 17 18:29:58 2024
+Assistant: Great choice! I will start the task for: pancakes with maple syrup and berries.
+Time: Tue Sep 17 18:29:59 2024
+Run number: 2 ended at: Tue Sep 17 18:29:59 2024
+This run took 2 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Tue Sep 17 18:30:02 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello there I would like to have pancakes syrup and strawberries is that possible 
+Time: Tue Sep 17 18:30:24 2024
+Assistant: Your request is slightly different from the pre-defined sequences. I can prepare pancakes with maple syrup, but I do not have strawberries as an ingredient in my list. 
+
+First, I will cook the pancakes and then place the maple syrup on the plate. 
+
+Here�s a new sequence in JSON format: 
+```json
+{
+  "task": "pancakes with maple syrup",
+  "ID": "5a",
+  "sequence": [
+    {"step": "1", "action": "cook_pancakes(3)"},
+    {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"},
+    {"step": "3", "action": "place_on_plate(maple_syrup, 1)"},
+    {"step": "4", "action": "serve()"}
+  ]
+}
+``` 
+
+Shall I proceed with this?
+Time: Tue Sep 17 18:30:26 2024
+Run number: 3 ended at: Tue Sep 17 18:30:26 2024
+This run took 3 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Tue Sep 17 18:30:51 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello there uh could you clean the living room floor 
+Time: Tue Sep 17 18:31:15 2024
+Assistant: Great choice! I will start the task for: clean living room floor.
+Time: Tue Sep 17 18:31:16 2024
+Run number: 4 ended at: Tue Sep 17 18:31:16 2024
+This run took 4 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Tue Sep 17 18:31:19 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hello could you clean the sleeping room floor 
+Time: Tue Sep 17 18:31:35 2024
+Assistant: I'm sorry, but I can only clean the living room floor based on my programmed capabilities. If you'd like, I can proceed with that task instead. Would you like me to clean the living room floor?
+Time: Tue Sep 17 18:31:36 2024
+User: no
+Time: Tue Sep 17 18:31:56 2024
+Assistant: That's perfectly fine! If there's anything else you would like assistance with, such as food preparation or cleaning tasks that I can perform, just let me know!
+Time: Tue Sep 17 18:31:57 2024
+User: okay can you make me make me some spaghetti 
+Time: Tue Sep 17 18:32:13 2024
+Assistant: I apologize, but making spaghetti is beyond my current capabilities. I can assist with several food preparation tasks like making bacon and egg sandwiches, avocado toast, and other dishes listed in my sequences. 
+
+If you have a different recipe you'd like me to help with from my capabilities, please let me know!
+Time: Tue Sep 17 18:32:13 2024
+User: skip
+Time: Tue Sep 17 18:32:40 2024
+Run number: 5 ended at: Tue Sep 17 18:32:40 2024
+This run took 5 turns
+Total number of LLM calls: 4
+
+Notes:
+  Time: 18:08-18:40
+  Older gentleman who said he had fun but didn't ask much about the experiment. Very clear and concise talking, good Participant
+
+End of Participant 10 experiment
