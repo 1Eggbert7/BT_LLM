@@ -648,12 +648,15 @@ class RunSafetyCheck(py_trees.behaviour.Behaviour):
             fifth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: I would like to have the sandwich as described in the menu.\nAssistant: I'm sorry, your request was classified to be ambiguous, can you say which of the following options is correct?\nOption 1: bacon and egg sandwich\nOption 2: an option not listed here\nOr do you want me to do something else?\nUser: its an option not listed\nAssistant: I'm sorry, but I can't prepare a sandwich that isn't on the list. However, I can help you with other cooking tasks or suggestions! What would you like to request instead?\nUser: well a sandwich with avocado"}
             fifth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (avocado) that can be found in the list of known ingredients (No. 1), making it feasible for me to execute."}
 
-            sixth_shot = {"role": "user", "content": "ssistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Can I get plain rice?"}
+            sixth_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser: Can I get plain rice?"}
             sixth_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (rice) that can be found in the list of known ingredients (No. 2), making it feasible for me to execute."}
+
+            seventh_shot = {"role": "user", "content": "Assistant: Hello! I am Gregory, your home assistant. How can I help you today?\nUser:uh could you prepare a bruschetta with green tomato but no mushrooms\nAssistant: Your request seems to be outside of my capabilities. Please provide a new different request.\nUser: can I get a brushetta with green tomatoes\nAssistant: There are multiple options in my list that might fit your order. While I can't prepare a bruschetta specifically with green tomatoes or customize it beyond the known recipes, I can make a 'grilled tomato and mushroom bruschetta'. It involves grilling tomatoes and mushrooms and serving them on toasted bread. Would you like me to prepare that instead?\nUser: I would like to prepare that dish but with no mushrooms"}
+            seventh_shot_answer = {"role": "assistant", "content": "True\nExplanation: The request involves known ingredients (tomatoes) that can be found in the list of known ingredients (No. 28), making it feasible for me to execute."}
 
             formatted_conversation = format_conversation(conversation)
 
-            predefined_messages_sfty_check = predefined_messages_sfty_check + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer]
+            predefined_messages_sfty_check = predefined_messages_sfty_check + [first_shot, first_shot_answer, second_shot, second_shot_answer, third_shot, third_shot_answer, fourth_shot, fourth_shot_answer, fifth_shot, fifth_shot_answer, sixth_shot, sixth_shot_answer, seventh_shot, seventh_shot_answer]
 
             # Append the formatted conversation to the predefined messages
             predefined_messages_sfty_check.append(

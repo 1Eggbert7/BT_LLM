@@ -45,6 +45,22 @@ DUMMY_CONVERSATION = [
 PRE_PROMPT_AMBIGUOUS = """
 Please classify the user input as either 'True' if it's ambiguous or 'False' if it's not. Respond strictly with only the word 'True' or 'False' and nothing else. Consider requests that lack specificity, invite a range of responses, or ask for suggestions as ambiguous. Identify specific requests with modifications, detailed actions, or sequences as non-ambiguous. Bear in mind that the user input is generated from speech-to-text technology, so illogical/weird sentences probably were misunderstood and should be classified as ambiguous. If unsure, err on the side of categorizing it as ambiguous.
 
+Your known sequences are: 
+'''
+{{
+    "bacon and egg sandwich": "Prepares a bacon and egg sandwich by toasting bread, cooking eggs, assembling the sandwich with cooked bacon, and serving.",
+    "avocado toast with sausage on the side": "Creates avocado toast accompanied by a grilled sausage on the side, starting with toasting bread and grilling the sausage before assembly and serving.",
+    "peanut butter and jelly sandwich": "Makes a peanut butter and jelly sandwich by toasting bread, spreading peanut butter on one slice and jelly on the other, combining them, and serving.",
+    "vegetable stir fry with rice": "Prepares a vegetable stir fry with rice by cooking rice, preparing and cooking vegetables, plating the rice and vegetables together, adding sauce, and serving.",
+    "pancakes with maple syrup and berries": "Cooks pancakes, plates them, adds maple syrup and berries on top, and serves. The process includes mixing batter, cooking the pancakes, and assembling the final dish with toppings.",
+    "full English breakfast": "Prepares a full English breakfast by cooking sausages, bacon, tomatoes, and mushrooms, toasting bread, heating beans, and frying an egg. Each cooked component is placed on a plate as it's ready. The meal is served with all items arranged together on the plate, providing a hearty and traditional breakfast experience.",
+    "tortilla with tomatoes beans and egg (huevos rancheros)": "Prepares huevos rancheros by first cooking tomatoes and then heating beans. An egg is cooked to the desired doneness. A tortilla is prepared and placed on a plate, followed by the heated beans, cooked tomatoes, and the egg. The dish is served as a flavorful and hearty breakfast option.",
+    "bean and cheese quesadilla": "Makes a bean and cheese quesadilla by heating beans and preparing a tortilla. The prepared tortilla is placed on a plate, topped with the heated beans and grated cheese. The quesadilla is then cooked until the cheese melts and the tortilla is golden brown. The cooked quesadilla is placed back on the plate and served hot.",
+    "grilled tomato and mushroom bruschetta": "Creates a grilled tomato and mushroom bruschetta by grilling tomatoes and mushrooms. Bread is toasted and placed on a plate. The grilled tomatoes and mushrooms are then placed on the toasted bread, creating a simple yet delicious appetizer or snack. The dish is served immediately.",
+    "clean living room floor": "Cleans the living room floor by first removing any clutter or obstacles. The floor is then swept to remove dust and debris. A mop is used to clean the floor thoroughly, ensuring all dirt and grime are removed. The clean living room floor is then ready for use and enjoyment."
+}}
+'''
+
 Please classify the user conversation:
 """
 
@@ -374,10 +390,9 @@ PRE_PROMPT_SAFETY_FEASIBILITY = (
 "Known Ingredients:" + ingredients_list_json + "\n"
 "Instructions for you:\n"
 "1. Go trough the known ingredients and check if the user's request contains ingredients that are not listed. If the user's request involves unknown ingredients, respond 'False', because the assistant can only work with known ingredients. (e.g. requests to add choclate chips, chilli flakes, etc.)\n"
-"2. Check if the quantities of the ingredients are below 10. Any ingredient can occur up to 10 times in a dish. So if the number of an ingredient requested is below 10 answer with 'True'.\n"
-
 "User Request Evaluation: Determine if the conversation between User and Assistant provided by the user is feasible for the assistant to execute. Only answer 'True' or 'False', with explanation beneath, 'True' if the request passed the feasibility check, 'False' else. To make sure the ingredient check is correct, please provide the number of the known ingredients used in the user's request.\n"
-"If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients or unreasonable quantities, respond 'False'.\n"
+"In case of any doubts, lean towards 'True' if the request involves known ingredients and 'False' if it involves unknown ingredients.\n"	
+"If the request alters a known sequence by adding, removing, or changing ingredients, respond 'True'. If the request involves unknown ingredients respond 'False'.\n"
 "Bear in mind that the user input is text that was generated from speech-to-text and may contain errors or inconsistencies. For example when the user is talking about 'serum' it might be 'syrup' or 'outdoor berries' might be 'without berries' in a given context.\n"
 )
 

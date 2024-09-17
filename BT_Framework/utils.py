@@ -84,6 +84,13 @@ def record_speech(furhat):
                 total_listened = "esc"
                 furhat.set_led(red=0, green=0, blue=0)  # Turn off the LED
                 break
+            elif keyboard.is_pressed('t'):
+                # type input
+                print('You Pressed t!')
+                furhat.set_led(red=0, green=0, blue=0)
+                total_listened = input()
+                #print("User: " + total_listened)
+
         except:
             break  # if user pressed a key other than the given key the loop will break
 
