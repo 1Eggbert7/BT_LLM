@@ -9945,3 +9945,527 @@ Notes:
     - seemed fine
 
 End of Participant 17 experiment
+
+
+
+
+
+
+
+Participant 18 
+RunID B
+Version: 1.3
+Thu Sep 19 09:39:38 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: can I have a full English breakfast 
+Is it ambiguous? False
+Time: Thu Sep 19 09:39:38 2024
+Is it known? True
+Time: Thu Sep 19 09:39:39 2024
+var_KnowNo: ['full English breakfast']
+Time: Thu Sep 19 09:39:41 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 09:39:41 2024
+Assistant: Great choice! I will get the task for full English breakfast started.
+Time: Thu Sep 19 09:39:41 2024
+Run number: 1 ended at: Thu Sep 19 09:39:41 2024
+This run took 3 turns
+Total number of LLM calls: 5
+
+Run: 2
+Thu Sep 19 09:39:59 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: I'm looking at a healthy food 
+Is it ambiguous? True
+Time: Thu Sep 19 09:39:59 2024
+Assistant: There are multiple options in my list that might fit your order. If you're looking for healthy food, I can recommend:
+1. Avocado toast with sausage on the side 
+2. A vegetable stir fry with rice 
+3. A grilled tomato and mushroom bruschetta 
+
+Let me know if any of these options appeal to you!
+Time: Thu Sep 19 09:40:00 2024
+User: of vegetables stir fry with rice 
+Time: Thu Sep 19 09:40:26 2024
+Is it ambiguous? False
+Time: Thu Sep 19 09:40:26 2024
+Is it known? True
+Time: Thu Sep 19 09:40:27 2024
+var_KnowNo: ['vegetable stir fry with rice']
+Time: Thu Sep 19 09:40:29 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 09:40:29 2024
+Assistant: Great choice! I will get the task for vegetable stir fry with rice started.
+Time: Thu Sep 19 09:40:29 2024
+Run number: 2 ended at: Thu Sep 19 09:40:29 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Run: 3
+Thu Sep 19 09:40:52 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: can you put a a on my fried rice 
+Is it ambiguous? True
+Time: Thu Sep 19 09:40:52 2024
+Assistant: There are multiple options in my list that might fit your order. However, I'm not familiar with any dish called "fried rice" in my repertoire. If you're looking for something similar, I can prepare a 'vegetable stir fry with rice' instead. Would you like that?
+Time: Thu Sep 19 09:40:53 2024
+Assistant: I am sorry. I did not get that. Can you please repeat?
+User: can I get a pancakes with the bacon on it 
+Time: Thu Sep 19 09:41:29 2024
+Is it ambiguous? True
+Time: Thu Sep 19 09:41:30 2024
+Assistant: There are multiple options in my list that might fit your order. I understand you'd like pancakes with bacon. While I can make 'pancakes with maple syrup and berries', I don't have a recipe for pancakes with bacon included. If you would like, I can prepare the pancakes, and you can enjoy them with the bacon separately if you have some. Would you like me to proceed with just the pancakes?
+Time: Thu Sep 19 09:41:32 2024
+User: yes
+Time: Thu Sep 19 09:41:56 2024
+Is it ambiguous? False
+Time: Thu Sep 19 09:41:58 2024
+Is it known? False
+Time: Thu Sep 19 09:41:58 2024
+Is it within the capabilities of the robot? True
+Time: Thu Sep 19 09:41:59 2024
+Is a new sequence requested?: True
+Time: Thu Sep 19 09:42:00 2024
+Is a new sequence actually requested? True
+Time: Thu Sep 19 09:42:00 2024
+Did it pass the safety check?: True
+Explanation: The request involves known ingredients (pancakes and bacon) that can be found in the list of known ingredients (No. 2, 6, 10), making it feasible for me to execute.
+Time: Thu Sep 19 09:42:01 2024
+The generated sequence is: {"sequence": [{"step": "1", "action": "cook_pancakes(3)"}, {"step": "2", "action": "place_on_plate(cooked_pancakes, 3)"}, {"step": "3", "action": "cook_bacon(2)"}, {"step": "4", "action": "place_on_plate(fried_bacon, 2)"}, {"step": "5", "action": "serve()"}]}
+Time: Thu Sep 19 09:42:03 2024
+Assistant: I will perform a new set of steps to fulfill your request. First, I will cook three pancakes. Once they are cooked, I will place them on a plate. After that, I will cook two pieces of bacon and place them on the plate as well. Finally, I will serve the pancakes and bacon together. 
+
+Does this sequence sound good to you?
+Time: Thu Sep 19 09:42:04 2024
+var_generated_sequence_name is: pancakes with bacon
+Time: Thu Sep 19 09:42:04 2024
+Total listened:yes
+Time: Thu Sep 19 09:42:32 2024
+Assistant: Great then I will now proceed to make the: pancakes with bacon
+Time: Thu Sep 19 09:42:33 2024
+Run number: 3 ended at: Thu Sep 19 09:42:33 2024
+This run took 8 turns
+Total number of LLM calls: 12
+
+Run: 4
+Thu Sep 19 09:42:51 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: making a dishes 
+Is it ambiguous? True
+Time: Thu Sep 19 09:42:52 2024
+Assistant: There are multiple options in my list that might fit your order. Could you please clarify what type of dish you're looking to make? If you have a specific kind in mind, that would help me provide better suggestions!
+Time: Thu Sep 19 09:42:53 2024
+User: we can be like painting the walls 
+Time: Thu Sep 19 09:43:13 2024
+Is it ambiguous? True
+Time: Thu Sep 19 09:43:15 2024
+Assistant: I apologize, but painting walls is outside the scope of my capabilities. However, I can assist you with making food! If you'd like, I can suggest something from my menu, such as a 'vegetable stir fry with rice' or a 'bean and cheese quesadilla'. Please let me know if you're interested in any of these options or have a different request!
+Time: Thu Sep 19 09:43:17 2024
+User: yes 
+Time: Thu Sep 19 09:43:39 2024
+Is it ambiguous? True
+Time: Thu Sep 19 09:43:40 2024
+Assistant: There are multiple options in my list that might fit your order. Could you please let me know which dish you're interested in? Here are a couple of suggestions to consider:
+1. Vegetable stir fry with rice
+2. Bean and cheese quesadilla
+Please tell me which one you'd like, or if there's something else you have in mind!
+Time: Thu Sep 19 09:43:41 2024
+User: the 2nd
+Time: Thu Sep 19 09:44:12 2024
+Is it ambiguous? False
+Time: Thu Sep 19 09:44:14 2024
+Is it known? True
+Time: Thu Sep 19 09:44:14 2024
+var_KnowNo: ['bean and cheese quesadilla']
+Time: Thu Sep 19 09:44:16 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 09:44:17 2024
+Assistant: Great choice! I will get the task for bean and cheese quesadilla started.
+Time: Thu Sep 19 09:44:17 2024
+Run number: 4 ended at: Thu Sep 19 09:44:17 2024
+This run took 9 turns
+Total number of LLM calls: 11
+
+Run: 5
+Thu Sep 19 09:44:44 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hi can I get the can I get the Italian bread dish that is an appetizer 
+Is it ambiguous? True
+Time: Thu Sep 19 09:44:44 2024
+Assistant: There are multiple options in my list that might fit your order. It sounds like you might be referring to 'grilled tomato and mushroom bruschetta', which is a delicious appetizer. Would you like me to prepare that for you?
+Time: Thu Sep 19 09:44:45 2024
+User: yes it's 
+Time: Thu Sep 19 09:45:00 2024
+Is it ambiguous? True
+Time: Thu Sep 19 09:45:02 2024
+Assistant: Great choice! I'll go ahead and prepare the 'grilled tomato and mushroom bruschetta' for you. Please hold on for a moment while I get that ready!
+Time: Thu Sep 19 09:45:03 2024
+User: esc
+Time: Thu Sep 19 09:45:08 2024
+Run number: 5 ended at: Thu Sep 19 09:45:08 2024
+This run took 6 turns
+Total number of LLM calls: 4
+
+Version: 1.3
+Thu Sep 19 09:48:24 2024
+Furhat is being used with Baseline
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: I want to have a bacon and egg sandwich 
+Time: Thu Sep 19 09:48:35 2024
+Assistant: Great choice! I will start the task for: bacon and egg sandwich.
+Time: Thu Sep 19 09:48:35 2024
+Run number: 1 ended at: Thu Sep 19 09:48:35 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Thu Sep 19 09:48:41 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: sth sweet
+Time: Thu Sep 19 09:49:07 2024
+Assistant: It seems your request is a bit vague. Could you please specify what you have in mind? 
+
+Here are three options for sweet dishes I can prepare for you:
+1. Pancakes with maple syrup and berries
+2. Peanut butter and jelly sandwich
+3. Avocado toast (which can be made sweet by adding some honey or berries if desired)
+
+Please let me know which one you'd like!
+Time: Thu Sep 19 09:49:08 2024
+User: the avocado 
+Time: Thu Sep 19 09:49:35 2024
+Assistant: Great choice! I will start the task for: avocado toast with sausage on the side.
+Time: Thu Sep 19 09:49:35 2024
+Run number: 2 ended at: Thu Sep 19 09:49:35 2024
+This run took 2 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Thu Sep 19 09:49:40 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: I got a full English breakfast with extra egg 
+Time: Thu Sep 19 09:49:57 2024
+Assistant: I can include an extra egg by modifying the sequence for the full English breakfast to include an additional step for frying an egg. 
+
+First, I will prepare all the ingredients as per the full English breakfast and then fry an extra egg before serving. Here�s the new sequence in JSON format:
+
+```json
+{
+  "task": "full English breakfast with extra egg",
+  "ID": "6a",
+  "sequence": [
+    {"step": "1", "action": "grill_sausages(2)"},
+    {"step": "2", "action": "cook_bacon(2)"},
+    {"step": "3", "action": "toast_bread(2)"},
+    {"step": "4", "action": "grill_tomatoes(1)"},
+    {"step": "5", "action": "grill_mushrooms(3)"},
+    {"step": "6", "action": "heat_beans(1)"},
+    {"step": "7", "action": "fry_eggs(2)"},
+    {"step": "8", "action": "place_on_plate(grilled_sausages, 2)"},
+    {"step": "9", "action": "place_on_plate(fried_bacon, 2)"},
+    {"step": "10", "action": "place_on_plate(toasted_bread, 2)"},
+    {"step": "11", "action": "place_on_plate(grilled_tomatoes, 1)"},
+    {"step": "12", "action": "place_on_plate(grilled_mushrooms, 3)"},
+    {"step": "13", "action": "place_on_plate(heated_beans, 1)"},
+    {"step": "14", "action": "place_on_plate(fried_egg, 2)"},
+    {"step": "15", "action": "serve()"}
+  ]
+}
+```
+
+Great choice! I will start the task for: full English breakfast with extra egg.
+Time: Thu Sep 19 09:50:01 2024
+Run number: 3 ended at: Thu Sep 19 09:50:01 2024
+This run took 3 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Thu Sep 19 09:50:19 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: hi can you pick up the glass for me 
+Time: Thu Sep 19 09:50:35 2024
+Assistant: I'm sorry, but picking up objects is currently outside my capabilities. However, I can assist you with tasks like food preparation or cleaning. If you need help with those, feel free to let me know!
+Time: Thu Sep 19 09:50:36 2024
+User: skip
+Time: Thu Sep 19 09:51:06 2024
+Run number: 4 ended at: Thu Sep 19 09:51:06 2024
+This run took 4 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Thu Sep 19 09:51:07 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: can I have the fourth dish 
+Time: Thu Sep 19 09:51:28 2024
+Assistant: Great choice! I will start the task for: vegetable stir fry with rice.
+Time: Thu Sep 19 09:51:28 2024
+Run number: 5 ended at: Thu Sep 19 09:51:28 2024
+This run took 5 turns
+Total number of LLM calls: 1
+
+Notes:
+  Times: 9:30 - 10:00
+
+  Overall: 
+    - english pronounciation was sometimes a little off, had to tipe in some answers for STT correction
+
+  BT:
+    - Task 3 kinda failed at first but then generated a sequence for another request
+    - Task 5 kinda failed, ambiguity got triggered to promise a sequence execution.
+
+  Base:
+    - Task 2 for sweet suggestions LLM wrongfully advertised avocado toast as sweet by giving the option of adding honey, when honey is not part of known ingredients. When the option was chosen the response also was wrong with "Great choice! I will start the task for 'avocado toast with sausage on the side'"...
+
+End of Participant 18 experiment
+
+
+
+
+
+
+Participant 19
+RunID C
+Version: 1.3
+Thu Sep 19 10:31:42 2024
+Furhat is being used with Baseline
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: uh hi could you make me a bacon and egg sandwich 
+Time: Thu Sep 19 10:31:52 2024
+Assistant: Great choice! I will start the task for: bacon and egg sandwich.
+Time: Thu Sep 19 10:31:53 2024
+Run number: 1 ended at: Thu Sep 19 10:31:53 2024
+This run took 1 turns
+Total number of LLM calls: 1
+
+Version: 1.3
+Thu Sep 19 10:31:58 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: uh I'm craving something sweet do you have any recommendation 
+Time: Thu Sep 19 10:32:13 2024
+Assistant: It seems like you're looking for something sweet! Here are a few options I can prepare for you:
+
+1. Pancakes with maple syrup and berries
+2. Peanut butter and jelly sandwich
+3. Grilled tomato and mushroom bruschetta (although it's not typically sweet, it can be a tasty snack!)
+
+Please let me know which one you'd like, or if you have something specific in mind!
+Time: Thu Sep 19 10:32:14 2024
+User: uh can you read it again 
+Time: Thu Sep 19 10:32:44 2024
+Assistant: Sure! Here are the sweet options I can prepare for you:
+
+1. Pancakes with maple syrup and berries
+2. Peanut butter and jelly sandwich
+
+Let me know which one you prefer!
+Time: Thu Sep 19 10:32:45 2024
+User: uh I'll take the pancake 
+Time: Thu Sep 19 10:33:01 2024
+Assistant: Great choice! I will start the task for: pancakes with maple syrup and berries.
+Time: Thu Sep 19 10:33:02 2024
+Run number: 2 ended at: Thu Sep 19 10:33:02 2024
+This run took 2 turns
+Total number of LLM calls: 3
+
+Version: 1.3
+Thu Sep 19 10:33:08 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: uh can I have sandwich but can you add a ketchup to it 
+Time: Thu Sep 19 10:33:28 2024
+Assistant: I can prepare a sandwich, but unfortunately, I don't have the capability to add ketchup, as it's not included in my list of defined ingredients and functions. 
+
+I can proceed with making a bacon and egg sandwich, avocado toast, or a peanut butter and jelly sandwich. Please let me know which one you'd like!
+Time: Thu Sep 19 10:33:30 2024
+User: uh yeah uh back on to the I forgot the toast is fine 
+Time: Thu Sep 19 10:33:57 2024
+Assistant: It sounds like you're interested in a sandwich without the toasted bread. However, I can't prepare a sandwich without bread, as it's an essential part of all the sandwiches in my sequences. 
+
+If you'd like to go ahead with a specific sandwich (like bacon and egg sandwich or peanut butter and jelly sandwich), please let me know, and I'll also prepare it using toasted bread as required. Alternatively, I can also make avocado toast if you're open to that!
+Time: Thu Sep 19 10:33:59 2024
+User: ok avocado toast
+Time: Thu Sep 19 10:34:37 2024
+Assistant: Great choice! I will start the task for: avocado toast with sausage on the side.
+Time: Thu Sep 19 10:34:38 2024
+Run number: 3 ended at: Thu Sep 19 10:34:38 2024
+This run took 3 turns
+Total number of LLM calls: 3
+
+Version: 1.3
+Thu Sep 19 10:34:46 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: could you do my laundry 
+Time: Thu Sep 19 10:35:00 2024
+Assistant: I'm sorry, but doing laundry is outside my current capabilities. However, I can help with food preparation or cleaning tasks like cleaning the living room floor. Would you like me to assist with something else?
+Time: Thu Sep 19 10:35:02 2024
+User: skip
+Time: Thu Sep 19 10:35:20 2024
+Run number: 4 ended at: Thu Sep 19 10:35:20 2024
+This run took 4 turns
+Total number of LLM calls: 2
+
+Version: 1.3
+Thu Sep 19 10:35:22 2024
+Furhat is being used with Baseline
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: uh can I get some Western fruit for my breakfast 
+Time: Thu Sep 19 10:35:40 2024
+Assistant: Could you please clarify what you mean by "Western fruit"? If you're looking for a specific dish or combination that includes fruit, I can assist with breakfast options such as pancakes with berries or avocado toast with grilled tomatoes. Let me know which option you prefer or provide more details!
+Time: Thu Sep 19 10:35:41 2024
+User: Western breakfast 
+Time: Thu Sep 19 10:36:02 2024
+Assistant: A "Western breakfast" can refer to various dishes, but it often includes items such as eggs, bacon, sausage, toast, and sometimes pancakes or fruit. I can prepare a full English breakfast, which is similar and includes a variety of items. Would you like that, or do you have a specific combination in mind? Please specify, and I'll be happy to assist!
+Time: Thu Sep 19 10:36:04 2024
+User: all right I'll take the English breakfast 
+Time: Thu Sep 19 10:36:29 2024
+Assistant: Great choice! I will start the task for: full English breakfast.
+Time: Thu Sep 19 10:36:30 2024
+Run number: 5 ended at: Thu Sep 19 10:36:30 2024
+This run took 5 turns
+Total number of LLM calls: 3
+
+Version: 1.3
+Thu Sep 19 10:39:43 2024
+Tree is initialized and furhat is used
+
+Assistant: Hello! I am Gregory, your home assistant. How can I help you today?
+User: uh could you help me to clean my living room please 
+Is it ambiguous? False
+Time: Thu Sep 19 10:39:44 2024
+Is it known? True
+Time: Thu Sep 19 10:39:45 2024
+var_KnowNo: ['clean living room floor']
+Time: Thu Sep 19 10:39:47 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 10:39:47 2024
+Assistant: Great choice! I will get the task for clean living room floor started.
+Time: Thu Sep 19 10:39:47 2024
+Run number: 1 ended at: Thu Sep 19 10:39:47 2024
+This run took 3 turns
+Total number of LLM calls: 5
+
+Run: 2
+Thu Sep 19 10:40:14 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: sth healthy
+Is it ambiguous? True
+Time: Thu Sep 19 10:40:14 2024
+Assistant: There are multiple options in my list that might fit your order. If you're looking for something healthy, here are a few suggestions:
+1. Avocado toast with sausage on the side
+2. Vegetable stir fry with rice
+3. Grilled tomato and mushroom bruschetta
+
+Please let me know which one you would like, or if you need more options!
+Time: Thu Sep 19 10:40:16 2024
+User: all right I'll go with grilled tomato and mushroom bruschetta 
+Time: Thu Sep 19 10:40:44 2024
+Is it ambiguous? False
+Time: Thu Sep 19 10:40:44 2024
+Is it known? True
+Time: Thu Sep 19 10:40:45 2024
+var_KnowNo: ['grilled tomato and mushroom bruschetta']
+Time: Thu Sep 19 10:40:47 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 10:40:48 2024
+Assistant: Great choice! I will get the task for grilled tomato and mushroom bruschetta started.
+Time: Thu Sep 19 10:40:48 2024
+Run number: 2 ended at: Thu Sep 19 10:40:48 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Run: 3
+Thu Sep 19 10:41:09 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: could you make me peanut butter jelly and sandwich and also make me a coffee 
+Is it ambiguous? False
+Time: Thu Sep 19 10:41:09 2024
+Is it known? False
+Time: Thu Sep 19 10:41:10 2024
+Is it within the capabilities of the robot? False
+Time: Thu Sep 19 10:41:11 2024
+Assistant: Your request seems to be outside of my capabilities. Please provide a new different request.
+Time: Thu Sep 19 10:41:11 2024
+User: pancakes with syrup berries and milk
+Time: Thu Sep 19 10:41:44 2024
+Is it ambiguous? True
+Time: Thu Sep 19 10:41:45 2024
+Assistant: There are multiple options in my list that might fit your order. I can prepare 'pancakes with maple syrup and berries' for you. However, please note that I cannot make coffee or milk. Would you like me to proceed with the pancakes?
+Time: Thu Sep 19 10:41:46 2024
+User: please 
+Time: Thu Sep 19 10:42:03 2024
+Is it ambiguous? False
+Time: Thu Sep 19 10:42:05 2024
+Is it known? True
+Time: Thu Sep 19 10:42:05 2024
+var_KnowNo: ['pancakes with maple syrup and berries']
+Time: Thu Sep 19 10:42:07 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 10:42:08 2024
+Assistant: Great choice! I will get the task for pancakes with maple syrup and berries started.
+Time: Thu Sep 19 10:42:08 2024
+Run number: 3 ended at: Thu Sep 19 10:42:08 2024
+This run took 7 turns
+Total number of LLM calls: 11
+
+Run: 4
+Thu Sep 19 10:42:27 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: uh could you help me to find where is my shoes 
+Is it ambiguous? True
+Time: Thu Sep 19 10:42:27 2024
+Assistant: I apologize, but locating your shoes is outside the scope of my capabilities. However, I can assist you with cooking or cleaning tasks if you need help in those areas. For instance, I can prepare a delicious 'bacon and egg sandwich' or clean your living room floor. Let me know how I can assist you!
+Time: Thu Sep 19 10:42:28 2024
+User: skip
+Time: Thu Sep 19 10:42:49 2024
+Run number: 4 ended at: Thu Sep 19 10:42:49 2024
+This run took 4 turns
+Total number of LLM calls: 2
+
+Run: 5
+Thu Sep 19 10:43:06 2024
+Assistant: That's it for this task. Let's go onto the next one... Hello. How can I help you today?
+User: can you make me some rice 
+Is it ambiguous? True
+Time: Thu Sep 19 10:43:06 2024
+Assistant: I apologize, but making plain rice is outside the scope of my capabilities. However, I can prepare a 'vegetable stir fry with rice', which includes cooking rice along with vegetables and serving them together. Would you like me to make that instead?
+Time: Thu Sep 19 10:43:07 2024
+User: uh yeah if you can 
+Time: Thu Sep 19 10:43:26 2024
+Is it ambiguous? False
+Time: Thu Sep 19 10:43:27 2024
+Is it known? True
+Time: Thu Sep 19 10:43:27 2024
+var_KnowNo: ['vegetable stir fry with rice']
+Time: Thu Sep 19 10:43:30 2024
+Does it map to the action in var_KnowNo? True
+Time: Thu Sep 19 10:43:30 2024
+Assistant: Great choice! I will get the task for vegetable stir fry with rice started.
+Time: Thu Sep 19 10:43:30 2024
+Run number: 5 ended at: Thu Sep 19 10:43:30 2024
+This run took 5 turns
+Total number of LLM calls: 7
+
+Notes:
+  Time: 10:25-10:50
+  Overall: 
+    - Quick with everything (reading consent, filling survey, asking questions to furhat)
+    - pronounciation was not favoured by STT ;instead of "avocado toast" "i forgot the toast" for example, so i tiped out some stuff
+
+
+End of Participant 19 experiment
+
+
+
+
+
+
+Participant 20
+RunID D
