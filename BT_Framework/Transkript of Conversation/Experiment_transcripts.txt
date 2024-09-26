@@ -1340,7 +1340,7 @@ This run took 5 turns
 Total number of LLM calls: 7
 
 Notes:
-  Time: 13:05-13:40
+  Time: 13:05 - 13:40
   One of the best participants when it comes to speaking clearly and waiting for robot responses and asking the right questions by knowing the tasks
 
   BT:
@@ -1640,12 +1640,12 @@ Run number: 5 ended at: Tue Sep 17 14:40:27 2024
 This run took 5 turns
 Total number of LLM calls: 2
 
-Notes: 14:18-14:48
+Notes: 14:18 - 14:48
   Overall this participant was not patient with the robot and started speaking quickly after robot finished and was annoyed by the furhat taking time to answer. Probably judged BT worse than base because of longer response time.
   BT: 
-    long pauses made it awkward
+    - long pauses made it awkward
   Base:
-    STT was bad at times but quicker response time was appreciated
+    - STT was bad at times but quicker response time was appreciated
 
 End of Paricipant 06 experiment
 
@@ -1939,8 +1939,8 @@ Run number: 5 ended at: Tue Sep 17 15:41:32 2024
 This run took 11 turns
 Total number of LLM calls: 15
 
-Notes: 15:20-15:50
-  Mostly fine. General suggestion/complaint at the end was that its hard to rate competence when no actual cooking was done...
+Notes: 15:20 - 15:50
+  - Mostly fine. General suggestion/complaint at the end was that its hard to rate competence when no actual cooking was done...
   BT:
     - when explaining full english breakfast without egg modification in task 3, it listed all steps with numbers (14 steps...) which was long and annoying and probably made the user like the baseline more. Usually the BT here is supposed to keep the answer moderate in explaining the new sequence and not list 14 steps...
 
@@ -2316,10 +2316,9 @@ Run number: 5 ended at: Tue Sep 17 16:25:36 2024
 This run took 5 turns
 Total number of LLM calls: 1
 
-Notes: 16:07-16:38
-  Mixed the task together, for example asked for suggestions in task one and modified it right after. Did it for all 5 tasks with both versions though, so its not necessarily an outlier since both system were tested to their extent.
-
-  Suggested that answers contain too much text and response time too long to make it feel more natural (not the point of my study tho)
+Notes: 16:07 - 16:38
+  - Mixed the task together, for example asked for suggestions in task one and modified it right after. Did it for all 5 tasks with both versions though, so its not necessarily an outlier since both system were tested to their extent.
+  - Suggested that answers contain too much text and response time too long to make it feel more natural (not the point of my study tho)
 
 
 End of Paricipant 08 experiment
@@ -2589,7 +2588,7 @@ Run number: 5 ended at: Tue Sep 17 17:23:52 2024
 This run took 5 turns
 Total number of LLM calls: 7
 
-Notes: 16:57-17:29
+Notes: 16:57 - 17:29
   Worst one so far because furhat stopped talking, maybe cause i used the web interface to say something. It didn't speak after the first "Hello how can I help you" even tho text was generated. Upon restart Furhats voice couldn't be set to Gregory neural so it was entirely conducted in the default voice.
   The participant had a rather quiet voice so the Speech-to-Text recognition was bad a couple times.
   Could be a potential elimination of the study...
@@ -2864,7 +2863,7 @@ This run took 5 turns
 Total number of LLM calls: 4
 
 Notes:
-  Time: 18:08-18:40
+  Time: 18:08 - 18:40
   Older gentleman who said he had fun but didn't ask much about the experiment. Very clear and concise talking, good Participant
 
 End of Participant 10 experiment
@@ -3151,11 +3150,11 @@ Notes: 9:14 - 9:44
     - asked FH with furhat on if it was cold, not bad note tho..
 
   Overall: 
-    short questions
-    Monotonous
-    asked same questions kinda both times
-    good STT
-    "complained"/mentioned systems are same
+    - short questions
+    - Monotonous
+    - asked same questions kinda both times
+    - good STT
+    - "complained"/mentioned systems are same
 
 End of Participant 11 experiment
 
@@ -3517,7 +3516,7 @@ This run took 5 turns
 Total number of LLM calls: 2
 
 Notes:
-  Time: 10:00-10:36
+  Time: 10:00 - 10:36
 
   Overall: Had to restard at BT when Internet connection ran out and STT api stopped working, could potentially be thrown out of the study
 
@@ -3815,7 +3814,7 @@ This run took 5 turns
 Total number of LLM calls: 7
 
 Notes:
-  Time: 12:19-13:00
+  Time: 12:19 - 13:00
   Overall: Older participant, talked slow but system still managed well 
 
   BT:
@@ -4373,7 +4372,8 @@ Total number of LLM calls: 5
 
 Notes: 
   Time: 15:00 - 15:27
-  Overall: STT was bad here because the participant had long breaks mid sentence and would speak rather quiet. STT was equally bad with both systems so maybe a keeper
+  Overall: 
+    - STT was bad here because the participant had long breaks mid sentence and would speak rather quiet. STT was equally bad with both systems so maybe a keeper
   Base: 
     - lied that huevos rancheros recipe is served with avocado when Participant asked for sth with avocado
     - 'grilled tomatoes' as a sequence got executed when irl it doesnt exist...
@@ -4689,7 +4689,7 @@ This run took 5 turns
 Total number of LLM calls: 2
 
 Notes: 
-  Times: 15:50-16:23
+  Times: 15:50 - 16:23
 
   BT:
     - things that normally generate a new seq got classified as ambiguous and declined the request to modify certain dishes...
@@ -5455,10 +5455,10 @@ This run took 5 turns
 Total number of LLM calls: 7
 
 Notes:
-  Time: 10:25-10:50
+  Time: 10:25 - 10:50
   Overall: 
     - Quick with everything (reading consent, filling survey, asking questions to furhat)
-    - pronounciation was not favoured by STT ;instead of "avocado toast" "i forgot the toast" for example, so i tiped out some stuff
+    - pronounciation was not favoured by STT ;instead of "avocado toast" "i forgot the toast" for example, so i typed out some stuff
 
 
 End of Participant 19 experiment
@@ -6593,7 +6593,7 @@ Run number: 5 ended at: Fri Sep 20 12:18:32 2024
 This run took 5 turns
 Total number of LLM calls: 7
 Notes:
-  Times: 12:00 - 11:28
+  Times: 12:00 - 12:28
 
   Overall: 
     - good STT
@@ -12098,7 +12098,7 @@ Notes:
     - interesting T3 request that worked
 
   BT:
-    - T3 had a long break because mic didn't pic up and i had to tipe in, but request worked and was interesting too.
+    - T3 had a long break because mic didn't pic up and i had to type in, but request worked and was interesting too.
 
 End of Participant 43 experiment
 
