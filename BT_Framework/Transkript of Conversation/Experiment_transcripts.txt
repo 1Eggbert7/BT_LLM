@@ -815,7 +815,7 @@ Total number of LLM calls: 10
 
 Notes:
   Time: 14:15-14:50
-  Overall STT racted badly and I accidently stopped after Task 4. Participant was asking for multiple dishes at task 3 instead of modifying one
+  Overall STT reacted badly and I accidently stopped after Task 4. Participant was asking for multiple dishes at task 3 instead of modifying one
   BT Framework:
     - laundry got misunderstood (not recorded at all) 4 times
 
